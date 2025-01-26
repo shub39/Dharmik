@@ -1,9 +1,9 @@
-package com.shub39.dharmik.core.presentation
+package com.shub39.dharmik.core.presentation.home
 
 import com.shub39.dharmik.core.domain.AppThemes
 import com.shub39.dharmik.core.domain.PreferencesRepo
 
-class SettingsPrefs(
+class SettingsUseCase(
     private val preferencesRepo: PreferencesRepo
 ) {
     fun getPrefIsDarkTheme() = preferencesRepo.getIsDarkTheme()

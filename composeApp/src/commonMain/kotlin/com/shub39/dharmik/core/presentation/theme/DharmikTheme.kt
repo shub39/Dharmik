@@ -13,10 +13,11 @@ fun DharmikTheme(
 ) {
     MaterialTheme(
         colorScheme = when(appTheme) {
-            else -> if (darkTheme) darkYellow else lightYellow
-           // AppThemes.LIME -> if (darkTheme) darkLime else lightLime
-           // AppThemes.BLUE -> if (darkTheme) darkBlue else lightBlue
+            AppThemes.YELLOW -> if (darkTheme) darkYellow else lightYellow
+            AppThemes.LIME -> if (darkTheme) darkLime else lightLime
+            AppThemes.BLUE -> if (darkTheme) darkBlue else lightBlue
         },
+        typography = provideTypography(1f),
         content = content
     )
 }

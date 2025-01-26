@@ -5,17 +5,13 @@ import kotlinx.serialization.Serializable
 sealed interface Routes {
 
     @Serializable
-    data object HomeGraph: Routes
-
+    data object Home: Routes
     @Serializable
     data object SavedPage: Routes
-
     @Serializable
-    data object FavoritesPage: Routes
-
+    data object LikedPage: Routes
     @Serializable
     data object LibraryPage: Routes
-
     @Serializable
     data object SettingsPage: Routes
 
