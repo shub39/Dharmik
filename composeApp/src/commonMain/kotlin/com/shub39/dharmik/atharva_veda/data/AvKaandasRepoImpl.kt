@@ -5,11 +5,16 @@ import com.shub39.dharmik.atharva_veda.domain.AvVerse
 import dharmik.composeapp.generated.resources.Res
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-class AvKaandasRepoImpl : AvKaandasRepo {
+class AvKaandasRepoImpl(
+    private val avDao: AvDao
+) : AvKaandasRepo {
+
     @OptIn(ExperimentalResourceApi::class)
     override suspend fun getKaandas(): Map<Int, List<AvVerse>> = withContext(Dispatchers.IO) {
         val decoder = Json {
@@ -25,6 +30,23 @@ class AvKaandasRepoImpl : AvKaandasRepo {
         }
 
         return@withContext kaandas
+    }
+
+    override fun getFavesFlow(): Flow<List<AvVerse>> {
+        return avDao.getAvVerses().map { flow ->
+            flow.map { it.toAvVerse() }
+        }
+    }
+
+    override suspend fun setOrUnsetFave(verse: AvVerse) {
+        val entity = verse.toAvEntity()
+        val isFave = avDao.isVerseFaved(entity.text)
+
+        if (isFave) {
+            avDao.deleteAvVerse(entity)
+        } else {
+            avDao.upsertAvVerse(entity)
+        }
     }
 
     companion object {

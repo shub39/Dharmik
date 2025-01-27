@@ -25,10 +25,8 @@ import com.shub39.dharmik.app.Routes
 import com.shub39.dharmik.core.presentation.components.ContentCap
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
-import dharmik.composeapp.generated.resources.baseline_bookmark_24
 import dharmik.composeapp.generated.resources.baseline_favorite_border_24
 import dharmik.composeapp.generated.resources.baseline_settings_24
-import dharmik.composeapp.generated.resources.bookmarks
 import dharmik.composeapp.generated.resources.library
 import dharmik.composeapp.generated.resources.liked
 import dharmik.composeapp.generated.resources.round_library_books_24
@@ -42,7 +40,6 @@ fun Home(
     navController: NavController
 ) = ContentCap {
     val destinations = listOf(
-        Routes.BookMarksSection,
         Routes.LikedSection,
         Routes.LibrarySection,
         Routes.SettingsSection
@@ -78,7 +75,6 @@ fun Home(
                                         when (dest) {
                                             Routes.LikedSection -> Res.drawable.baseline_favorite_border_24
                                             Routes.LibrarySection -> Res.drawable.round_library_books_24
-                                            Routes.BookMarksSection -> Res.drawable.baseline_bookmark_24
                                             else -> Res.drawable.baseline_settings_24
                                         }
                                     ),
@@ -91,7 +87,6 @@ fun Home(
                                         when(dest) {
                                             Routes.LikedSection -> Res.string.liked
                                             Routes.LibrarySection -> Res.string.library
-                                            Routes.BookMarksSection -> Res.string.bookmarks
                                             else -> Res.string.settings
                                         }
                                     )
@@ -111,7 +106,6 @@ fun Home(
             when (it) {
                 Routes.LikedSection -> Text("Favorites")
                 Routes.LibrarySection -> LibrarySection(navController)
-                Routes.BookMarksSection -> Text("Saved")
                 else -> SettingsSection()
             }
         }

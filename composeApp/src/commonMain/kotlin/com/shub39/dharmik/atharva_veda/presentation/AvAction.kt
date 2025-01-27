@@ -4,4 +4,5 @@ import com.shub39.dharmik.atharva_veda.domain.AvVerse
 
 sealed interface AvAction {
     data class SetKaandas(val kaandas: List<AvVerse>): AvAction
+    data class SetFave(val verse: AvVerse): AvAction
 }
