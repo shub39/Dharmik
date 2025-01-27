@@ -1,0 +1,2 @@
+-dontobfuscate
+-keep class com.shub39.dharmik.** { *; }

@@ -11,7 +11,19 @@ plugins {
     alias(libs.plugins.room)
 }
 
+val appName = "Dharmik"
+val version = "1.0.0"
+val versionCode = 1
+
 kotlin {
+    targets.all {
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -72,8 +84,8 @@ android {
         applicationId = "com.shub39.dharmik"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionCode
+        versionName = version
     }
     packaging {
         resources {
@@ -82,7 +94,16 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "src/commonMain/proguard-rules.pro"
+            )
+        }
+        debug {
+            resValue("string", "app_name", "$appName Debug")
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
     }
     compileOptions {
@@ -109,7 +130,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.shub39.dharmik"
-            packageVersion = "1.0.0"
+            packageVersion = version
         }
     }
 }
