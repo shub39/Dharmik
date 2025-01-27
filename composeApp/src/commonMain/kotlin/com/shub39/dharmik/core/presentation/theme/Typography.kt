@@ -7,9 +7,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dharmik.composeapp.generated.resources.Res
-import dharmik.composeapp.generated.resources.poppins_black
-import dharmik.composeapp.generated.resources.poppins_bold
-import dharmik.composeapp.generated.resources.poppins_mediun
 import dharmik.composeapp.generated.resources.poppins_regular
 import org.jetbrains.compose.resources.Font
 
@@ -17,9 +14,6 @@ import org.jetbrains.compose.resources.Font
 fun provideTypography(scale: Float = 1f): Typography {
     val poppinsFont = FontFamily(
         Font(Res.font.poppins_regular, FontWeight.Normal),
-        Font(Res.font.poppins_bold, FontWeight.Bold),
-        Font(Res.font.poppins_mediun, FontWeight.Medium),
-        Font(Res.font.poppins_black, FontWeight.Black)
     )
 
     return Typography(

@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
 import com.shub39.dharmik.core.presentation.components.ContentCap
 import dharmik.composeapp.generated.resources.Res
@@ -27,22 +28,24 @@ import dharmik.composeapp.generated.resources.app_name
 import dharmik.composeapp.generated.resources.baseline_bookmark_24
 import dharmik.composeapp.generated.resources.baseline_favorite_border_24
 import dharmik.composeapp.generated.resources.baseline_settings_24
+import dharmik.composeapp.generated.resources.bookmarks
 import dharmik.composeapp.generated.resources.library
 import dharmik.composeapp.generated.resources.liked
 import dharmik.composeapp.generated.resources.round_library_books_24
-import dharmik.composeapp.generated.resources.saved
 import dharmik.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home() = ContentCap {
+fun Home(
+    navController: NavController
+) = ContentCap {
     val destinations = listOf(
-        Routes.SavedPage,
-        Routes.LikedPage,
-        Routes.LibraryPage,
-        Routes.SettingsPage
+        Routes.BookMarksSection,
+        Routes.LikedSection,
+        Routes.LibrarySection,
+        Routes.SettingsSection
     )
     var currentDest by remember { mutableStateOf(destinations[0]) }
 
@@ -73,9 +76,9 @@ fun Home() = ContentCap {
                                 Icon(
                                     painter = painterResource(
                                         when (dest) {
-                                            Routes.LikedPage -> Res.drawable.baseline_favorite_border_24
-                                            Routes.LibraryPage -> Res.drawable.round_library_books_24
-                                            Routes.SavedPage -> Res.drawable.baseline_bookmark_24
+                                            Routes.LikedSection -> Res.drawable.baseline_favorite_border_24
+                                            Routes.LibrarySection -> Res.drawable.round_library_books_24
+                                            Routes.BookMarksSection -> Res.drawable.baseline_bookmark_24
                                             else -> Res.drawable.baseline_settings_24
                                         }
                                     ),
@@ -86,9 +89,9 @@ fun Home() = ContentCap {
                                 Text(
                                     text = stringResource(
                                         when(dest) {
-                                            Routes.LikedPage -> Res.string.liked
-                                            Routes.LibraryPage -> Res.string.library
-                                            Routes.SavedPage -> Res.string.saved
+                                            Routes.LikedSection -> Res.string.liked
+                                            Routes.LibrarySection -> Res.string.library
+                                            Routes.BookMarksSection -> Res.string.bookmarks
                                             else -> Res.string.settings
                                         }
                                     )
@@ -106,9 +109,9 @@ fun Home() = ContentCap {
             modifier = Modifier.padding(padding)
         ) {
             when (it) {
-                Routes.LikedPage -> Text("Favorites")
-                Routes.LibraryPage -> Text("Library")
-                Routes.SavedPage -> Text("Saved")
+                Routes.LikedSection -> Text("Favorites")
+                Routes.LibrarySection -> LibrarySection(navController)
+                Routes.BookMarksSection -> Text("Saved")
                 else -> SettingsSection()
             }
         }

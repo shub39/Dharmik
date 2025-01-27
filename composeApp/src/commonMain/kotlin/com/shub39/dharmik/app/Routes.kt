@@ -7,15 +7,19 @@ sealed interface Routes {
     @Serializable
     data object Home: Routes
     @Serializable
-    data object SavedPage: Routes
+    data object BookMarksSection: Routes
     @Serializable
-    data object LikedPage: Routes
+    data object LikedSection: Routes
     @Serializable
-    data object LibraryPage: Routes
+    data object LibrarySection: Routes
     @Serializable
-    data object SettingsPage: Routes
+    data object SettingsSection: Routes
 
     @Serializable
     data object AtharvaVedaGraph: Routes
+    @Serializable
+    data object AvKaandasPage: Routes
+    @Serializable
+    data object AvVersesPage: Routes
 
 }

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <string name="app_name">Dharmik</string>
-    <string name="saved">Saved</string>
+    <string name="bookmarks">Bookmarks</string>
     <string name="liked">Liked</string>
     <string name="library">Library</string>
     <string name="settings">Settings</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="app_theme">App Theme</string>
+    <string name="atharva_veda">Atharva Veda</string>
+    <string name="atharva_veda_desc">Approximately 6000 verses || Hymns and prose</string>
+    <string name="kaanda_template">Kaanda %1$d</string>
+    <string name="verses_template">%1$d Verses</string>
 </resources>

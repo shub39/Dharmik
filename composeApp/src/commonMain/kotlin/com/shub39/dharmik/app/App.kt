@@ -8,7 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.shub39.dharmik.atharva_veda.presentation.AvKaandasPage
+import com.shub39.dharmik.atharva_veda.presentation.AvVersesPage
+import com.shub39.dharmik.atharva_veda.presentation.AvViewModel
 import com.shub39.dharmik.core.domain.AppThemes
 import com.shub39.dharmik.core.presentation.home.Home
 import com.shub39.dharmik.core.presentation.home.SettingsUseCase
@@ -17,10 +21,13 @@ import org.koin.compose.koinInject
 
 @Composable
 fun App(
-    settingsUseCase: SettingsUseCase = koinInject()
+    settingsUseCase: SettingsUseCase = koinInject(),
+    avvm: AvViewModel = koinInject()
 ) {
     val isDark by settingsUseCase.getPrefIsDarkTheme().collectAsStateWithLifecycle(false)
     val appTheme by settingsUseCase.getPrefAppTheme().collectAsStateWithLifecycle(AppThemes.YELLOW)
+
+    val avState by avvm.kaandas.collectAsStateWithLifecycle()
 
     DharmikTheme(
         darkTheme = isDark,
@@ -34,11 +41,27 @@ fun App(
             modifier = Modifier.background(MaterialTheme.colorScheme.surface)
         ) {
             composable<Routes.Home> {
-                Home()
+                Home(navController)
             }
 
-            composable<Routes.AtharvaVedaGraph> {
+            navigation<Routes.AtharvaVedaGraph>(
+                startDestination = Routes.AvKaandasPage
+            ) {
+                composable<Routes.AvKaandasPage> {
+                    AvKaandasPage(
+                        navController = navController,
+                        state = avState,
+                        action = avvm::onAction
+                    )
+                }
 
+                composable<Routes.AvVersesPage> {
+                    AvVersesPage(
+                        navController = navController,
+                        state = avState,
+                        action = avvm::onAction
+                    )
+                }
             }
         }
     }
