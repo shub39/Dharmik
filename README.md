@@ -15,8 +15,9 @@
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()
 
 ### Screenshots
-| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) | ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
-|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
+|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
 
 
 ### Check List
