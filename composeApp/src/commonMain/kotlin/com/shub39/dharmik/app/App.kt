@@ -41,7 +41,11 @@ fun App(
             modifier = Modifier.background(MaterialTheme.colorScheme.surface)
         ) {
             composable<Routes.Home> {
-                Home(navController)
+                Home(
+                    navController = navController,
+                    avState = avState,
+                    avAction = avvm::onAction
+                )
             }
 
             navigation<Routes.AtharvaVedaGraph>(

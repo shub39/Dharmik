@@ -87,7 +87,7 @@ fun AvVersesPage(
                     },
                     supportingContent = {
                         Text(
-                            text = "${kaanda.sukta} || ${kaanda.kaanda} || ${kaanda.samhita}"
+                            text = "${kaanda.sukta} : ${kaanda.kaanda} || ${kaanda.samhita}"
                         )
                     },
                     trailingContent = {

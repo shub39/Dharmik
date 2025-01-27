@@ -22,6 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
+import com.shub39.dharmik.atharva_veda.presentation.AvAction
+import com.shub39.dharmik.atharva_veda.presentation.AvState
 import com.shub39.dharmik.core.presentation.components.ContentCap
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
@@ -37,7 +39,9 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
-    navController: NavController
+    navController: NavController,
+    avState: AvState,
+    avAction: (AvAction) -> Unit,
 ) = ContentCap {
     val destinations = listOf(
         Routes.LikedSection,
@@ -104,7 +108,10 @@ fun Home(
             modifier = Modifier.padding(padding)
         ) {
             when (it) {
-                Routes.LikedSection -> Text("Favorites")
+                Routes.LikedSection -> FavoritesSection(
+                    avState = avState,
+                    avAction = avAction
+                )
                 Routes.LibrarySection -> LibrarySection(navController)
                 else -> SettingsSection()
             }

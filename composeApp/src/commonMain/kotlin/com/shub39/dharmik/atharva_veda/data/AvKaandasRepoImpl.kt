@@ -38,19 +38,19 @@ class AvKaandasRepoImpl(
         }
     }
 
-    override suspend fun setOrUnsetFave(verse: AvVerse) {
-        val entity = verse.toAvEntity()
-        val isFave = avDao.isVerseFaved(entity.text)
+    override suspend fun setFave(verse: AvVerse) {
+        avDao.upsertAvVerse(verse.toAvEntity())
+    }
 
-        if (isFave) {
-            avDao.deleteAvVerse(entity)
-        } else {
-            avDao.upsertAvVerse(entity)
-        }
+    override suspend fun deleteFave(verse: AvVerse) {
+        avDao.deleteAvVerse(verse.text)
     }
 
     companion object {
-        private fun kaandasFileName(kaanda: Int) = "files/atharva_veda/atharvaveda_kaanda_$kaanda.json"
+        private fun kaandasFileName(kaanda: Int) =
+            "files/atharva_veda/atharvaveda_kaanda_$kaanda.json"
+
         private const val KAANDAS_COUNT = 20
     }
+
 }

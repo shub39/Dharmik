@@ -48,7 +48,11 @@ class AvViewModel(
                }
 
                is AvAction.SetFave -> {
-                   avKaandasRepo.setOrUnsetFave(action.verse)
+                   if (_kaandas.value.favorites.contains(action.verse)) {
+                       avKaandasRepo.deleteFave(action.verse)
+                   } else {
+                       avKaandasRepo.setFave(action.verse)
+                   }
                }
            }
         }

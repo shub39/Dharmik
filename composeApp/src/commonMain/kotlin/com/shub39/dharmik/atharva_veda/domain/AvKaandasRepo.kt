@@ -7,5 +7,7 @@ interface AvKaandasRepo {
 
     fun getFavesFlow(): Flow<List<AvVerse>>
 
-    suspend fun setOrUnsetFave(verse: AvVerse)
+    suspend fun setFave(verse: AvVerse)
+
+    suspend fun deleteFave(verse: AvVerse)
 }

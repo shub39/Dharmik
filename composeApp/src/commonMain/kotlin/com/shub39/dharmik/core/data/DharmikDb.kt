@@ -1,5 +1,6 @@
 package com.shub39.dharmik.core.data
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -13,6 +14,7 @@ import com.shub39.dharmik.atharva_veda.data.AvEntity
     version = 1
 )
 @TypeConverters(AvConverters::class)
+@ConstructedBy(DbConstructor::class)
 abstract class DharmikDb: RoomDatabase() {
     abstract val avDao: AvDao
 
