@@ -1,0 +1,1 @@
+Dharmik is a simple Compose Multiplatform app to browse Hindu Texts. Work in progress
