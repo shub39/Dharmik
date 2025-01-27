@@ -1,11 +1,16 @@
 package com.shub39.dharmik.atharva_veda.presentation
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -37,6 +42,7 @@ fun AvKaandasPage(
     state: AvState,
     action: (AvAction) -> Unit
 ) = ContentCap {
+    val scrollState = rememberLazyListState()
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -60,44 +66,56 @@ fun AvKaandasPage(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.padding(padding)
         ) {
-            items(state.kaandas.entries.toList(), key = { it.key }) { kaanda ->
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.kaanda_template, kaanda.key)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(Res.string.verses_template, kaanda.value.size)
-                        )
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = {
-                                action(AvAction.SetKaandas(kaanda.value))
-                                navController.navigate(Routes.AvVersesPage)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                                contentDescription = "Navigate"
+            VerticalScrollbar(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(scrollState)
+            )
+
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(state.kaandas.entries.toList(), key = { it.key }) { kaanda ->
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(Res.string.kaanda_template, kaanda.key)
                             )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(Res.string.verses_template, kaanda.value.size)
+                            )
+                        },
+                        trailingContent = {
+                            IconButton(
+                                onClick = {
+                                    action(AvAction.SetKaandas(kaanda.value))
+                                    navController.navigate(Routes.AvVersesPage)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                                    contentDescription = "Navigate"
+                                )
+                            }
                         }
-                    }
-                )
+                    )
 
-                HorizontalDivider()
-            }
+                    HorizontalDivider()
+                }
 
-            item {
-                Spacer(modifier = Modifier.padding(60.dp))
+                item {
+                    Spacer(modifier = Modifier.padding(60.dp))
+                }
             }
         }
     }

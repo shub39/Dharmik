@@ -1,11 +1,16 @@
 package com.shub39.dharmik.atharva_veda.presentation
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -46,6 +51,8 @@ fun AvVersesPage(
     state: AvState,
     action: (AvAction) -> Unit,
 ) = ContentCap {
+    val scrollState = rememberLazyListState()
+
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
     val clipboardManager = LocalClipboardManager.current
 
@@ -71,60 +78,72 @@ fun AvVersesPage(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.padding(padding)
         ) {
-            items(state.currentKaandas, key = { it.sukta }) { kaanda ->
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = kaanda.text,
-                            fontFamily = fontFamily
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = "${kaanda.sukta} : ${kaanda.kaanda} || ${kaanda.samhita}"
-                        )
-                    },
-                    trailingContent = {
-                        var isFave by remember { mutableStateOf(state.favorites.contains(kaanda)) }
+            VerticalScrollbar(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(scrollState)
+            )
 
-                        Column {
-                            IconButton(
-                                onClick = {
-                                    clipboardManager.setText(
-                                        annotatedString = buildAnnotatedString {
-                                            append(kaanda.text)
-                                        }
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(state.currentKaandas, key = { it.sukta }) { kaanda ->
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = kaanda.text,
+                                fontFamily = fontFamily
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = "${kaanda.sukta} : ${kaanda.kaanda} || ${kaanda.samhita}"
+                            )
+                        },
+                        trailingContent = {
+                            var isFave by remember { mutableStateOf(state.favorites.contains(kaanda)) }
+
+                            Column {
+                                IconButton(
+                                    onClick = {
+                                        clipboardManager.setText(
+                                            annotatedString = buildAnnotatedString {
+                                                append(kaanda.text)
+                                            }
+                                        )
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.round_content_copy_24),
+                                        contentDescription = "Copy to clipboard"
                                     )
                                 }
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.round_content_copy_24),
-                                    contentDescription = "Copy to clipboard"
-                                )
-                            }
 
-                            IconButton(
-                                onClick = {
-                                    action(AvAction.SetFave(kaanda))
-                                    isFave = !isFave
+                                IconButton(
+                                    onClick = {
+                                        action(AvAction.SetFave(kaanda))
+                                        isFave = !isFave
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = if (isFave) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                        contentDescription = "Favorite"
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (isFave) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                    contentDescription = "Favorite"
-                                )
                             }
                         }
-                    }
-                )
+                    )
 
-                HorizontalDivider()
+                    HorizontalDivider()
+                }
             }
         }
     }

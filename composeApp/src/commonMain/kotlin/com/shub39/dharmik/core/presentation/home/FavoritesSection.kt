@@ -1,15 +1,20 @@
 package com.shub39.dharmik.core.presentation.home
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -45,13 +50,26 @@ import org.jetbrains.compose.resources.stringResource
 fun FavoritesSection(
     avState: AvState,
     avAction: (AvAction) -> Unit,
-) {
+) = Box {
+    val scrollState = rememberLazyListState()
+
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
     val clipboardManager = LocalClipboardManager.current
 
+    if (avState.favorites.isNotEmpty()) {
+        VerticalScrollbar(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight(),
+            adapter = rememberScrollbarAdapter(scrollState)
+        )
+    }
+
     LazyColumn(
+        state = scrollState,
         modifier = Modifier
             .animateContentSize()
+            .padding(end = 12.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
