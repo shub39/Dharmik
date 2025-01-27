@@ -1,16 +1,12 @@
 package com.shub39.dharmik.atharva_veda.presentation
 
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -20,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -36,6 +33,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.core.presentation.components.ContentCap
+import com.shub39.dharmik.core.presentation.components.scrollbar
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.kaanda_template
 import dharmik.composeapp.generated.resources.noto_regular
@@ -62,7 +60,10 @@ fun AvVersesPage(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(Res.string.kaanda_template, state.currentKaandas.first().kaanda)
+                        text = stringResource(
+                            Res.string.kaanda_template,
+                            state.currentKaandas.first().kaanda
+                        )
                     )
                 },
                 navigationIcon = {
@@ -78,72 +79,72 @@ fun AvVersesPage(
             )
         }
     ) { padding ->
-        Box(
-            modifier = Modifier.padding(padding)
+
+        LazyColumn(
+            state = scrollState,
+            modifier = Modifier
+                .padding(padding)
+                .scrollbar(
+                    state = scrollState,
+                    horizontal = false,
+                    alignEnd = true,
+                    thickness = 8.dp,
+                    knobCornerRadius = 4.dp,
+                    trackCornerRadius = 4.dp,
+                    knobColor = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.primaryContainer
+                )
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            VerticalScrollbar(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(scrollState)
-            )
+            items(state.currentKaandas, key = { it.sukta }) { kaanda ->
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = kaanda.text,
+                            fontFamily = fontFamily
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "${kaanda.sukta} : ${kaanda.kaanda} || ${kaanda.samhita}"
+                        )
+                    },
+                    trailingContent = {
+                        var isFave by remember { mutableStateOf(state.favorites.contains(kaanda)) }
 
-            LazyColumn(
-                state = scrollState,
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(state.currentKaandas, key = { it.sukta }) { kaanda ->
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = kaanda.text,
-                                fontFamily = fontFamily
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = "${kaanda.sukta} : ${kaanda.kaanda} || ${kaanda.samhita}"
-                            )
-                        },
-                        trailingContent = {
-                            var isFave by remember { mutableStateOf(state.favorites.contains(kaanda)) }
-
-                            Column {
-                                IconButton(
-                                    onClick = {
-                                        clipboardManager.setText(
-                                            annotatedString = buildAnnotatedString {
-                                                append(kaanda.text)
-                                            }
-                                        )
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.round_content_copy_24),
-                                        contentDescription = "Copy to clipboard"
+                        Column {
+                            IconButton(
+                                onClick = {
+                                    clipboardManager.setText(
+                                        annotatedString = buildAnnotatedString {
+                                            append(kaanda.text)
+                                        }
                                     )
                                 }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.round_content_copy_24),
+                                    contentDescription = "Copy to clipboard"
+                                )
+                            }
 
-                                IconButton(
-                                    onClick = {
-                                        action(AvAction.SetFave(kaanda))
-                                        isFave = !isFave
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = if (isFave) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                        contentDescription = "Favorite"
-                                    )
+                            IconButton(
+                                onClick = {
+                                    action(AvAction.SetFave(kaanda))
+                                    isFave = !isFave
                                 }
+                            ) {
+                                Icon(
+                                    imageVector = if (isFave) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                    contentDescription = "Favorite"
+                                )
                             }
                         }
-                    )
+                    }
+                )
 
-                    HorizontalDivider()
-                }
+                HorizontalDivider()
             }
         }
     }
