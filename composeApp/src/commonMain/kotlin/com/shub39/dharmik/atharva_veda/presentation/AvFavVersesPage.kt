@@ -28,6 +28,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,6 +68,10 @@ fun AvFavVersesPage(
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
     val clipboardManager = LocalClipboardManager.current
 
+    LaunchedEffect(pagerState.currentPage) {
+        sliderPosition = pagerState.currentPage.toFloat()
+    }
+
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
         topBar = {
@@ -96,7 +101,6 @@ fun AvFavVersesPage(
                     IconButton(
                         onClick = {
                             coroutineScope.launch {
-                                sliderPosition = (pagerState.currentPage - 1).toFloat()
                                 pagerState.animateScrollToPage(pagerState.currentPage - 1)
                             }
                         },
@@ -119,7 +123,6 @@ fun AvFavVersesPage(
                         valueRange = 0f..state.favorites.size.toFloat().minus(1),
                         onValueChange = {
                             coroutineScope.launch {
-                                sliderPosition = it
                                 pagerState.animateScrollToPage(it.toInt())
                             }
                         }
@@ -128,7 +131,6 @@ fun AvFavVersesPage(
                     IconButton(
                         onClick = {
                             coroutineScope.launch {
-                                sliderPosition = (pagerState.currentPage + 1).toFloat()
                                 pagerState.animateScrollToPage(pagerState.currentPage + 1)
                             }
                         },
