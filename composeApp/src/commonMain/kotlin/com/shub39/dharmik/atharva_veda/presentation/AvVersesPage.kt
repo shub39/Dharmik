@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.core.presentation.components.ContentCap
 import dharmik.composeapp.generated.resources.Res
+import dharmik.composeapp.generated.resources.atharva_veda
 import dharmik.composeapp.generated.resources.kaanda_template
 import dharmik.composeapp.generated.resources.noto_regular
 import dharmik.composeapp.generated.resources.round_content_copy_24
@@ -58,12 +59,17 @@ fun AvVersesPage(
     navController: NavController,
     state: AvState,
     action: (AvAction) -> Unit,
+    favorites: Boolean = false
 ) = ContentCap {
     val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState { state.currentKaandas.size }
     var sliderPosition by remember { mutableStateOf(0f) }
 
-    val kaandas = state.currentKaandas.size
+    val kaandas = if (favorites) {
+        state.favorites.size
+    } else {
+        state.currentKaandas.size
+    }
+    val pagerState = rememberPagerState { kaandas }
 
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
     val clipboardManager = LocalClipboardManager.current
@@ -78,10 +84,14 @@ fun AvVersesPage(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(
-                            Res.string.kaanda_template,
-                            state.currentKaandas.first().kaanda
-                        )
+                        text = if (favorites) {
+                            stringResource(Res.string.atharva_veda)
+                        } else {
+                            stringResource(
+                                Res.string.kaanda_template,
+                                state.currentKaandas.first().kaanda
+                            )
+                        }
                     )
                 },
                 navigationIcon = {
@@ -118,12 +128,12 @@ fun AvVersesPage(
                     Slider(
                         modifier = Modifier.weight(1f),
                         value = sliderPosition,
-                        steps =when  {
+                        steps = when {
                             kaandas > 100 -> (kaandas - 2) / 5
                             kaandas > 50 -> (kaandas - 2) / 3
                             else -> kaandas - 2
                         }.coerceAtLeast(0),
-                        valueRange = 0f..state.currentKaandas.size.toFloat().minus(1),
+                        valueRange = 0f..kaandas.toFloat().minus(1),
                         onValueChange = {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(it.toInt())
@@ -137,7 +147,7 @@ fun AvVersesPage(
                                 pagerState.animateScrollToPage(pagerState.currentPage + 1)
                             }
                         },
-                        enabled = pagerState.currentPage < state.currentKaandas.size - 1
+                        enabled = pagerState.currentPage < kaandas - 1
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowForward,
@@ -154,7 +164,15 @@ fun AvVersesPage(
             modifier = Modifier.fillMaxSize(),
             contentPadding = padding
         ) { index ->
-            val currentVerse by remember { mutableStateOf(state.currentKaandas[index]) }
+            val currentVerse by remember {
+                mutableStateOf(
+                    if (favorites) {
+                        state.favorites[index]
+                    } else {
+                        state.currentKaandas[index]
+                    }
+                )
+            }
             val colors = CardDefaults.cardColors()
 
             Card(

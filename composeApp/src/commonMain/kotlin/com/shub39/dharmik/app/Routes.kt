@@ -22,4 +22,13 @@ sealed interface Routes {
     @Serializable
     data object AvFavVersesPage: Routes
 
+    @Serializable
+    data object BhagvadGitaGraph: Routes
+    @Serializable
+    data object BgChaptersPage: Routes
+    @Serializable
+    data object BgChapterVersesPage: Routes
+    @Serializable
+    data object BgFavVersesPage: Routes
+
 }
