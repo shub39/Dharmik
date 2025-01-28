@@ -2,7 +2,6 @@ package com.shub39.dharmik.app
 
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import com.shub39.dharmik.atharva_veda.presentation.AvKaandasPage
 import com.shub39.dharmik.atharva_veda.presentation.AvVersesPage
 import com.shub39.dharmik.atharva_veda.presentation.AvViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.BgChaptersPage
+import com.shub39.dharmik.bhagvad_gita.presentation.BgVersesPage
 import com.shub39.dharmik.bhagvad_gita.presentation.BgViewModel
 import com.shub39.dharmik.core.domain.AppThemes
 import com.shub39.dharmik.core.presentation.home.Home
@@ -48,7 +49,8 @@ fun App(
             composable<Routes.Home> {
                 Home(
                     navController = navController,
-                    avState = avState
+                    avState = avState,
+                    bgState = bgState
                 )
             }
 
@@ -85,10 +87,29 @@ fun App(
                 startDestination = Routes.BgChaptersPage
             ) {
                 composable<Routes.BgChaptersPage> {
-                    Text(bgState.currentFile.toString())
+                    BgChaptersPage(
+                        navController = navController,
+                        state = bgState,
+                        action = bgvm::onAction
+                    )
                 }
-                composable<Routes.BgChapterVersesPage> {  }
-                composable<Routes.BgFavVersesPage> {  }
+
+                composable<Routes.BgChapterVersesPage> {
+                   BgVersesPage(
+                       navController = navController,
+                       state = bgState,
+                       action = bgvm::onAction
+                   )
+                }
+
+                composable<Routes.BgFavVersesPage> {
+                    BgVersesPage(
+                        navController = navController,
+                        state = bgState,
+                        action = bgvm::onAction,
+                        favorites = true
+                    )
+                }
             }
         }
     }

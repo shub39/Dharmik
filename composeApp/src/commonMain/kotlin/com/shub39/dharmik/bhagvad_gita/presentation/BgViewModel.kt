@@ -40,8 +40,21 @@ class BgViewModel(
     fun onAction(action: BgAction) {
         viewModelScope.launch {
             when (action) {
-                is BgAction.ChapterChange -> TODO()
-                is BgAction.SetFave -> TODO()
+                is BgAction.ChapterChange -> {
+                    _state.update {
+                        it.copy(
+                            currentFile = repo.getChapter(action.index)
+                        )
+                    }
+                }
+
+                is BgAction.SetFave -> {
+                    if (_state.value.favorites.contains(action.verse)) {
+                        repo.deleteFave(action.verse)
+                    } else {
+                        repo.setFave(action.verse)
+                    }
+                }
             }
         }
     }

@@ -12,6 +12,9 @@
     <string name="atharva_veda_desc">Approximately 700 Hymns and prose</string>
     <string name="bhagvad_gita">Bhagvad Gita</string>
     <string name="bhagvad_gita_desc">Approximately 700 Verses (shlokas) in classical Sanskrit</string>
+    <string name="commentaries">Commentaries</string>
+    <string name="translations">Translations</string>
+    <string name="chapter_template">Chapter %1$d</string>
     <string name="kaanda_template">Kaanda %1$d</string>
     <string name="favorites_template">%1$d Favorites</string>
     <string name="verses_template">%1$d Verses</string>

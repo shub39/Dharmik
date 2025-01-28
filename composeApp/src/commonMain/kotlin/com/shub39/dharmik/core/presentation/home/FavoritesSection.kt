@@ -20,15 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
 import com.shub39.dharmik.atharva_veda.presentation.AvState
+import com.shub39.dharmik.bhagvad_gita.presentation.BgState
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.atharva_veda
+import dharmik.composeapp.generated.resources.bhagvad_gita
 import dharmik.composeapp.generated.resources.favorites_template
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FavoritesSection(
     navController: NavController,
-    avState: AvState
+    avState: AvState,
+    bgState: BgState
 ) = Box {
     LazyColumn(
         modifier = Modifier
@@ -36,6 +39,36 @@ fun FavoritesSection(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(Res.string.bhagvad_gita)
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = stringResource(Res.string.favorites_template, bgState.favorites.size)
+                    )
+                },
+                trailingContent = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(Routes.BgFavVersesPage)
+                        },
+                        enabled = bgState.favorites.isNotEmpty()
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                            contentDescription = "Navigate"
+                        )
+                    }
+                }
+            )
+
+            HorizontalDivider()
+        }
+
        item {
            ListItem(
                headlineContent = {

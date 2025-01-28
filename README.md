@@ -26,7 +26,7 @@
 > - [ ] Add translator (if possible)
 > - [x] ~~Add Atharvaveda~~
 > - [ ] Add Ramcharitmanas
-> - [ ] Add Srimad Bhagavad Gita
+> - [x] ~~Add Srimad Bhagavad Gita~~
 > - [ ] Add Mahabharata
 > - [ ] Add Valmiki Ramayana
 > - [ ] Add Rigveda

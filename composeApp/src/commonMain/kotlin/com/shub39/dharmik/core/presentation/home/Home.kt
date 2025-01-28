@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
 import com.shub39.dharmik.atharva_veda.presentation.AvState
+import com.shub39.dharmik.bhagvad_gita.presentation.BgState
 import com.shub39.dharmik.core.presentation.components.ContentCap
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
@@ -40,6 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 fun Home(
     navController: NavController,
     avState: AvState,
+    bgState: BgState
 ) = ContentCap {
     val destinations = listOf(
         Routes.LikedSection,
@@ -108,7 +110,8 @@ fun Home(
             when (it) {
                 Routes.LikedSection -> FavoritesSection(
                     navController = navController,
-                    avState = avState
+                    avState = avState,
+                    bgState = bgState
                 )
                 Routes.LibrarySection -> LibrarySection(navController)
                 else -> SettingsSection()
