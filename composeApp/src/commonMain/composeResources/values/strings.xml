@@ -11,5 +11,6 @@
     <string name="atharva_veda">Atharva Veda</string>
     <string name="atharva_veda_desc">Approximately 6000 verses || Hymns and prose</string>
     <string name="kaanda_template">Kaanda %1$d</string>
+    <string name="favorites_template">%1$d Favorites</string>
     <string name="verses_template">%1$d Verses</string>
 </resources>

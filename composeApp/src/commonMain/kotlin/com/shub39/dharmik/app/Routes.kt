@@ -7,8 +7,6 @@ sealed interface Routes {
     @Serializable
     data object Home: Routes
     @Serializable
-    data object BookMarksSection: Routes
-    @Serializable
     data object LikedSection: Routes
     @Serializable
     data object LibrarySection: Routes
@@ -21,5 +19,7 @@ sealed interface Routes {
     data object AvKaandasPage: Routes
     @Serializable
     data object AvVersesPage: Routes
+    @Serializable
+    data object AvFavVersesPage: Routes
 
 }

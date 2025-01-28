@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.shub39.dharmik.atharva_veda.presentation.AvFavVersesPage
 import com.shub39.dharmik.atharva_veda.presentation.AvKaandasPage
 import com.shub39.dharmik.atharva_veda.presentation.AvVersesPage
 import com.shub39.dharmik.atharva_veda.presentation.AvViewModel
@@ -43,8 +44,7 @@ fun App(
             composable<Routes.Home> {
                 Home(
                     navController = navController,
-                    avState = avState,
-                    avAction = avvm::onAction
+                    avState = avState
                 )
             }
 
@@ -61,6 +61,14 @@ fun App(
 
                 composable<Routes.AvVersesPage> {
                     AvVersesPage(
+                        navController = navController,
+                        state = avState,
+                        action = avvm::onAction
+                    )
+                }
+
+                composable<Routes.AvFavVersesPage> {
+                    AvFavVersesPage(
                         navController = navController,
                         state = avState,
                         action = avvm::onAction
