@@ -28,7 +28,7 @@ fun App(
     avvm: AvViewModel = koinViewModel(),
     bgvm: BgViewModel = koinViewModel()
 ) {
-    val isDark by settingsUseCase.getPrefIsDarkTheme().collectAsStateWithLifecycle(false)
+    val isDark by settingsUseCase.getPrefIsDarkTheme().collectAsStateWithLifecycle(true)
 
     val avState by avvm.kaandas.collectAsStateWithLifecycle()
     val bgState by bgvm.bgState.collectAsStateWithLifecycle()

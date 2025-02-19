@@ -163,6 +163,7 @@ fun AvVersesPage(
         HorizontalPager(
             state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = false,
             contentPadding = padding
         ) { index ->
             val currentVerse by remember {

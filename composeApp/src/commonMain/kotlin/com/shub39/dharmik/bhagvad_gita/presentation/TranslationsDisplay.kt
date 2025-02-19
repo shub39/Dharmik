@@ -3,6 +3,9 @@ package com.shub39.dharmik.bhagvad_gita.presentation
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.domain.Translations
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.noto_regular
@@ -49,7 +54,8 @@ fun TranslationsDisplay(
     ) {
         Text(
             text = stringResource(Res.string.translations),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
         )
 
         translationsMap.forEach { (key, value) ->
@@ -76,46 +82,55 @@ fun TranslationComposable(
 ) {
     var showComplete by remember { mutableStateOf(false) }
 
-   ListItem(
-       modifier = Modifier.clickable {
-           showComplete = !showComplete
-       },
-       headlineContent = {
-           AnimatedContent(
-               targetState = showComplete
-           ) {
-               if (it) {
-                   Text(
-                       text = translation,
-                       fontFamily = fontFamily
-                   )
-               } else {
-                   Text(
-                       text = translation,
-                       fontFamily = fontFamily,
-                       overflow = TextOverflow.Ellipsis,
-                       maxLines = 3
-                   )
-               }
-           }
-       },
-       supportingContent = {
-           Text(
-               text = title,
-               fontFamily = fontFamily
-           )
-       },
-       trailingContent = {
-           IconButton(
-               onClick = {
-                   onCopy(listOf(translation, title).joinToString("\n"))
-               }
-           ) {
-               Icon(
-                   painter = painterResource(Res.drawable.round_content_copy_24),
-                   contentDescription = "Copy to clipboard"
-               )
-           }
-       }
-   )
+    ListItem(
+        headlineContent = {
+            Text(
+                text = title,
+                fontFamily = fontFamily,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        trailingContent = {
+            IconButton(
+                onClick = {
+                    onCopy(listOf(translation, title).joinToString("\n"))
+                }
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.round_content_copy_24),
+                    contentDescription = "Copy to clipboard"
+                )
+            }
+        }
+    )
+
+    Row(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            .clickable {
+                showComplete = !showComplete
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AnimatedContent(
+            targetState = showComplete
+        ) {
+            if (it) {
+                Text(
+                    text = translation,
+                    fontFamily = fontFamily,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                Text(
+                    text = translation,
+                    fontFamily = fontFamily,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
 }

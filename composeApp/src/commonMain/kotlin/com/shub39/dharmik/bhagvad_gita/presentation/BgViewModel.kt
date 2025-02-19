@@ -76,6 +76,15 @@ class BgViewModel(
                         )
                     }
                 }
+
+                is BgAction.SetVerses -> {
+                    _state.update {
+                        it.copy(
+                            currentFile = action.verses,
+                            pagerState = PagerState { action.verses.size }
+                        )
+                    }
+                }
             }
         }
     }

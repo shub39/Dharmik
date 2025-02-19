@@ -13,12 +13,14 @@ kotlin = "2.1.0"
 navigationCompose = "2.8.0-alpha10"
 kotlinSerialization = "1.7.3"
 kotlinx-coroutines = "1.10.1"
+splashScreen = "1.0.1"
 ksp = "2.1.0-1.0.29"
 sqlite = "2.5.0-beta01"
 room = "2.7.0-beta01"
 
 [libraries]
-# Jetbrains
+# Jetbrains and Android
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }

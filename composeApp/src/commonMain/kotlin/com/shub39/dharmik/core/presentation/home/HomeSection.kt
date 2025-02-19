@@ -82,6 +82,7 @@ fun HomeSection(
                 trailingContent = {
                     IconButton(
                         onClick = {
+                            bgAction(BgAction.SetVerses(bgState.favorites))
                             navController.navigate(Routes.BgFavVersesPage)
                         },
                         enabled = bgState.favorites.isNotEmpty()

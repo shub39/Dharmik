@@ -3,6 +3,7 @@ package com.shub39.dharmik.bhagvad_gita.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -40,11 +41,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.core.domain.LongPair
 import com.shub39.dharmik.core.presentation.components.PageFill
-import com.shub39.dharmik.core.presentation.components.scrollbar
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
 import dharmik.composeapp.generated.resources.chapter_template
@@ -165,7 +166,8 @@ fun BgVersesPage(
         HorizontalPager(
             state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = padding
+            contentPadding = padding,
+            userScrollEnabled = false
         ) { index ->
             val currentVerse by remember {
                 mutableStateOf(verses[index])
@@ -176,16 +178,6 @@ fun BgVersesPage(
             LazyColumn(
                 state = scrollState,
                 modifier = Modifier
-                    .scrollbar(
-                        state = scrollState,
-                        horizontal = false,
-                        alignEnd = true,
-                        thickness = 8.dp,
-                        knobCornerRadius = 4.dp,
-                        trackCornerRadius = 4.dp,
-                        knobColor = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.primaryContainer
-                    )
                     .fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -250,15 +242,18 @@ fun BgVersesPage(
                         )
 
                         Text(
-                            text = currentVerse.text,
+                            text = currentVerse.text.removeExtraLineBreaks(),
                             fontFamily = fontFamily,
-                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
                 }
 
                 item {
+                    Spacer(modifier = Modifier.padding(30.dp))
+
                     TranslationsDisplay(
                         translations = currentVerse.translations,
                         onCopy = {
@@ -272,6 +267,8 @@ fun BgVersesPage(
                 }
 
                 item {
+                    Spacer(modifier = Modifier.padding(30.dp))
+
                     CommentariesDisplay(
                         commentaries = currentVerse.commentaries,
                         onCopy = {

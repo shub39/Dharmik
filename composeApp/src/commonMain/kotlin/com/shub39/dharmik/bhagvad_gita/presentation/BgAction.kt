@@ -7,5 +7,6 @@ sealed interface BgAction {
     data class ChapterChange(val index: Int): BgAction
     data class SetFave(val verse: GitaVerse): BgAction
     data class SetIndex(val mark: LongPair): BgAction
+    data class SetVerses(val verses: List<GitaVerse>): BgAction
     data object LoadBookMark: BgAction
 }

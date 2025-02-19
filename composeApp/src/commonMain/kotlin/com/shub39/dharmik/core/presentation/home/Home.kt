@@ -52,7 +52,7 @@ fun Home(
         Routes.LibrarySection,
         Routes.SettingsSection
     )
-    var currentDest by rememberSaveable { mutableStateOf(destinations[0]) }
+    var currentDest by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -75,8 +75,8 @@ fun Home(
                 NavigationBar {
                     destinations.forEach { dest ->
                         NavigationBarItem(
-                            selected = currentDest == dest,
-                            onClick = { currentDest = dest },
+                            selected = destinations[currentDest] == dest,
+                            onClick = { currentDest = destinations.indexOf(dest) },
                             icon = {
                                 Icon(
                                     painter = painterResource(
@@ -92,7 +92,7 @@ fun Home(
                             label = {
                                 Text(
                                     text = stringResource(
-                                        when(dest) {
+                                        when (dest) {
                                             Routes.HomeSection -> Res.string.home
                                             Routes.LibrarySection -> Res.string.library
                                             else -> Res.string.settings
@@ -112,14 +112,14 @@ fun Home(
             modifier = Modifier.padding(padding)
         ) {
             when (it) {
-                Routes.HomeSection -> HomeSection(
+                0 -> HomeSection(
                     navController = navController,
                     avState = avState,
                     avAction = avAction,
                     bgState = bgState,
                     bgAction = bgAction
                 )
-                Routes.LibrarySection -> LibrarySection(navController)
+                1 -> LibrarySection(navController)
                 else -> SettingsSection()
             }
         }
