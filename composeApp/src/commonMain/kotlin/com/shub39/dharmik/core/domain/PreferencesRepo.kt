@@ -8,4 +8,7 @@ interface PreferencesRepo {
 
     fun getAvBookMark(): Flow<IntPair>
     suspend fun setAvBookMark(mark: IntPair)
+
+    fun getBgBookMark(): Flow<LongPair>
+    suspend fun setBgBookMark(mark: LongPair)
 }

@@ -14,21 +14,17 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class BgRepoImpl(
     private val bgDao: BgDao
-): BgRepo {
+) : BgRepo {
     @OptIn(ExperimentalResourceApi::class)
-    override suspend fun getChapter(index: Int): GitaFile? = withContext(Dispatchers.IO) {
+    override suspend fun getChapter(index: Int): GitaFile = withContext(Dispatchers.IO) {
         val decoder = Json {
             ignoreUnknownKeys = true
         }
 
-        if (index in 1..CHAPTERS) {
-            val jsonFile = async { Res.readBytes(bgFileName(index)).decodeToString() }.await()
-            val file: GitaFile = decoder.decodeFromString(jsonFile)
+        val jsonFile = async { Res.readBytes(bgFileName(index)).decodeToString() }.await()
+        val file: GitaFile = decoder.decodeFromString(jsonFile)
 
-            return@withContext file
-        } else {
-            return@withContext null
-        }
+        return@withContext file
     }
 
     override fun getFavesFlow(): Flow<List<GitaVerse>> {
@@ -48,7 +44,5 @@ class BgRepoImpl(
     companion object {
         private fun bgFileName(index: Int) =
             "files/bhagvad_gita/bhagavad_gita_chapter_$index.json"
-
-        private const val CHAPTERS = 18
     }
 }

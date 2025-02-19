@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dharmik.composeapp.generated.resources.Res
@@ -89,6 +90,38 @@ fun SettingsSection(
             )
 
             HorizontalDivider()
+        }
+
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Dharmic Data by bhavyakhatri"
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = "Comprehensive Open-Source Collection of Hindu Sacred Texts including Ramcharitmanas, Bhagavad Gita, Mahabharata, Valmiki Ramayana, Rigveda, Yajurveda, Atharvaveda for Educational and Research Purposes.",
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                trailingContent = {
+                    Row {
+                        IconButton(
+                            onClick = {
+                                uriHandler.openUri("https://github.com/bhavykhatri/DharmicData")
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.github_mark),
+                                contentDescription = "Github",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
+            )
         }
 
         item {

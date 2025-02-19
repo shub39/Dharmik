@@ -150,12 +150,40 @@ fun HomeSection(
             ListItem(
                 headlineContent = {
                     Text(
+                        text = stringResource(Res.string.bhagvad_gita)
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = "${bgState.currentBookMark.first} : ${bgState.currentBookMark.second + 1}"
+                    )
+                },
+                trailingContent = {
+                    IconButton(
+                        onClick = {
+                            bgAction(BgAction.LoadBookMark)
+                            navController.navigate(Routes.BgChapterVersesPage)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                            contentDescription = "Navigate"
+                        )
+                    }
+                }
+            )
+        }
+
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
                         text = stringResource(Res.string.atharva_veda)
                     )
                 },
                 supportingContent = {
                     Text(
-                        text = "${avState.currentBookMark.first} : ${avState.currentBookMark.second}"
+                        text = "${avState.currentBookMark.first} : ${avState.currentBookMark.second + 1}"
                     )
                 },
                 trailingContent = {

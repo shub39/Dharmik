@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -43,6 +42,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.shub39.dharmik.core.domain.LongPair
 import com.shub39.dharmik.core.presentation.components.PageFill
 import com.shub39.dharmik.core.presentation.components.scrollbar
 import dharmik.composeapp.generated.resources.Res
@@ -69,15 +69,22 @@ fun BgVersesPage(
     val coroutineScope = rememberCoroutineScope()
     var sliderPosition by remember { mutableStateOf(0f) }
 
-    val verses = if (favorites) {
-        state.favorites
-    } else {
-        state.currentFile?.gitaVerse!!
-    }
-    val pagerState = rememberPagerState { verses.size }
+    val changeVerse = {index: Int ->
+        coroutineScope.launch {
+            state.pagerState.animateScrollToPage(index)
+        }
 
-    LaunchedEffect(pagerState.currentPage) {
-        sliderPosition = pagerState.currentPage.toFloat()
+        if (!favorites) {
+            action(BgAction.SetIndex(
+                LongPair(state.currentFile.first().chapter, index.toLong())
+            ))
+        }
+    }
+
+    val verses = state.currentFile
+
+    LaunchedEffect(state.pagerState.currentPage) {
+        sliderPosition = state.pagerState.currentPage.toFloat()
     }
 
     Scaffold(
@@ -115,11 +122,9 @@ fun BgVersesPage(
                 Row {
                     IconButton(
                         onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                            }
+                            changeVerse(state.pagerState.currentPage - 1)
                         },
-                        enabled = pagerState.currentPage > 0
+                        enabled = state.pagerState.currentPage > 0
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -137,19 +142,15 @@ fun BgVersesPage(
                         }.coerceAtLeast(0),
                         valueRange = 0f..verses.size.toFloat().minus(1),
                         onValueChange = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(it.toInt())
-                            }
+                            changeVerse(it.toInt())
                         }
                     )
 
                     IconButton(
                         onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
+                            changeVerse(state.pagerState.currentPage + 1)
                         },
-                        enabled = pagerState.currentPage < verses.size - 1
+                        enabled = state.pagerState.currentPage < verses.size - 1
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowForward,
@@ -162,7 +163,7 @@ fun BgVersesPage(
     ) { padding ->
 
         HorizontalPager(
-            state = pagerState,
+            state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = padding
         ) { index ->
