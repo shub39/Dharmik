@@ -6,6 +6,6 @@ interface PreferencesRepo {
     fun getIsDarkTheme(): Flow<Boolean>
     suspend fun setIsDarkTheme(isDarkTheme: Boolean)
 
-    fun getAppTheme(): Flow<AppThemes>
-    suspend fun setAppTheme(appTheme: AppThemes)
+    fun getAvBookMark(): Flow<IntPair>
+    suspend fun setAvBookMark(mark: IntPair)
 }

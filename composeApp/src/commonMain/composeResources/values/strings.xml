@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Dharmik</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="home">Home</string>
     <string name="liked">Liked</string>
     <string name="liked_placeholder">Your Favorites will appear here</string>
     <string name="library">Library</string>

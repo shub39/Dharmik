@@ -5,10 +5,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.dharmik.core.domain.AppThemes
+import com.shub39.dharmik.core.domain.IntPair
 import com.shub39.dharmik.core.domain.PreferencesRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class PreferencesRepoImpl(
     private val dataStore: DataStore<Preferences>
@@ -16,28 +18,21 @@ class PreferencesRepoImpl(
 
     companion object {
         const val DEFAULT_IS_DARK_THEME = false
+        private val isDarkThemeKey = booleanPreferencesKey("is_dark_theme")
+        private val avBookMarkKey = stringPreferencesKey("av_bookmark")
     }
-
-    private val isDarkThemeKey = booleanPreferencesKey("is_dark_theme")
-    private val appThemeKey = stringPreferencesKey("app_theme")
 
     override fun getIsDarkTheme(): Flow<Boolean> = dataStore.data.map {
         it[isDarkThemeKey] ?: DEFAULT_IS_DARK_THEME
     }
-
     override suspend fun setIsDarkTheme(isDarkTheme: Boolean) {
         dataStore.edit { it[isDarkThemeKey] = isDarkTheme }
     }
 
-    override fun getAppTheme(): Flow<AppThemes> = dataStore.data.map {
-        when (it[appThemeKey]) {
-            AppThemes.BLUE.name -> AppThemes.BLUE
-            AppThemes.LIME.name -> AppThemes.LIME
-            else -> AppThemes.YELLOW
-        }
+    override fun getAvBookMark(): Flow<IntPair> = dataStore.data.map {
+        Json.decodeFromString(it[avBookMarkKey] ?: Json.encodeToString(IntPair(0,0)))
     }
-
-    override suspend fun setAppTheme(appTheme: AppThemes) {
-        dataStore.edit { it[appThemeKey] = appTheme.name }
+    override suspend fun setAvBookMark(mark: IntPair) {
+        dataStore.edit { it[avBookMarkKey] = Json.encodeToString(mark) }
     }
 }

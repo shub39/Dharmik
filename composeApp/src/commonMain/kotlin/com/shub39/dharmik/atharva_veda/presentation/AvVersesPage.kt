@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -42,7 +41,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.shub39.dharmik.core.presentation.components.ContentCap
+import com.shub39.dharmik.core.domain.IntPair
+import com.shub39.dharmik.core.presentation.components.PageFill
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.atharva_veda
 import dharmik.composeapp.generated.resources.kaanda_template
@@ -60,23 +60,30 @@ fun AvVersesPage(
     state: AvState,
     action: (AvAction) -> Unit,
     favorites: Boolean = false
-) = ContentCap {
+) = PageFill {
     val coroutineScope = rememberCoroutineScope()
-    var sliderPosition by remember { mutableStateOf(0f) }
-
-    val kaandas = if (favorites) {
-        state.favorites.size
-    } else {
-        state.currentKaandas.size
-    }
-    val pagerState = rememberPagerState { kaandas }
+    var sliderPosition by remember { mutableStateOf(state.pagerState.currentPage.toFloat()) }
 
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
     val clipboardManager = LocalClipboardManager.current
 
-    LaunchedEffect(pagerState.currentPage) {
-        sliderPosition = pagerState.currentPage.toFloat()
+    val changeVerse = { index: Int ->
+        coroutineScope.launch {
+            state.pagerState.animateScrollToPage(index)
+        }
+
+        if (!favorites) {
+            action(AvAction.SetBookMark(
+                IntPair(state.currentKaandas.first().kaanda, index)
+            ))
+        }
     }
+
+    LaunchedEffect(state.pagerState.currentPage) {
+        sliderPosition = state.pagerState.currentPage.toFloat()
+    }
+
+    val kaandas = state.currentKaandas.size
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -113,11 +120,9 @@ fun AvVersesPage(
                 Row {
                     IconButton(
                         onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                            }
+                           changeVerse(state.pagerState.currentPage - 1)
                         },
-                        enabled = pagerState.currentPage > 0
+                        enabled = state.pagerState.currentPage > 0
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -135,19 +140,15 @@ fun AvVersesPage(
                         }.coerceAtLeast(0),
                         valueRange = 0f..kaandas.toFloat().minus(1),
                         onValueChange = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(it.toInt())
-                            }
+                           changeVerse(it.toInt())
                         }
                     )
 
                     IconButton(
                         onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
+                            changeVerse(state.pagerState.currentPage + 1)
                         },
-                        enabled = pagerState.currentPage < kaandas - 1
+                        enabled = state.pagerState.currentPage < kaandas - 1
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowForward,
@@ -160,17 +161,13 @@ fun AvVersesPage(
     ) { padding ->
 
         HorizontalPager(
-            state = pagerState,
+            state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = padding
         ) { index ->
             val currentVerse by remember {
                 mutableStateOf(
-                    if (favorites) {
-                        state.favorites[index]
-                    } else {
-                        state.currentKaandas[index]
-                    }
+                    state.currentKaandas[index]
                 )
             }
             val colors = CardDefaults.cardColors()

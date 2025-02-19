@@ -13,9 +13,9 @@ kotlin = "2.1.0"
 navigationCompose = "2.8.0-alpha10"
 kotlinSerialization = "1.7.3"
 kotlinx-coroutines = "1.10.1"
-ksp = "2.0.20-1.0.24"
-sqlite = "2.5.0-alpha12"
-room = "2.7.0-alpha07"
+ksp = "2.1.0-1.0.29"
+sqlite = "2.5.0-beta01"
+room = "2.7.0-beta01"
 
 [libraries]
 # Jetbrains

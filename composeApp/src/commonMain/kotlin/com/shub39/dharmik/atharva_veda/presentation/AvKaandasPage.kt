@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
-import com.shub39.dharmik.core.presentation.components.ContentCap
+import com.shub39.dharmik.core.presentation.components.PageFill
 import com.shub39.dharmik.core.presentation.components.scrollbar
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.atharva_veda
@@ -39,7 +39,7 @@ fun AvKaandasPage(
     navController: NavController,
     state: AvState,
     action: (AvAction) -> Unit
-) = ContentCap {
+) = PageFill {
     val scrollState = rememberLazyListState()
 
     Scaffold(

@@ -1,8 +1,10 @@
 package com.shub39.dharmik.atharva_veda.presentation
 
+import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.atharva_veda.domain.AvKaandasRepo
+import com.shub39.dharmik.core.domain.PreferencesRepo
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AvViewModel(
-    private val avKaandasRepo: AvKaandasRepo
+    private val avKaandasRepo: AvKaandasRepo,
+    private val datastore: PreferencesRepo
 ): ViewModel() {
     private var faveObserve: Job? = null
 
@@ -42,7 +45,8 @@ class AvViewModel(
                is AvAction.SetKaandas -> {
                    _kaandas.update {
                        it.copy(
-                           currentKaandas = action.kaandas
+                           currentKaandas = action.kaandas,
+                           pagerState = PagerState { action.kaandas.size }
                        )
                    }
                }
@@ -54,20 +58,47 @@ class AvViewModel(
                        avKaandasRepo.setFave(action.verse)
                    }
                }
+
+               AvAction.LoadBookMark -> {
+                   val kaandas = _kaandas.value.kaandas[_kaandas.value.currentBookMark.first] ?: emptyList()
+
+                   _kaandas.update {
+                       it.copy(
+                           currentKaandas = kaandas,
+                           pagerState = PagerState(it.currentBookMark.second) { kaandas.size }
+                       )
+                   }
+               }
+
+               is AvAction.SetBookMark -> {
+                   datastore.setAvBookMark(action.mark)
+               }
            }
         }
     }
 
-    private fun observeFaves() {
+    private fun observeFaves() = viewModelScope.launch {
         faveObserve?.cancel()
-        faveObserve = avKaandasRepo.getFavesFlow()
-            .onEach { list ->
-                _kaandas.update {
-                    it.copy(
-                        favorites = list
-                    )
+        faveObserve = launch {
+            avKaandasRepo.getFavesFlow()
+                .onEach { list ->
+                    _kaandas.update {
+                        it.copy(
+                            favorites = list
+                        )
+                    }
                 }
-            }
-            .launchIn(viewModelScope)
+                .launchIn(this)
+
+            datastore.getAvBookMark()
+                .onEach { mark ->
+                    _kaandas.update {
+                        it.copy(
+                            currentBookMark = mark
+                        )
+                    }
+                }
+                .launchIn(this)
+        }
     }
 }

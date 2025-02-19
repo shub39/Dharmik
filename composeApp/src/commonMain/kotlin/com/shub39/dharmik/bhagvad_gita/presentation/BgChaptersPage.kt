@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
-import com.shub39.dharmik.core.presentation.components.ContentCap
+import com.shub39.dharmik.core.presentation.components.PageFill
 import com.shub39.dharmik.core.presentation.components.scrollbar
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
@@ -37,7 +37,7 @@ fun BgChaptersPage(
     navController: NavController,
     state: BgState,
     action: (BgAction) -> Unit
-) = ContentCap {
+) = PageFill {
     val scrollState = rememberLazyListState()
 
     Scaffold(

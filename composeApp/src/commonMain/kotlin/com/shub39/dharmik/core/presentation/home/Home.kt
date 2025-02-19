@@ -15,22 +15,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
+import com.shub39.dharmik.atharva_veda.presentation.AvAction
 import com.shub39.dharmik.atharva_veda.presentation.AvState
+import com.shub39.dharmik.bhagvad_gita.presentation.BgAction
 import com.shub39.dharmik.bhagvad_gita.presentation.BgState
-import com.shub39.dharmik.core.presentation.components.ContentCap
+import com.shub39.dharmik.core.presentation.components.PageFill
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
-import dharmik.composeapp.generated.resources.baseline_favorite_border_24
 import dharmik.composeapp.generated.resources.baseline_settings_24
+import dharmik.composeapp.generated.resources.home
 import dharmik.composeapp.generated.resources.library
-import dharmik.composeapp.generated.resources.liked
+import dharmik.composeapp.generated.resources.round_home_24
 import dharmik.composeapp.generated.resources.round_library_books_24
 import dharmik.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.painterResource
@@ -41,14 +43,16 @@ import org.jetbrains.compose.resources.stringResource
 fun Home(
     navController: NavController,
     avState: AvState,
-    bgState: BgState
-) = ContentCap {
+    avAction: (AvAction) -> Unit,
+    bgState: BgState,
+    bgAction: (BgAction) -> Unit
+) = PageFill {
     val destinations = listOf(
-        Routes.LikedSection,
+        Routes.HomeSection,
         Routes.LibrarySection,
         Routes.SettingsSection
     )
-    var currentDest by remember { mutableStateOf(destinations[0]) }
+    var currentDest by rememberSaveable { mutableStateOf(destinations[0]) }
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -77,7 +81,7 @@ fun Home(
                                 Icon(
                                     painter = painterResource(
                                         when (dest) {
-                                            Routes.LikedSection -> Res.drawable.baseline_favorite_border_24
+                                            Routes.HomeSection -> Res.drawable.round_home_24
                                             Routes.LibrarySection -> Res.drawable.round_library_books_24
                                             else -> Res.drawable.baseline_settings_24
                                         }
@@ -89,7 +93,7 @@ fun Home(
                                 Text(
                                     text = stringResource(
                                         when(dest) {
-                                            Routes.LikedSection -> Res.string.liked
+                                            Routes.HomeSection -> Res.string.home
                                             Routes.LibrarySection -> Res.string.library
                                             else -> Res.string.settings
                                         }
@@ -108,10 +112,12 @@ fun Home(
             modifier = Modifier.padding(padding)
         ) {
             when (it) {
-                Routes.LikedSection -> FavoritesSection(
+                Routes.HomeSection -> HomeSection(
                     navController = navController,
                     avState = avState,
-                    bgState = bgState
+                    avAction = avAction,
+                    bgState = bgState,
+                    bgAction = bgAction
                 )
                 Routes.LibrarySection -> LibrarySection(navController)
                 else -> SettingsSection()

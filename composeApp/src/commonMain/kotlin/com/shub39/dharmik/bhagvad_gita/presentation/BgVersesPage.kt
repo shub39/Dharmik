@@ -43,7 +43,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.shub39.dharmik.core.presentation.components.ContentCap
+import com.shub39.dharmik.core.presentation.components.PageFill
 import com.shub39.dharmik.core.presentation.components.scrollbar
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
@@ -62,7 +62,7 @@ fun BgVersesPage(
     state: BgState,
     action: (BgAction) -> Unit,
     favorites: Boolean = false
-) = ContentCap {
+) = PageFill {
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
     val clipboardManager = LocalClipboardManager.current
 

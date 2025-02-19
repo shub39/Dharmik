@@ -7,7 +7,7 @@ sealed interface Routes {
     @Serializable
     data object Home: Routes
     @Serializable
-    data object LikedSection: Routes
+    data object HomeSection: Routes
     @Serializable
     data object LibrarySection: Routes
     @Serializable

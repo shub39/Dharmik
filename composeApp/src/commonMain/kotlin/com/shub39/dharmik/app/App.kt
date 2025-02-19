@@ -16,7 +16,6 @@ import com.shub39.dharmik.atharva_veda.presentation.AvViewModel
 import com.shub39.dharmik.bhagvad_gita.presentation.BgChaptersPage
 import com.shub39.dharmik.bhagvad_gita.presentation.BgVersesPage
 import com.shub39.dharmik.bhagvad_gita.presentation.BgViewModel
-import com.shub39.dharmik.core.domain.AppThemes
 import com.shub39.dharmik.core.presentation.home.Home
 import com.shub39.dharmik.core.presentation.home.SettingsUseCase
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
@@ -30,14 +29,12 @@ fun App(
     bgvm: BgViewModel = koinViewModel()
 ) {
     val isDark by settingsUseCase.getPrefIsDarkTheme().collectAsStateWithLifecycle(false)
-    val appTheme by settingsUseCase.getPrefAppTheme().collectAsStateWithLifecycle(AppThemes.YELLOW)
 
     val avState by avvm.kaandas.collectAsStateWithLifecycle()
     val bgState by bgvm.bgState.collectAsStateWithLifecycle()
 
     DharmikTheme(
-        darkTheme = isDark,
-        appTheme = appTheme
+        darkTheme = isDark
     ) {
         val navController = rememberNavController()
 
@@ -50,7 +47,9 @@ fun App(
                 Home(
                     navController = navController,
                     avState = avState,
-                    bgState = bgState
+                    avAction = avvm::onAction,
+                    bgState = bgState,
+                    bgAction = bgvm::onAction
                 )
             }
 
