@@ -12,8 +12,6 @@ plugins {
 }
 
 val appName = "Dharmik"
-val version = "1.0.0"
-val versionCode = 1
 
 kotlin {
     targets.all {
@@ -85,8 +83,8 @@ android {
         applicationId = "com.shub39.dharmik"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = versionCode
-        versionName = version
+        versionCode = 1000
+        versionName = "1.0.0"
     }
     packaging {
         resources {
@@ -131,7 +129,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.shub39.dharmik"
-            packageVersion = version
+            packageVersion = "1.0.0"
         }
     }
 }

@@ -18,7 +18,7 @@ class PreferencesRepoImpl(
 ): PreferencesRepo {
 
     companion object {
-        const val DEFAULT_IS_DARK_THEME = false
+        const val DEFAULT_IS_DARK_THEME = true
         private val isDarkThemeKey = booleanPreferencesKey("is_dark_theme")
         private val avBookMarkKey = stringPreferencesKey("av_bookmark")
         private val bgBookMarkKey = stringPreferencesKey("bg_bookmark")
@@ -32,14 +32,14 @@ class PreferencesRepoImpl(
     }
 
     override fun getAvBookMark(): Flow<IntPair> = dataStore.data.map {
-        Json.decodeFromString(it[avBookMarkKey] ?: Json.encodeToString(IntPair(1, 1)))
+        Json.decodeFromString(it[avBookMarkKey] ?: Json.encodeToString(IntPair(1, 0)))
     }
     override suspend fun setAvBookMark(mark: IntPair) {
         dataStore.edit { it[avBookMarkKey] = Json.encodeToString(mark) }
     }
 
     override fun getBgBookMark(): Flow<LongPair> = dataStore.data.map {
-        Json.decodeFromString(it[bgBookMarkKey] ?: Json.encodeToString(LongPair(1, 1)))
+        Json.decodeFromString(it[bgBookMarkKey] ?: Json.encodeToString(LongPair(1, 0)))
     }
     override suspend fun setBgBookMark(mark: LongPair) {
         dataStore.edit { it[bgBookMarkKey] = Json.encodeToString(mark) }
