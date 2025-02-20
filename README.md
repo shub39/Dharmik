@@ -15,7 +15,8 @@
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()
 
 > ### Android
-> Latest [Github Release](https://github.com/shub39/Dharmik/releases)
+> <a href="https://apt.izzysoft.de/packages/com.shub39.dharmik/latest"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
+> ### or latest [Github Release](https://github.com/shub39/Dharmik/releases)
 
 > ### Desktop *(soon...?)*
 > Check out the desktop version by importing this project on android studio and running 
