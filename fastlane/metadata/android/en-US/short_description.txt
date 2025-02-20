@@ -1,1 +1,1 @@
-Multiplatform app to browse the vedas
+Browse Hindu Texts
