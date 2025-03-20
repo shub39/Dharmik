@@ -4,10 +4,6 @@
 
 ### A Compose Multiplatform app to browse Hindu Texts.
 
-> [!NOTE]
-> This app is just a convenient way to browse info from [Dharmic data](https://github.com/bhavykhatri/DharmicData) not a translator
-> I have tried many translators for the sanskrit language but couldn't find anything satisfactory 
-
 > ### Platforms
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Windows/windows2.svg">]()
@@ -30,23 +26,6 @@
 > ./gradlew run
 > ```
 
-### Screenshots
-| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
-|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
-| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
-
-### Check List
-> - [x] ~~Setup project (themes, libraries, etc)~~
-> - [x] ~~Add bookmarks~~
-> - [ ] Add Share as Cards feature (if possible)
-> - [ ] Add translator (if possible)
-> - [x] ~~Add Atharvaveda~~
-> - [ ] Add Ramcharitmanas
-> - [x] ~~Add Srimad Bhagavad Gita~~
-> - [ ] Add Mahabharata
-> - [ ] Add Valmiki Ramayana
-> - [ ] Add Rigveda
-> - [ ] Add Yajurveda Shukla
-
 ### Thanks to
 > - [Dharmic Data](https://github.com/bhavykhatri/DharmicData) for the texts
+> - [Gita Supersite](https://www.gitasupersite.iitk.ac.in/) for audio

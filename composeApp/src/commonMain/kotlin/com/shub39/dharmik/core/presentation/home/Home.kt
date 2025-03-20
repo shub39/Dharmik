@@ -22,8 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
-import com.shub39.dharmik.atharva_veda.presentation.AvAction
-import com.shub39.dharmik.atharva_veda.presentation.AvState
 import com.shub39.dharmik.bhagvad_gita.presentation.BgAction
 import com.shub39.dharmik.bhagvad_gita.presentation.BgState
 import com.shub39.dharmik.core.presentation.components.PageFill
@@ -42,8 +40,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun Home(
     navController: NavController,
-    avState: AvState,
-    avAction: (AvAction) -> Unit,
     bgState: BgState,
     bgAction: (BgAction) -> Unit
 ) = PageFill {
@@ -114,8 +110,6 @@ fun Home(
             when (it) {
                 0 -> HomeSection(
                     navController = navController,
-                    avState = avState,
-                    avAction = avAction,
                     bgState = bgState,
                     bgAction = bgAction
                 )

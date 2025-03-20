@@ -14,15 +14,6 @@ sealed interface Routes {
     data object SettingsSection: Routes
 
     @Serializable
-    data object AtharvaVedaGraph: Routes
-    @Serializable
-    data object AvKaandasPage: Routes
-    @Serializable
-    data object AvVersesPage: Routes
-    @Serializable
-    data object AvFavVersesPage: Routes
-
-    @Serializable
     data object BhagvadGitaGraph: Routes
     @Serializable
     data object BgChaptersPage: Routes

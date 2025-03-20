@@ -20,12 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
-import com.shub39.dharmik.atharva_veda.presentation.AvAction
-import com.shub39.dharmik.atharva_veda.presentation.AvState
 import com.shub39.dharmik.bhagvad_gita.presentation.BgAction
 import com.shub39.dharmik.bhagvad_gita.presentation.BgState
 import dharmik.composeapp.generated.resources.Res
-import dharmik.composeapp.generated.resources.atharva_veda
 import dharmik.composeapp.generated.resources.baseline_bookmark_24
 import dharmik.composeapp.generated.resources.baseline_favorite_border_24
 import dharmik.composeapp.generated.resources.bhagvad_gita
@@ -38,8 +35,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun HomeSection(
     navController: NavController,
-    avState: AvState,
-    avAction: (AvAction) -> Unit,
     bgState: BgState,
     bgAction: (BgAction) -> Unit
 ) = Box {
@@ -96,35 +91,6 @@ fun HomeSection(
             )
         }
 
-       item {
-           ListItem(
-               headlineContent = {
-                   Text(
-                       text = stringResource(Res.string.atharva_veda)
-                   )
-               },
-               supportingContent = {
-                   Text(
-                       text = stringResource(Res.string.favorites_template, avState.favorites.size)
-                   )
-               },
-               trailingContent = {
-                   IconButton(
-                       onClick = {
-                           avAction(AvAction.SetKaandas(avState.favorites))
-                           navController.navigate(Routes.AvFavVersesPage)
-                       },
-                       enabled = avState.favorites.isNotEmpty()
-                   ) {
-                       Icon(
-                           imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                           contentDescription = "Navigate"
-                       )
-                   }
-               }
-           )
-       }
-
         item {
             Spacer(modifier = Modifier.padding(30.dp))
         }
@@ -164,34 +130,6 @@ fun HomeSection(
                         onClick = {
                             bgAction(BgAction.LoadBookMark)
                             navController.navigate(Routes.BgChapterVersesPage)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                            contentDescription = "Navigate"
-                        )
-                    }
-                }
-            )
-        }
-
-        item {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.atharva_veda)
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "${avState.currentBookMark.first} : ${avState.currentBookMark.second + 1}"
-                    )
-                },
-                trailingContent = {
-                    IconButton(
-                        onClick = {
-                            avAction(AvAction.LoadBookMark)
-                            navController.navigate(Routes.AvVersesPage)
                         }
                     ) {
                         Icon(

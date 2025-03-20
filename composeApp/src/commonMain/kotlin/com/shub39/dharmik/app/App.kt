@@ -10,9 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.shub39.dharmik.atharva_veda.presentation.AvKaandasPage
-import com.shub39.dharmik.atharva_veda.presentation.AvVersesPage
-import com.shub39.dharmik.atharva_veda.presentation.AvViewModel
 import com.shub39.dharmik.bhagvad_gita.presentation.BgChaptersPage
 import com.shub39.dharmik.bhagvad_gita.presentation.BgVersesPage
 import com.shub39.dharmik.bhagvad_gita.presentation.BgViewModel
@@ -25,12 +22,10 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun App(
     settingsUseCase: SettingsUseCase = koinInject(),
-    avvm: AvViewModel = koinViewModel(),
     bgvm: BgViewModel = koinViewModel()
 ) {
     val isDark by settingsUseCase.getPrefIsDarkTheme().collectAsStateWithLifecycle(true)
 
-    val avState by avvm.kaandas.collectAsStateWithLifecycle()
     val bgState by bgvm.bgState.collectAsStateWithLifecycle()
 
     DharmikTheme(
@@ -46,40 +41,9 @@ fun App(
             composable<Routes.Home> {
                 Home(
                     navController = navController,
-                    avState = avState,
-                    avAction = avvm::onAction,
                     bgState = bgState,
                     bgAction = bgvm::onAction
                 )
-            }
-
-            navigation<Routes.AtharvaVedaGraph>(
-                startDestination = Routes.AvKaandasPage
-            ) {
-                composable<Routes.AvKaandasPage> {
-                    AvKaandasPage(
-                        navController = navController,
-                        state = avState,
-                        action = avvm::onAction
-                    )
-                }
-
-                composable<Routes.AvVersesPage> {
-                    AvVersesPage(
-                        navController = navController,
-                        state = avState,
-                        action = avvm::onAction
-                    )
-                }
-
-                composable<Routes.AvFavVersesPage> {
-                    AvVersesPage(
-                        navController = navController,
-                        state = avState,
-                        action = avvm::onAction,
-                        favorites = true
-                    )
-                }
             }
 
             navigation<Routes.BhagvadGitaGraph>(
