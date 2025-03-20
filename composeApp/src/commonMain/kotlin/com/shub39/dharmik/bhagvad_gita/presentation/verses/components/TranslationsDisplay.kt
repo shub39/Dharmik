@@ -1,4 +1,4 @@
-package com.shub39.dharmik.bhagvad_gita.presentation
+package com.shub39.dharmik.bhagvad_gita.presentation.verses.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable

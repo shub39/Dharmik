@@ -1,4 +1,4 @@
-package com.shub39.dharmik.bhagvad_gita.presentation
+package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,6 +44,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.shub39.dharmik.bhagvad_gita.presentation.removeExtraLineBreaks
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.CommentariesDisplay
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
 import com.shub39.dharmik.core.domain.LongPair
 import com.shub39.dharmik.core.presentation.components.PageFill
 import dharmik.composeapp.generated.resources.Res
@@ -58,7 +61,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BgVersesPage(
+fun Verses(
     navController: NavController,
     state: BgState,
     action: (BgAction) -> Unit,
@@ -76,7 +79,8 @@ fun BgVersesPage(
         }
 
         if (!favorites) {
-            action(BgAction.SetIndex(
+            action(
+                BgAction.SetIndex(
                 LongPair(state.currentFile.first().chapter, index.toLong())
             ))
         }

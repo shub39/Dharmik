@@ -1,4 +1,4 @@
-package com.shub39.dharmik.core.presentation.home
+package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.shub39.dharmik.app.Routes
-import com.shub39.dharmik.bhagvad_gita.presentation.BgAction
-import com.shub39.dharmik.bhagvad_gita.presentation.BgState
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.BgAction
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.BgState
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.baseline_bookmark_24
 import dharmik.composeapp.generated.resources.baseline_favorite_border_24
@@ -78,7 +78,7 @@ fun HomeSection(
                     IconButton(
                         onClick = {
                             bgAction(BgAction.SetVerses(bgState.favorites))
-                            navController.navigate(Routes.BgFavVersesPage)
+                            navController.navigate(Routes.FavVerses)
                         },
                         enabled = bgState.favorites.isNotEmpty()
                     ) {
@@ -129,7 +129,7 @@ fun HomeSection(
                     IconButton(
                         onClick = {
                             bgAction(BgAction.LoadBookMark)
-                            navController.navigate(Routes.BgChapterVersesPage)
+                            navController.navigate(Routes.Verses)
                         }
                     ) {
                         Icon(

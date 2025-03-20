@@ -1,12 +1,12 @@
-package com.shub39.dharmik.bhagvad_gita.presentation
+package com.shub39.dharmik.bhagvad_gita.presentation.viewModels
 
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.bhagvad_gita.domain.BgRepo
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.BgAction
 import com.shub39.dharmik.core.domain.PreferencesRepo
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -17,14 +17,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class BgViewModel(
+    private val stateLayer: StateLayer,
     private val repo: BgRepo,
     private val datastore: PreferencesRepo
 ) : ViewModel() {
     private var observeFavesJob: Job? = null
 
-    private val _state = MutableStateFlow(BgState())
+    private val _state = stateLayer.bgState
 
-    val bgState = _state.asStateFlow()
+    val state = _state.asStateFlow()
         .onStart {
             _state.update {
                 it.copy(
@@ -36,7 +37,7 @@ class BgViewModel(
         }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Companion.WhileSubscribed(5000),
             _state.value
         )
 

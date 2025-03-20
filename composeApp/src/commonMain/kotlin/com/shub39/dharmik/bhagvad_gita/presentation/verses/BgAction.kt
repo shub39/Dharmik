@@ -1,4 +1,4 @@
-package com.shub39.dharmik.bhagvad_gita.presentation
+package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
 import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
 import com.shub39.dharmik.core.domain.LongPair

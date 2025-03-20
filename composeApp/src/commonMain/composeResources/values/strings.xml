@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <string name="app_name">Dharmik</string>
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="system_theme">System</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="home">Home</string>
+    <string name="reminders">Reminders</string>
     <string name="copy">Copy to clipboard</string>
     <string name="liked">Liked</string>
     <string name="liked_placeholder">Your Favorites will appear here</string>

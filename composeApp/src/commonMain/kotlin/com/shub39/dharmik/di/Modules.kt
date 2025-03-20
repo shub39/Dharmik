@@ -3,13 +3,14 @@ package com.shub39.dharmik.di
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.shub39.dharmik.bhagvad_gita.data.BgRepoImpl
 import com.shub39.dharmik.bhagvad_gita.domain.BgRepo
-import com.shub39.dharmik.bhagvad_gita.presentation.BgViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.BgViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.HomeViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.StateLayer
 import com.shub39.dharmik.core.data.DataStoreFactory
 import com.shub39.dharmik.core.data.DatabaseFactory
 import com.shub39.dharmik.core.data.DharmikDb
 import com.shub39.dharmik.core.data.PreferencesRepoImpl
 import com.shub39.dharmik.core.domain.PreferencesRepo
-import com.shub39.dharmik.core.presentation.home.SettingsUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -38,9 +39,8 @@ val sharedModule = module {
     single<PreferencesRepo> { PreferencesRepoImpl(get(named("PreferencesDataStore"))) }
     singleOf(::BgRepoImpl).bind<BgRepo>()
 
-    // Use Cases
-    single<SettingsUseCase> { SettingsUseCase(get()) }
-
     // ViewModels
+    singleOf(::StateLayer)
+    viewModelOf(::HomeViewModel)
     viewModelOf(::BgViewModel)
 }

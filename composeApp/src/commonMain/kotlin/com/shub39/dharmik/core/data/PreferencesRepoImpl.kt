@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.shub39.dharmik.core.domain.AppTheme
 import com.shub39.dharmik.core.domain.LongPair
 import com.shub39.dharmik.core.domain.PreferencesRepo
 import kotlinx.coroutines.flow.Flow
@@ -17,16 +18,19 @@ class PreferencesRepoImpl(
 ): PreferencesRepo {
 
     companion object {
-        const val DEFAULT_IS_DARK_THEME = true
-        private val isDarkThemeKey = booleanPreferencesKey("is_dark_theme")
+        private val appThemeKey = stringPreferencesKey("is_dark_theme")
         private val bgBookMarkKey = stringPreferencesKey("bg_bookmark")
     }
 
-    override fun getIsDarkTheme(): Flow<Boolean> = dataStore.data.map {
-        it[isDarkThemeKey] ?: DEFAULT_IS_DARK_THEME
+    override fun getAppTheme(): Flow<AppTheme> = dataStore.data.map {
+        when (it[appThemeKey]) {
+            AppTheme.LIGHT.name -> AppTheme.LIGHT
+            AppTheme.DARK.name -> AppTheme.DARK
+            else -> AppTheme.SYSTEM
+        }
     }
-    override suspend fun setIsDarkTheme(isDarkTheme: Boolean) {
-        dataStore.edit { it[isDarkThemeKey] = isDarkTheme }
+    override suspend fun setAppTheme(appTheme: AppTheme) {
+        dataStore.edit { it[appThemeKey] = appTheme.name }
     }
 
     override fun getBgBookMark(): Flow<LongPair> = dataStore.data.map {

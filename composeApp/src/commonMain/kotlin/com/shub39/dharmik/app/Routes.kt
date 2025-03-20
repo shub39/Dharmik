@@ -3,18 +3,12 @@ package com.shub39.dharmik.app
 import kotlinx.serialization.Serializable
 
 sealed interface Routes {
-
     @Serializable
     data object Home: Routes
     @Serializable
-    data object BhagvadGitaGraph: Routes
+    data object Verses: Routes
     @Serializable
-    data object BgChaptersPage: Routes
-    @Serializable
-    data object BgChapterVersesPage: Routes
-    @Serializable
-    data object BgFavVersesPage: Routes
-
+    data object FavVerses: Routes
 }
 
 sealed interface HomeRoutes {
