@@ -12,11 +12,16 @@ datastore = "1.1.3"
 kotlin = "2.1.10"
 navigationCompose = "2.8.0-alpha10"
 kotlinSerialization = "1.7.3"
-kotlinx-coroutines = "1.10.1"
 splashScreen = "1.0.1"
 ksp = "2.1.10-1.0.31"
 sqlite = "2.5.0-rc02"
 room = "2.7.0-rc02"
+mediaPlayer = "1.0.34"
+materialKolor = "2.0.1"
+aboutLibraries = '11.4.0'
+datetime = "0.6.2"
+composeIcons = "1.1.1"
+buildKonfig = "0.17.0"
 
 [libraries]
 # Jetbrains and Android
@@ -25,9 +30,9 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 compose-adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "compose-adaptive"}
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigationCompose"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
 
 # Koin
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -44,7 +49,15 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
+# Other
+mediaPlayer = { module = "network.chaintech:compose-multiplatform-media-player", version.ref = "mediaPlayer" }
+materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", version.ref = "aboutLibraries" }
+composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
+
 [plugins]
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
+aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
