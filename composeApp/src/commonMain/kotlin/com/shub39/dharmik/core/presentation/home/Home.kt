@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.shub39.dharmik.app.HomeRoutes
 import com.shub39.dharmik.app.Routes
 import com.shub39.dharmik.bhagvad_gita.presentation.BgAction
 import com.shub39.dharmik.bhagvad_gita.presentation.BgState
@@ -43,11 +44,6 @@ fun Home(
     bgState: BgState,
     bgAction: (BgAction) -> Unit
 ) = PageFill {
-    val destinations = listOf(
-        Routes.HomeSection,
-        Routes.LibrarySection,
-        Routes.SettingsSection
-    )
     var currentDest by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
@@ -69,7 +65,7 @@ fun Home(
                 )
             ) {
                 NavigationBar {
-                    destinations.forEach { dest ->
+                    HomeRoutes.forEach { dest ->
                         NavigationBarItem(
                             selected = destinations[currentDest] == dest,
                             onClick = { currentDest = destinations.indexOf(dest) },
