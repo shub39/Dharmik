@@ -6,26 +6,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
+import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.github_mark
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun SettingsSection() {
+fun SettingsSection(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit
+) {
     val uriHandler = LocalUriHandler.current
-    val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -49,8 +50,6 @@ fun SettingsSection() {
 //                    )
 //                }
 //            )
-
-            HorizontalDivider()
         }
 
         item {
@@ -76,8 +75,6 @@ fun SettingsSection() {
                     }
                 }
             )
-
-            HorizontalDivider()
         }
 
         item {
@@ -85,13 +82,6 @@ fun SettingsSection() {
                 headlineContent = {
                     Text(
                         text = "Dharmic Data by bhavyakhatri"
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "Comprehensive Open-Source Collection of Hindu Sacred Texts including Ramcharitmanas, Bhagavad Gita, Mahabharata, Valmiki Ramayana, Rigveda, Yajurveda, Atharvaveda for Educational and Research Purposes.",
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 trailingContent = {

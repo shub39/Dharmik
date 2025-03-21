@@ -37,6 +37,9 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import chaintech.videoplayer.host.MediaPlayerHost
+import chaintech.videoplayer.model.AudioFile
+import chaintech.videoplayer.ui.audio.AudioPlayerComposable
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.CommentariesDisplay
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
@@ -68,13 +71,13 @@ fun Verses(
         if (state.saveBookMarks) {
             action(
                 VersesAction.SetIndex(
-                    LongPair(state.currentFile.first().chapter, index.toLong())
+                    LongPair(state.currentVerses.first().chapter, index.toLong())
                 )
             )
         }
     }
 
-    val verses = state.currentFile
+    val verses = state.currentVerses
 
     LaunchedEffect(state.pagerState.currentPage) {
         sliderPosition = state.pagerState.currentPage.toFloat()
@@ -154,7 +157,6 @@ fun Verses(
             }
         }
     ) { padding ->
-
         HorizontalPager(
             state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
@@ -162,6 +164,7 @@ fun Verses(
             userScrollEnabled = false
         ) { index ->
             val currentVerse by remember { mutableStateOf(verses[index]) }
+            val audioFiles by remember { mutableStateOf(state.audioFiles[index]) }
             val scrollState = rememberLazyListState()
 
             LazyColumn(
@@ -187,6 +190,29 @@ fun Verses(
                                 }
                             )
                         }
+                    )
+                }
+
+                item {
+                    val playerHost = remember { MediaPlayerHost() }
+
+                    AudioPlayerComposable(
+                        modifier = Modifier.fillMaxWidth(),
+                        audios = listOf(
+                            AudioFile(
+                                audioUrl = audioFiles.moolSloka,
+                                audioTitle = "Mool Sloka"
+                            ),
+                            AudioFile(
+                                audioUrl = audioFiles.hindiTranslation,
+                                audioTitle = "Hindi Translation"
+                            ),
+                            AudioFile(
+                                audioUrl = audioFiles.englishTranslation,
+                                audioTitle = "English Translation"
+                            )
+                        ),
+                        playerHost = playerHost,
                     )
                 }
 
@@ -225,6 +251,5 @@ fun Verses(
                 }
             }
         }
-
     }
 }

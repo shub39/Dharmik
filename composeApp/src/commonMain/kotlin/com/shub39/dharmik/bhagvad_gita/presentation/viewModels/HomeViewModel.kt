@@ -39,12 +39,14 @@ class HomeViewModel(
 
             HomeAction.LoadBookMark -> {
                 val file = repo.getChapter(_state.value.currentBookMark.first.toInt())
+                val audios = repo.getAudios(_state.value.currentBookMark.first.toInt())
 
                 stateLayer.versesState.update {
                     it.copy(
-                        currentFile = file.gitaVerse,
+                        currentVerses = file.gitaVerses,
                         saveBookMarks = true,
-                        pagerState = PagerState(_state.value.currentBookMark.second.toInt().coerceAtLeast(0)) { file.gitaVerse.size }
+                        audioFiles = audios,
+                        pagerState = PagerState(_state.value.currentBookMark.second.toInt().coerceAtLeast(0)) { file.gitaVerses.size }
                     )
                 }
             }
@@ -57,36 +59,30 @@ class HomeViewModel(
                 }
             }
 
-            is HomeAction.SetVerses -> {
-                stateLayer.versesState.update {
-                    it.copy(
-                        currentFile = action.verses,
-                        saveBookMarks = true,
-                        pagerState = PagerState { action.verses.size }
-                    )
-                }
-            }
-
             is HomeAction.ChapterChange -> {
                 val file = repo.getChapter(action.index)
+                val audios = repo.getAudios(action.index)
 
                 stateLayer.versesState.update {
                     it.copy(
-                        currentFile = file.gitaVerse,
+                        currentVerses = file.gitaVerses,
+                        audioFiles = audios,
                         saveBookMarks = true,
-                        pagerState = PagerState { file.gitaVerse.size }
+                        pagerState = PagerState { file.gitaVerses.size }
                     )
                 }
             }
 
             is HomeAction.LoadVerse -> {
                 val file = repo.getChapter(action.verse.chapter.toInt())
+                val audios = repo.getAudios(action.verse.chapter.toInt())
 
                 stateLayer.versesState.update {
                     it.copy(
-                        currentFile = file.gitaVerse,
+                        currentVerses = file.gitaVerses,
+                        audioFiles = audios,
                         saveBookMarks = false,
-                        pagerState = PagerState(action.verse.verse.toInt().minus(1).coerceAtLeast(0)) { file.gitaVerse.size }
+                        pagerState = PagerState(action.verse.verse.toInt().minus(1).coerceAtLeast(0)) { file.gitaVerses.size }
                     )
                 }
             }

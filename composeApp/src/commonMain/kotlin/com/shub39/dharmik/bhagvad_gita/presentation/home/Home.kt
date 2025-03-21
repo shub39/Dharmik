@@ -33,6 +33,7 @@ import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
 import com.shub39.dharmik.bhagvad_gita.domain.Translations
 import com.shub39.dharmik.bhagvad_gita.presentation.home.components.ChaptersSection
 import com.shub39.dharmik.bhagvad_gita.presentation.home.components.HomeSection
+import com.shub39.dharmik.bhagvad_gita.presentation.home.components.SettingsSection
 import com.shub39.dharmik.core.domain.AppTheme
 import com.shub39.dharmik.core.presentation.components.PageFill
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
@@ -147,7 +148,10 @@ fun Home(
 
             composable<HomeRoutes.SettingsSection> {
                 currentDest = HomeRoutes.SettingsSection
-                Text("Settings")
+                SettingsSection(
+                    state = homeState,
+                    onAction = onAction
+                )
             }
         }
     }
