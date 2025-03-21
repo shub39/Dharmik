@@ -8,5 +8,5 @@ data class HomeState(
     val theme: Theme = Theme(),
     val chapters: Int = 18,
     val favorites: List<GitaVerse> = emptyList(),
-    val currentBookMark: LongPair = LongPair(0, 0),
+    val currentBookMark: LongPair = LongPair(1, 1),
 )

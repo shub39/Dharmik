@@ -16,6 +16,4 @@ sealed interface HomeRoutes {
     data object ChaptersSection: HomeRoutes
     @Serializable
     data object SettingsSection: HomeRoutes
-    @Serializable
-    data object RemindersSection: HomeRoutes
 }

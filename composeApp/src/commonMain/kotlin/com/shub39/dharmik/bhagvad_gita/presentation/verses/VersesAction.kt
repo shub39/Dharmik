@@ -8,5 +8,4 @@ sealed interface VersesAction {
     data class SetFave(val verse: GitaVerse): VersesAction
     data class SetIndex(val mark: LongPair): VersesAction
     data class SetVerses(val verses: List<GitaVerse>): VersesAction
-    data object LoadBookMark: VersesAction
 }

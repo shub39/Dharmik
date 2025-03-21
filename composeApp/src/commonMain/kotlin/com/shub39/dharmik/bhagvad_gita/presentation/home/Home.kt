@@ -40,13 +40,11 @@ import com.shub39.dharmik.core.presentation.theme.Theme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Book
-import compose.icons.fontawesomeicons.solid.Clock
 import compose.icons.fontawesomeicons.solid.Home
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
 import dharmik.composeapp.generated.resources.chapters
 import dharmik.composeapp.generated.resources.home
-import dharmik.composeapp.generated.resources.reminders
 import dharmik.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.stringResource
 
@@ -82,7 +80,6 @@ fun Home(
                 listOf(
                     HomeRoutes.HomeSection,
                     HomeRoutes.ChaptersSection,
-                    HomeRoutes.RemindersSection,
                     HomeRoutes.SettingsSection
                 ).forEach { route ->
                     NavigationBarItem(
@@ -99,7 +96,6 @@ fun Home(
                                 imageVector = when (route) {
                                     HomeRoutes.HomeSection -> FontAwesomeIcons.Solid.Home
                                     HomeRoutes.ChaptersSection -> FontAwesomeIcons.Solid.Book
-                                    HomeRoutes.RemindersSection -> FontAwesomeIcons.Solid.Clock
                                     HomeRoutes.SettingsSection -> Icons.Default.Settings
                                 },
                                 contentDescription = "Sections",
@@ -112,7 +108,6 @@ fun Home(
                                     when (route) {
                                         HomeRoutes.HomeSection -> Res.string.home
                                         HomeRoutes.ChaptersSection -> Res.string.chapters
-                                        HomeRoutes.RemindersSection -> Res.string.reminders
                                         HomeRoutes.SettingsSection -> Res.string.settings
                                     }
                                 )
@@ -138,7 +133,7 @@ fun Home(
                     onNavigateToVerses = onNavigateToVerses,
                     homeState = homeState,
                     onAction = onAction
-                ) 
+                )
             }
 
             composable<HomeRoutes.ChaptersSection> {
@@ -148,11 +143,6 @@ fun Home(
                     state = homeState,
                     onAction = onAction
                 )
-            }
-
-            composable<HomeRoutes.RemindersSection> {
-                currentDest = HomeRoutes.RemindersSection
-                Text("Reminders")
             }
 
             composable<HomeRoutes.SettingsSection> {
@@ -174,7 +164,7 @@ private fun Preview() {
         Home(
             onNavigateToVerses = {},
             homeState = HomeState(
-                favorites = (0..100).map { 
+                favorites = (0..100).map {
                     GitaVerse(
                         chapter = it.toLong(),
                         verse = it.toLong(),

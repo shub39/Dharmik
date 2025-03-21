@@ -43,7 +43,8 @@ class HomeViewModel(
                 stateLayer.versesState.update {
                     it.copy(
                         currentFile = file.gitaVerse,
-                        pagerState = PagerState(it.currentBookMark.second.toInt()) { file.gitaVerse.size }
+                        saveBookMarks = true,
+                        pagerState = PagerState(_state.value.currentBookMark.second.toInt().coerceAtLeast(0)) { file.gitaVerse.size }
                     )
                 }
             }
@@ -60,6 +61,7 @@ class HomeViewModel(
                 stateLayer.versesState.update {
                     it.copy(
                         currentFile = action.verses,
+                        saveBookMarks = true,
                         pagerState = PagerState { action.verses.size }
                     )
                 }
@@ -71,6 +73,7 @@ class HomeViewModel(
                 stateLayer.versesState.update {
                     it.copy(
                         currentFile = file.gitaVerse,
+                        saveBookMarks = true,
                         pagerState = PagerState { file.gitaVerse.size }
                     )
                 }
@@ -82,7 +85,8 @@ class HomeViewModel(
                 stateLayer.versesState.update {
                     it.copy(
                         currentFile = file.gitaVerse,
-                        pagerState = PagerState(action.verse.verse.toInt()) { file.gitaVerse.size }
+                        saveBookMarks = false,
+                        pagerState = PagerState(action.verse.verse.toInt().minus(1).coerceAtLeast(0)) { file.gitaVerse.size }
                     )
                 }
             }
@@ -93,10 +97,16 @@ class HomeViewModel(
         observeJob?.cancel()
         observeJob = launch {
             repo.getFavesFlow()
-                .onEach { flow ->
+                .onEach { faves ->
                     _state.update {
                         it.copy(
-                            favorites = flow
+                            favorites = faves
+                        )
+                    }
+
+                    stateLayer.versesState.update {
+                        it.copy(
+                            favorites = faves
                         )
                     }
                 }

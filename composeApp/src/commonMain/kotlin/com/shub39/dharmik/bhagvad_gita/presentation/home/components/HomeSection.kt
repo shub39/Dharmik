@@ -57,7 +57,7 @@ fun HomeSection(
                     )
                 },
                 supportingContent = {
-                    Text(text = "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second}")
+                    Text(text = "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second.plus(1)}")
                 },
                 trailingContent = {
                     IconButton(

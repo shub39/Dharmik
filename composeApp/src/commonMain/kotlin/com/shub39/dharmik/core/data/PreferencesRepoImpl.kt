@@ -2,7 +2,6 @@ package com.shub39.dharmik.core.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.dharmik.core.domain.AppTheme
@@ -34,7 +33,7 @@ class PreferencesRepoImpl(
     }
 
     override fun getBgBookMark(): Flow<LongPair> = dataStore.data.map {
-        Json.decodeFromString(it[bgBookMarkKey] ?: Json.encodeToString(LongPair(1, 0)))
+        Json.decodeFromString(it[bgBookMarkKey] ?: Json.encodeToString(LongPair(1, 1)))
     }
     override suspend fun setBgBookMark(mark: LongPair) {
         dataStore.edit { it[bgBookMarkKey] = Json.encodeToString(mark) }
