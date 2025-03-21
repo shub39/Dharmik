@@ -2,141 +2,124 @@ package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.shub39.dharmik.app.Routes
-import com.shub39.dharmik.bhagvad_gita.presentation.verses.BgAction
-import com.shub39.dharmik.bhagvad_gita.presentation.verses.BgState
+import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
+import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
+import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ArrowRight
+import compose.icons.fontawesomeicons.solid.Bookmark
+import compose.icons.fontawesomeicons.solid.Heart
 import dharmik.composeapp.generated.resources.Res
-import dharmik.composeapp.generated.resources.baseline_bookmark_24
-import dharmik.composeapp.generated.resources.baseline_favorite_border_24
-import dharmik.composeapp.generated.resources.bhagvad_gita
-import dharmik.composeapp.generated.resources.bookmarks
+import dharmik.composeapp.generated.resources.bookmark
 import dharmik.composeapp.generated.resources.favorites_template
-import dharmik.composeapp.generated.resources.liked
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeSection(
-    navController: NavController,
-    bgState: BgState,
-    bgAction: (BgAction) -> Unit
+    onNavigateToVerses: () -> Unit,
+    homeState: HomeState,
+    onAction: (HomeAction) -> Unit
 ) = Box {
+    val clipboardManager = LocalClipboardManager.current
+
     LazyColumn(
         modifier = Modifier
             .animateContentSize()
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             ListItem(
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.baseline_favorite_border_24),
-                        contentDescription = "Favorite"
-                    )
-                },
                 headlineContent = {
                     Text(
-                        text = stringResource(Res.string.liked),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            )
-        }
-
-        item {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.bhagvad_gita)
+                        text = stringResource(Res.string.bookmark)
                     )
                 },
                 supportingContent = {
-                    Text(
-                        text = stringResource(Res.string.favorites_template, bgState.favorites.size)
-                    )
+                    Text(text = "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second}")
                 },
                 trailingContent = {
                     IconButton(
                         onClick = {
-                            bgAction(BgAction.SetVerses(bgState.favorites))
-                            navController.navigate(Routes.FavVerses)
-                        },
-                        enabled = bgState.favorites.isNotEmpty()
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                            contentDescription = "Navigate"
-                        )
-                    }
-                }
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.padding(30.dp))
-        }
-
-        item {
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.baseline_bookmark_24),
-                        contentDescription = "Favorite"
-                    )
-                },
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.bookmarks),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            )
-        }
-
-        item {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.bhagvad_gita)
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "${bgState.currentBookMark.first} : ${bgState.currentBookMark.second + 1}"
-                    )
-                },
-                trailingContent = {
-                    IconButton(
-                        onClick = {
-                            bgAction(BgAction.LoadBookMark)
-                            navController.navigate(Routes.Verses)
+                            onAction(HomeAction.LoadBookMark)
+                            onNavigateToVerses()
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                            contentDescription = "Navigate"
+                            imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                            contentDescription = "Open Bookmark",
+                            modifier = Modifier.size(20.dp)
                         )
                     }
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.Bookmark,
+                        contentDescription = "Bookmark",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            )
+        }
+
+        item {
+            HorizontalDivider()
+        }
+
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(text = stringResource(Res.string.favorites_template, homeState.favorites.size))
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.Heart,
+                        contentDescription = "Favorites",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            )
+        }
+
+        items(homeState.favorites) { verse ->
+            VerseCard(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth(),
+                verse = verse,
+                isFave = homeState.favorites.contains(verse),
+                onFavorite = { onAction(HomeAction.SetFave(verse)) },
+                onClick = {
+                    onAction(HomeAction.LoadVerse(verse))
+                    onNavigateToVerses()
+                },
+                onCopy = {
+                    clipboardManager.setText(
+                        annotatedString = buildAnnotatedString {
+                            append(verse.text)
+                        }
+                    )
                 }
             )
         }

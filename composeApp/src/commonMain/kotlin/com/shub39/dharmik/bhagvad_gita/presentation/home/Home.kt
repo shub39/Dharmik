@@ -1,5 +1,7 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home
 
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -22,11 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.dharmik.app.HomeRoutes
+import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
+import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
+import com.shub39.dharmik.bhagvad_gita.domain.Translations
+import com.shub39.dharmik.bhagvad_gita.presentation.home.components.ChaptersSection
+import com.shub39.dharmik.bhagvad_gita.presentation.home.components.HomeSection
 import com.shub39.dharmik.core.domain.AppTheme
 import com.shub39.dharmik.core.presentation.components.PageFill
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
@@ -38,8 +44,8 @@ import compose.icons.fontawesomeicons.solid.Clock
 import compose.icons.fontawesomeicons.solid.Home
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
+import dharmik.composeapp.generated.resources.chapters
 import dharmik.composeapp.generated.resources.home
-import dharmik.composeapp.generated.resources.library
 import dharmik.composeapp.generated.resources.reminders
 import dharmik.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.stringResource
@@ -47,7 +53,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
-    navController: NavController,
+    onNavigateToVerses: () -> Unit,
     homeState: HomeState,
     onAction: (HomeAction) -> Unit
 ) = PageFill {
@@ -75,18 +81,24 @@ fun Home(
             ) {
                 listOf(
                     HomeRoutes.HomeSection,
-                    HomeRoutes.LibrarySection,
+                    HomeRoutes.ChaptersSection,
                     HomeRoutes.RemindersSection,
                     HomeRoutes.SettingsSection
                 ).forEach { route ->
                     NavigationBarItem(
                         selected = currentDest == route,
-                        onClick = { homeNavController.navigate(route) },
+                        onClick = {
+                            if (currentDest != route) {
+                                homeNavController.navigate(route) {
+                                    popUpTo(HomeRoutes.HomeSection)
+                                }
+                            }
+                        },
                         icon = {
                             Icon(
-                                imageVector =  when (route) {
+                                imageVector = when (route) {
                                     HomeRoutes.HomeSection -> FontAwesomeIcons.Solid.Home
-                                    HomeRoutes.LibrarySection -> FontAwesomeIcons.Solid.Book
+                                    HomeRoutes.ChaptersSection -> FontAwesomeIcons.Solid.Book
                                     HomeRoutes.RemindersSection -> FontAwesomeIcons.Solid.Clock
                                     HomeRoutes.SettingsSection -> Icons.Default.Settings
                                 },
@@ -99,7 +111,7 @@ fun Home(
                                 text = stringResource(
                                     when (route) {
                                         HomeRoutes.HomeSection -> Res.string.home
-                                        HomeRoutes.LibrarySection -> Res.string.library
+                                        HomeRoutes.ChaptersSection -> Res.string.chapters
                                         HomeRoutes.RemindersSection -> Res.string.reminders
                                         HomeRoutes.SettingsSection -> Res.string.settings
                                     }
@@ -114,22 +126,38 @@ fun Home(
         NavHost(
             modifier = Modifier.padding(padding),
             navController = homeNavController,
-            startDestination = HomeRoutes.HomeSection
+            startDestination = HomeRoutes.HomeSection,
+            enterTransition = { slideInVertically(initialOffsetY = { it / 2 }) },
+            exitTransition = { fadeOut() },
+            popEnterTransition = { slideInVertically(initialOffsetY = { it / 2 }) },
+            popExitTransition = { fadeOut() }
         ) {
             composable<HomeRoutes.HomeSection> {
                 currentDest = HomeRoutes.HomeSection
+                HomeSection(
+                    onNavigateToVerses = onNavigateToVerses,
+                    homeState = homeState,
+                    onAction = onAction
+                ) 
             }
 
-            composable<HomeRoutes.LibrarySection>{
-                currentDest = HomeRoutes.LibrarySection
+            composable<HomeRoutes.ChaptersSection> {
+                currentDest = HomeRoutes.ChaptersSection
+                ChaptersSection(
+                    onNavigateToVerses = onNavigateToVerses,
+                    state = homeState,
+                    onAction = onAction
+                )
             }
 
-            composable<HomeRoutes.RemindersSection>{
+            composable<HomeRoutes.RemindersSection> {
                 currentDest = HomeRoutes.RemindersSection
+                Text("Reminders")
             }
 
-            composable<HomeRoutes.SettingsSection>{
+            composable<HomeRoutes.SettingsSection> {
                 currentDest = HomeRoutes.SettingsSection
+                Text("Settings")
             }
         }
     }
@@ -144,8 +172,18 @@ private fun Preview() {
         )
     ) {
         Home(
-            navController = rememberNavController(),
-            homeState = HomeState(),
+            onNavigateToVerses = {},
+            homeState = HomeState(
+                favorites = (0..100).map { 
+                    GitaVerse(
+                        chapter = it.toLong(),
+                        verse = it.toLong(),
+                        text = it.toString(),
+                        commentaries = Commentaries(),
+                        translations = Translations()
+                    )
+                }
+            ),
             onAction = {}
         )
     }

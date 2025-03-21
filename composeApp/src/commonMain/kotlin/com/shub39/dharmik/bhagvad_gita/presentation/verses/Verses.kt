@@ -63,8 +63,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun Verses(
     navController: NavController,
-    state: BgState,
-    action: (BgAction) -> Unit,
+    state: VersesState,
+    action: (VersesAction) -> Unit,
     favorites: Boolean = false
 ) = PageFill {
     val fontFamily = FontFamily(Font(Res.font.noto_regular))
@@ -80,7 +80,7 @@ fun Verses(
 
         if (!favorites) {
             action(
-                BgAction.SetIndex(
+                VersesAction.SetIndex(
                 LongPair(state.currentFile.first().chapter, index.toLong())
             ))
         }
@@ -232,7 +232,7 @@ fun Verses(
 
                                     IconButton(
                                         onClick = {
-                                            action(BgAction.SetFave(currentVerse))
+                                            action(VersesAction.SetFave(currentVerse))
                                             isFave = !isFave
                                         }
                                     ) {

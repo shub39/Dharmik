@@ -3,7 +3,7 @@ package com.shub39.dharmik.di
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.shub39.dharmik.bhagvad_gita.data.BgRepoImpl
 import com.shub39.dharmik.bhagvad_gita.domain.BgRepo
-import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.BgViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.VersesViewModel
 import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.HomeViewModel
 import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.StateLayer
 import com.shub39.dharmik.core.data.DataStoreFactory
@@ -42,5 +42,5 @@ val sharedModule = module {
     // ViewModels
     singleOf(::StateLayer)
     viewModelOf(::HomeViewModel)
-    viewModelOf(::BgViewModel)
+    viewModelOf(::VersesViewModel)
 }

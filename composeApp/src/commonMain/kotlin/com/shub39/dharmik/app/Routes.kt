@@ -7,15 +7,13 @@ sealed interface Routes {
     data object Home: Routes
     @Serializable
     data object Verses: Routes
-    @Serializable
-    data object FavVerses: Routes
 }
 
 sealed interface HomeRoutes {
     @Serializable
     data object HomeSection: HomeRoutes
     @Serializable
-    data object LibrarySection: HomeRoutes
+    data object ChaptersSection: HomeRoutes
     @Serializable
     data object SettingsSection: HomeRoutes
     @Serializable

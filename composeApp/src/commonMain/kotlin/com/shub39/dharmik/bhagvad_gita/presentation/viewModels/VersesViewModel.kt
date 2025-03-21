@@ -4,7 +4,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.bhagvad_gita.domain.BgRepo
-import com.shub39.dharmik.bhagvad_gita.presentation.verses.BgAction
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.VersesAction
 import com.shub39.dharmik.core.domain.PreferencesRepo
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,14 +16,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class BgViewModel(
+class VersesViewModel(
     private val stateLayer: StateLayer,
     private val repo: BgRepo,
     private val datastore: PreferencesRepo
 ) : ViewModel() {
     private var observeFavesJob: Job? = null
 
-    private val _state = stateLayer.bgState
+    private val _state = stateLayer.versesState
 
     val state = _state.asStateFlow()
         .onStart {
@@ -41,10 +41,10 @@ class BgViewModel(
             _state.value
         )
 
-    fun onAction(action: BgAction) {
+    fun onAction(action: VersesAction) {
         viewModelScope.launch {
             when (action) {
-                is BgAction.ChapterChange -> {
+                is VersesAction.ChapterChange -> {
                     val file = repo.getChapter(action.index)
 
                     _state.update {
@@ -55,7 +55,7 @@ class BgViewModel(
                     }
                 }
 
-                is BgAction.SetFave -> {
+                is VersesAction.SetFave -> {
                     if (_state.value.favorites.contains(action.verse)) {
                         repo.deleteFave(action.verse)
                     } else {
@@ -63,11 +63,11 @@ class BgViewModel(
                     }
                 }
 
-                is BgAction.SetIndex -> {
+                is VersesAction.SetIndex -> {
                     datastore.setBgBookMark(action.mark)
                 }
 
-                BgAction.LoadBookMark -> {
+                VersesAction.LoadBookMark -> {
                     val file = repo.getChapter(_state.value.currentBookMark.first.toInt())
 
                     _state.update {
@@ -78,7 +78,7 @@ class BgViewModel(
                     }
                 }
 
-                is BgAction.SetVerses -> {
+                is VersesAction.SetVerses -> {
                     _state.update {
                         it.copy(
                             currentFile = action.verses,

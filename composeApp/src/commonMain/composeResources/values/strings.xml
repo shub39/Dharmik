@@ -4,13 +4,13 @@
     <string name="light_theme">Light</string>
     <string name="dark_theme">Dark</string>
     <string name="system_theme">System</string>
-    <string name="bookmarks">Bookmarks</string>
+    <string name="bookmark">Bookmark</string>
     <string name="home">Home</string>
     <string name="reminders">Reminders</string>
     <string name="copy">Copy to clipboard</string>
     <string name="liked">Liked</string>
     <string name="liked_placeholder">Your Favorites will appear here</string>
-    <string name="library">Library</string>
+    <string name="chapters">Chapters</string>
     <string name="settings">Settings</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="app_theme">App Theme</string>
@@ -21,4 +21,5 @@
     <string name="chapter_template">Chapter %1$d</string>
     <string name="favorites_template">%1$d Favorites</string>
     <string name="verses_template">%1$d Verses</string>
+    <string name="verses_alt_template">Verse %1$d</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.shub39.dharmik.app
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,7 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.dharmik.bhagvad_gita.presentation.home.Home
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.Verses
-import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.BgViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.VersesViewModel
 import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.HomeViewModel
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
 import org.koin.compose.viewmodel.koinViewModel
@@ -19,7 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun App(
     homevm: HomeViewModel = koinViewModel(),
-    bgvm: BgViewModel = koinViewModel(),
+    bgvm: VersesViewModel = koinViewModel(),
 ) {
     val bgState by bgvm.state.collectAsStateWithLifecycle()
     val homeState by homevm.state.collectAsStateWithLifecycle()
@@ -32,11 +34,20 @@ fun App(
         NavHost(
             navController = navController,
             startDestination = Routes.Home,
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
+            popEnterTransition = { fadeIn() },
+            popExitTransition = { fadeOut() }
         ) {
             composable<Routes.Home> {
                 Home(
-                    navController = navController,
+                    onNavigateToVerses = {
+                        navController.navigate(Routes.Verses) {
+                            launchSingleTop = true
+                            popUpTo(Routes.Home)
+                        }
+                    },
                     homeState = homeState,
                     onAction = homevm::onAction
                 )
@@ -47,15 +58,6 @@ fun App(
                     navController = navController,
                     state = bgState,
                     action = bgvm::onAction
-                )
-            }
-
-            composable<Routes.FavVerses> {
-                Verses(
-                    navController = navController,
-                    state = bgState,
-                    action = bgvm::onAction,
-                    favorites = true
                 )
             }
         }
