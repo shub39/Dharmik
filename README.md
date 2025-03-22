@@ -2,7 +2,7 @@
 
 # Dharmik
 
-### Browse Bhagaved Gita
+### Browse Bhagavad Gita
 
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio2.svg">]()
@@ -18,6 +18,12 @@
 | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
 |:------------------------------------------------------------------:|:------------------------------------------------------------------:|
 | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
+
+### Features
+- Completely offline with no sketchy permissions or ads
+- View verses, commentaries and translations for over 2000 verses
+- Audio transcriptions in three languages (english, hindi and sanskrit)
+- Copy verses, commentaries and translations to clipboard
 
 ### Thanks to
 > - [Dharmic Data](https://github.com/bhavykhatri/DharmicData) for the texts
