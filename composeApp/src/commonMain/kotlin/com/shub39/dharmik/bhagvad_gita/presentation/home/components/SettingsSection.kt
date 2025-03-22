@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +34,7 @@ import com.shub39.dharmik.DharmikConfig
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
 import com.shub39.dharmik.core.domain.AppTheme
+import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.DharmikDialog
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
@@ -43,6 +45,8 @@ import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
 import dharmik.composeapp.generated.resources.app_theme
 import dharmik.composeapp.generated.resources.app_theme_desc
+import dharmik.composeapp.generated.resources.verse_state
+import dharmik.composeapp.generated.resources.verse_state_desc
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -54,11 +58,37 @@ fun SettingsSection(
 
     var showLicences by remember { mutableStateOf(false) }
     var showThemePicker by remember { mutableStateOf(false) }
+    var showLanguagePicker by remember { mutableStateOf(false) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(Res.string.verse_state)
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = stringResource(Res.string.verse_state_desc)
+                    )
+                },
+                trailingContent = {
+                    FilledTonalIconButton(
+                        onClick = { showLanguagePicker = true }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Create,
+                            contentDescription = "Edit"
+                        )
+                    }
+                }
+            )
+        }
+
         item {
             ListItem(
                 headlineContent = {
@@ -83,6 +113,8 @@ fun SettingsSection(
                 }
             )
         }
+
+        item { HorizontalDivider() }
 
         item {
             ListItem(
@@ -227,6 +259,33 @@ fun SettingsSection(
 
         item {
             Spacer(modifier = Modifier.padding(60.dp))
+        }
+    }
+
+    if (showLanguagePicker) {
+        DharmikDialog(
+            onDismissRequest = { showLanguagePicker = false }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                VerseCardState.entries.forEach { vcState ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = vcState.fullName)
+
+                        RadioButton(
+                            selected = state.verseCardState == vcState,
+                            onClick = {
+                                onAction(HomeAction.OnSetVerseCardState(vcState))
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 

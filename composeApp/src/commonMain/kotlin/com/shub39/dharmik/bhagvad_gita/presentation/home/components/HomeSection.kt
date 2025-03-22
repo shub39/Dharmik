@@ -108,6 +108,7 @@ fun HomeSection(
                     .padding(vertical = 8.dp)
                     .fillMaxWidth(),
                 verse = verse,
+                state = homeState.verseCardState,
                 onClick = {
                     onAction(HomeAction.LoadVerse(verse))
                     onNavigateToVerses()

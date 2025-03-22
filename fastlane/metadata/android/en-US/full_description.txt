@@ -1,6 +1,7 @@
-Dharmik is a simple app to browse Hindu Texts.
+Dharmik is a simple app to browse the Bhagavad Gita easily
 
-Currently it supports copying, bookmarking and saving verses from
+Features:
 
-- Atharvaveda
-- Bhagavad Gita (with translations and commentaries)
+- View verses, commentaries and translations for over 2000 verses
+- Audio transcriptions in three languages (english, hindi and sanskrit)
+- Copy verses, commentaries and translations to clipboard

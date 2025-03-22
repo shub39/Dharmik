@@ -3,6 +3,8 @@
     <string name="app_name">Dharmik</string>
     <string name="light_theme">Light</string>
     <string name="dark_theme">Dark</string>
+    <string name="verse_state">Language</string>
+    <string name="verse_state_desc">Select preferred language to show verses</string>
     <string name="system_theme">System</string>
     <string name="bookmark">Bookmark</string>
     <string name="home">Home</string>
