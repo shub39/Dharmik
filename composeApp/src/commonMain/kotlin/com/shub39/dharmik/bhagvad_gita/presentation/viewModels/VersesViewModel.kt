@@ -48,6 +48,16 @@ class VersesViewModel(
                 is VersesAction.SetIndex -> {
                     datastore.setBgBookMark(action.mark)
                 }
+
+                is VersesAction.SetVerseCardState -> {
+                    _state.update {
+                        it.copy(
+                            verseCardState = action.state,
+                        )
+                    }
+
+                    _state.value.playerHost.pause()
+                }
             }
         }
     }

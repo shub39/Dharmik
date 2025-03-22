@@ -1,5 +1,7 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,13 +37,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import chaintech.videoplayer.host.MediaPlayerHost
-import chaintech.videoplayer.model.AudioFile
-import chaintech.videoplayer.ui.audio.AudioPlayerComposable
+import chaintech.videoplayer.ui.audio.AudioPlayer
+import com.shub39.dharmik.bhagvad_gita.domain.VerseCardState
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.CommentariesDisplay
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
@@ -68,6 +72,8 @@ fun Verses(
             state.pagerState.animateScrollToPage(index)
         }
 
+        state.playerHost.pause()
+
         if (state.saveBookMarks) {
             action(
                 VersesAction.SetIndex(
@@ -81,6 +87,12 @@ fun Verses(
 
     LaunchedEffect(state.pagerState.currentPage) {
         sliderPosition = state.pagerState.currentPage.toFloat()
+    }
+
+    AudioPlayer(state.playerHost)
+    BackHandler {
+        state.playerHost.pause()
+        navController.navigateUp()
     }
 
     Scaffold(
@@ -101,7 +113,10 @@ fun Verses(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.navigateUp() }
+                        onClick = {
+                            state.playerHost.pause()
+                            navController.navigateUp()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -175,45 +190,47 @@ fun Verses(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    VerseCard(
-                        verse = currentVerse,
-                        modifier = Modifier.fillMaxWidth(),
-                        isFave = state.favorites.contains(currentVerse),
-                        onFavorite = {
-                            action(VersesAction.SetFave(currentVerse))
-                        },
-                        onClick = {},
-                        onCopy = {
-                            clipboardManager.setText(
-                                annotatedString = buildAnnotatedString {
-                                    append(currentVerse.text)
-                                }
+                    SingleChoiceSegmentedButtonRow(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        VerseCardState.entries.forEach { vcState ->
+                            SegmentedButton(
+                                selected = vcState == state.verseCardState,
+                                onClick = {
+                                    action(VersesAction.SetVerseCardState(vcState))
+                                },
+                                shape = when (vcState) {
+                                    VerseCardState.ENGLISH -> RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
+                                    VerseCardState.HINDI -> RectangleShape
+                                    VerseCardState.SANSKRIT -> RoundedCornerShape(topEnd = 20.dp, bottomEnd = 20.dp)
+                                },
+                                label = { Text(vcState.fullName) }
                             )
                         }
-                    )
+                    }
                 }
 
                 item {
-                    val playerHost = remember { MediaPlayerHost() }
-
-                    AudioPlayerComposable(
-                        modifier = Modifier.fillMaxWidth(),
-                        audios = listOf(
-                            AudioFile(
-                                audioUrl = audioFiles.moolSloka,
-                                audioTitle = "Mool Sloka"
-                            ),
-                            AudioFile(
-                                audioUrl = audioFiles.hindiTranslation,
-                                audioTitle = "Hindi Translation"
-                            ),
-                            AudioFile(
-                                audioUrl = audioFiles.englishTranslation,
-                                audioTitle = "English Translation"
-                            )
-                        ),
-                        playerHost = playerHost,
-                    )
+                    AnimatedContent(
+                        targetState = state.verseCardState
+                    ) { vcState ->
+                        VerseCard(
+                            verse = currentVerse,
+                            modifier = Modifier.fillMaxWidth(),
+                            isFave = state.favorites.contains(currentVerse),
+                            state = vcState,
+                            audios = audioFiles,
+                            playerHost = state.playerHost,
+                            onClick = {},
+                            onCopy = {
+                                clipboardManager.setText(
+                                    annotatedString = buildAnnotatedString {
+                                        append(currentVerse.text)
+                                    }
+                                )
+                            }
+                        )
+                    }
                 }
 
                 item {

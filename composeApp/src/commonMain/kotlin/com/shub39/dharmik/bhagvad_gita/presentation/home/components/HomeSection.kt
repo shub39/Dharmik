@@ -108,8 +108,6 @@ fun HomeSection(
                     .padding(vertical = 8.dp)
                     .fillMaxWidth(),
                 verse = verse,
-                isFave = homeState.favorites.contains(verse),
-                onFavorite = { onAction(HomeAction.SetFave(verse)) },
                 onClick = {
                     onAction(HomeAction.LoadVerse(verse))
                     onNavigateToVerses()

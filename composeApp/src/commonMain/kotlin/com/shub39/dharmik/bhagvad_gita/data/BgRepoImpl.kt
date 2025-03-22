@@ -29,7 +29,7 @@ class BgRepoImpl(
     }
 
     override suspend fun getAudios(index: Int): List<Audios> = withContext(Dispatchers.IO) {
-        val basePath = "files/gita_audio/CHAP${"%02d".format(index)}/"
+        val basePath = "files/gita_audio/CHAP$index/"
         val slokaCount = slokaNumbers[index - 1]
 
         val audios = (1..slokaCount).map { slokaIndex ->
