@@ -1,0 +1,269 @@
+package com.shub39.dharmik.bhagvad_gita.presentation.verses
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import chaintech.videoplayer.ui.audio.AudioPlayer
+import com.shub39.dharmik.core.domain.VerseCardState
+import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.CommentariesDisplay
+import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
+import com.shub39.dharmik.core.domain.LongPair
+import com.shub39.dharmik.core.presentation.components.PageFill
+import dharmik.composeapp.generated.resources.Res
+import dharmik.composeapp.generated.resources.bhagvad_gita
+import dharmik.composeapp.generated.resources.chapter_template
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Verses(
+    navController: NavController,
+    state: VersesState,
+    action: (VersesAction) -> Unit,
+) = PageFill {
+    val clipboardManager = LocalClipboardManager.current
+
+    val coroutineScope = rememberCoroutineScope()
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+
+    val changeVerse = { index: Int ->
+        coroutineScope.launch {
+            state.pagerState.animateScrollToPage(index)
+        }
+
+        state.playerHost.pause()
+
+        if (state.saveBookMarks) {
+            action(
+                VersesAction.SetIndex(
+                    LongPair(state.currentVerses.first().chapter, index.toLong())
+                )
+            )
+        }
+    }
+
+    val verses = state.currentVerses
+
+    LaunchedEffect(state.pagerState.currentPage) {
+        sliderPosition = state.pagerState.currentPage.toFloat()
+    }
+
+    AudioPlayer(state.playerHost)
+    BackHandler {
+        state.playerHost.pause()
+        navController.navigateUp()
+    }
+
+    Scaffold(
+        modifier = Modifier.widthIn(max = 500.dp),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = if (!state.saveBookMarks) {
+                            stringResource(Res.string.bhagvad_gita)
+                        } else {
+                            stringResource(
+                                Res.string.chapter_template,
+                                verses.first().chapter
+                            )
+                        }
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            state.playerHost.pause()
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Go Back"
+                        )
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            ) {
+                Row {
+                    IconButton(
+                        onClick = {
+                            changeVerse(state.pagerState.currentPage - 1)
+                        },
+                        enabled = state.pagerState.currentPage > 0
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "Previous"
+                        )
+                    }
+
+                    Slider(
+                        modifier = Modifier.weight(1f),
+                        value = sliderPosition,
+                        steps = when {
+                            verses.size > 100 -> (verses.size - 2) / 5
+                            verses.size > 50 -> (verses.size - 2) / 3
+                            else -> verses.size - 2
+                        }.coerceAtLeast(0),
+                        valueRange = 0f..verses.size.toFloat().minus(1),
+                        onValueChange = {
+                            changeVerse(it.toInt())
+                        }
+                    )
+
+                    IconButton(
+                        onClick = {
+                            changeVerse(state.pagerState.currentPage + 1)
+                        },
+                        enabled = state.pagerState.currentPage < verses.size - 1
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                            contentDescription = "Next"
+                        )
+                    }
+                }
+            }
+        }
+    ) { padding ->
+        HorizontalPager(
+            state = state.pagerState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = padding,
+            userScrollEnabled = false
+        ) { index ->
+            val currentVerse by remember { mutableStateOf(verses[index]) }
+            val audioFiles by remember { mutableStateOf(state.audioFiles[index]) }
+            val scrollState = rememberLazyListState()
+
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    SingleChoiceSegmentedButtonRow(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        VerseCardState.entries.forEach { vcState ->
+                            SegmentedButton(
+                                selected = vcState == state.verseCardState,
+                                onClick = {
+                                    action(VersesAction.SetVerseCardState(vcState))
+                                },
+                                shape = when (vcState) {
+                                    VerseCardState.ENGLISH -> RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
+                                    VerseCardState.HINDI -> RectangleShape
+                                    VerseCardState.SANSKRIT -> RoundedCornerShape(topEnd = 20.dp, bottomEnd = 20.dp)
+                                },
+                                label = { Text(vcState.fullName) }
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    AnimatedContent(
+                        targetState = state.verseCardState
+                    ) { vcState ->
+                        VerseCard(
+                            verse = currentVerse,
+                            modifier = Modifier.fillMaxWidth(),
+                            isFave = state.favorites.contains(currentVerse),
+                            state = vcState,
+                            audios = audioFiles,
+                            playerHost = state.playerHost,
+                            action = action,
+                            onClick = {},
+                            onCopy = {
+                                clipboardManager.setText(
+                                    annotatedString = buildAnnotatedString {
+                                        append(currentVerse.text)
+                                    }
+                                )
+                            }
+                        )
+                    }
+                }
+
+                item {
+                    TranslationsDisplay(
+                        translations = currentVerse.translations,
+                        onCopy = {
+                            clipboardManager.setText(
+                                annotatedString = buildAnnotatedString {
+                                    append(it)
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    CommentariesDisplay(
+                        commentaries = currentVerse.commentaries,
+                        onCopy = {
+                            clipboardManager.setText(
+                                annotatedString = buildAnnotatedString {
+                                    append(it)
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.padding(16.dp))
+                }
+            }
+        }
+    }
+}

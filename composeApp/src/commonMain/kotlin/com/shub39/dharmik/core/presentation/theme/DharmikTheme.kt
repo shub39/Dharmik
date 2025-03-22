@@ -1,16 +1,24 @@
 package com.shub39.dharmik.core.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import com.materialkolor.DynamicMaterialTheme
+import com.shub39.dharmik.core.domain.AppTheme
 
 @Composable
 fun DharmikTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    theme: Theme = Theme(),
     content: @Composable () -> Unit
 ) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) darkYellow else lightYellow,
+    DynamicMaterialTheme(
+        useDarkTheme = when(theme.appTheme) {
+            AppTheme.LIGHT -> false
+            AppTheme.DARK -> true
+            else -> isSystemInDarkTheme()
+        },
+        withAmoled = theme.withAmoled,
+        seedColor = theme.seedColor,
+        style = theme.paletteStyle,
         typography = provideTypography(1f),
         content = content
     )

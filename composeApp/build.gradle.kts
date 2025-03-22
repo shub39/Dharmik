@@ -1,5 +1,5 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,9 +9,14 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.aboutLibraries)
+    alias(libs.plugins.buildKonfig)
 }
 
 val appName = "Dharmik"
+val appPackageName = "com.shub39.dharmik"
+val appVersionName = "2.0.0"
+val appVersionCode = 2000
 
 kotlin {
     targets.all {
@@ -27,21 +32,16 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
-    jvm("desktop")
 
     room {
         schemaDirectory("$projectDir/schemas")
     }
 
     sourceSets {
-        val desktopMain by getting
-        
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
-
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
@@ -55,7 +55,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.compose.adaptive)
             implementation(compose.material3)
-
+            implementation(libs.mediaPlayer)
+            implementation(libs.materialKolor)
             implementation(libs.androidx.datastore.core)
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
@@ -63,11 +64,10 @@ kotlin {
             implementation(libs.sqlite.bundled)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.datetime)
+            implementation(libs.composeIcons.fontAwesome)
+            implementation(libs.aboutLibraries)
             api(libs.koin.core)
-        }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
         }
         dependencies {
             ksp(libs.androidx.room.compiler)
@@ -76,15 +76,15 @@ kotlin {
 }
 
 android {
-    namespace = "com.shub39.dharmik"
+    namespace = appPackageName
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.shub39.dharmik"
+        applicationId = appPackageName
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1000
-        versionName = "1.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
     }
     packaging {
         resources {
@@ -94,6 +94,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "src/commonMain/proguard-rules.pro"
@@ -118,18 +119,23 @@ android {
     }
 }
 
+aboutLibraries {
+    // Remove the "generated" timestamp to allow for reproducible builds; from kaajjo/LibreSudoku
+    excludeFields = arrayOf("generated")
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
 }
 
-compose.desktop {
-    application {
-        mainClass = "com.shub39.dharmik.MainKt"
+buildkonfig {
+    packageName = appPackageName
+    objectName = "DharmikConfigs"
+    exposeObjectWithName = "DharmikConfig"
 
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.shub39.dharmik"
-            packageVersion = "1.0.0"
-        }
+    defaultConfigs {
+        buildConfigField(STRING, "packageName", appPackageName)
+        buildConfigField(STRING, "versionName", appVersionName)
+        buildConfigField(STRING, "versionCode", appVersionCode.toString())
     }
 }

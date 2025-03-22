@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GitaFile (
     @SerialName("BhagavadGitaChapter")
-    val gitaVerse: List<GitaVerse>
+    val gitaVerses: List<GitaVerse>
 )
 
 @Serializable
