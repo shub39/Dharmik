@@ -1,6 +1,5 @@
 package com.shub39.dharmik.core.presentation.components
 
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
