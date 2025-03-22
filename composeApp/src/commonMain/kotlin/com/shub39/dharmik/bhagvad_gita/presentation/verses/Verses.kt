@@ -234,10 +234,6 @@ fun Verses(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.padding(30.dp))
-                }
-
-                item {
                     TranslationsDisplay(
                         translations = currentVerse.translations,
                         onCopy = {
@@ -251,10 +247,6 @@ fun Verses(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.padding(30.dp))
-                }
-
-                item {
                     CommentariesDisplay(
                         commentaries = currentVerse.commentaries,
                         onCopy = {
@@ -265,6 +257,10 @@ fun Verses(
                             )
                         }
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.padding(16.dp))
                 }
             }
         }

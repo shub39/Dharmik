@@ -88,6 +88,7 @@ fun Home(
                         onClick = {
                             if (currentDest != route) {
                                 homeNavController.navigate(route) {
+                                    launchSingleTop = true
                                     popUpTo(HomeRoutes.HomeSection)
                                 }
                             }
