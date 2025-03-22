@@ -86,6 +86,8 @@ class HomeViewModel(
                     )
                 }
             }
+
+            is HomeAction.OnSetVerseCardState -> datastore.setVerseCardState(action.state)
         }
     }
 
@@ -125,6 +127,22 @@ class HomeViewModel(
                             theme = it.theme.copy(
                                 appTheme = theme
                             )
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            datastore.getVerseCardState()
+                .onEach { state ->
+                    _state.update {
+                        it.copy(
+                            verseCardState = state
+                        )
+                    }
+
+                    stateLayer.versesState.update {
+                        it.copy(
+                            verseCardState = state
                         )
                     }
                 }

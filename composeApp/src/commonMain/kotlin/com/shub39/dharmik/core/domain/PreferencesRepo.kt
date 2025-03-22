@@ -8,4 +8,7 @@ interface PreferencesRepo {
 
     fun getBgBookMark(): Flow<LongPair>
     suspend fun setBgBookMark(mark: LongPair)
+
+    fun getVerseCardState(): Flow<VerseCardState>
+    suspend fun setVerseCardState(state: VerseCardState)
 }

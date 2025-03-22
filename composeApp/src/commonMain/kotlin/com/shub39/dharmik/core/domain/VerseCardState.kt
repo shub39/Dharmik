@@ -1,4 +1,4 @@
-package com.shub39.dharmik.bhagvad_gita.domain
+package com.shub39.dharmik.core.domain
 
 enum class VerseCardState(val fullName: String) {
     ENGLISH("English"),

@@ -30,7 +30,7 @@ import com.shub39.dharmik.bhagvad_gita.domain.Audios
 import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
 import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
 import com.shub39.dharmik.bhagvad_gita.domain.Translations
-import com.shub39.dharmik.bhagvad_gita.domain.VerseCardState
+import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.bhagvad_gita.presentation.removeExtraLineBreaks
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.VersesAction
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme

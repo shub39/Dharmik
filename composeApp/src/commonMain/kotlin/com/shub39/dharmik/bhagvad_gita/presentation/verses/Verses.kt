@@ -43,7 +43,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import chaintech.videoplayer.ui.audio.AudioPlayer
-import com.shub39.dharmik.bhagvad_gita.domain.VerseCardState
+import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.CommentariesDisplay
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
@@ -221,6 +221,7 @@ fun Verses(
                             state = vcState,
                             audios = audioFiles,
                             playerHost = state.playerHost,
+                            action = action,
                             onClick = {},
                             onCopy = {
                                 clipboardManager.setText(

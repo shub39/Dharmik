@@ -4,7 +4,7 @@ import androidx.compose.foundation.pager.PagerState
 import chaintech.videoplayer.host.MediaPlayerHost
 import com.shub39.dharmik.bhagvad_gita.domain.Audios
 import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
-import com.shub39.dharmik.bhagvad_gita.domain.VerseCardState
+import com.shub39.dharmik.core.domain.VerseCardState
 
 data class VersesState(
     val currentVerses: List<GitaVerse> = emptyList(),
