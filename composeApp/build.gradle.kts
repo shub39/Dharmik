@@ -95,7 +95,7 @@ android {
         }
     }
     buildTypes {
-        create("release$variant") {
+        getByName("release") {
             resValue("string", "app_name", appName)
             isMinifyEnabled = true
             isShrinkResources = true
@@ -104,7 +104,7 @@ android {
                 "src/commonMain/proguard-rules.pro"
             )
         }
-        create("debug$variant") {
+        debug {
             resValue("string", "app_name", "$appName Debug")
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
