@@ -7,13 +7,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:name=".DharmikApp"
+        android:name="com.shub39.dharmik.DharmikApp"
         android:theme="@style/Theme.Dharmik">
         <activity
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
             android:theme="@style/Theme.Dharmik.Splash"
-            android:name=".MainActivity">
+            android:name="com.shub39.dharmik.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
