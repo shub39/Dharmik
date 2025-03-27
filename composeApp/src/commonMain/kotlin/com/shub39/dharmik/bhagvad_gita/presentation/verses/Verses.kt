@@ -88,6 +88,8 @@ fun Verses(
             } else {
                 action(VersesAction.Pause)
             }
+        } else if (event == MediaPlayerEvent.MediaEnd) {
+            action(VersesAction.Pause)
         }
     }
 
