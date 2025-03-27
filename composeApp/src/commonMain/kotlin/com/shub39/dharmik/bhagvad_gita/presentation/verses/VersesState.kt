@@ -10,8 +10,10 @@ data class VersesState(
     val currentVerses: List<GitaVerse> = emptyList(),
     val audioFiles: List<Audios> = emptyList(),
     val saveBookMarks: Boolean = true,
+    val autoPlay: Boolean = false,
+    val isPlaying: Boolean = false,
     val favorites: List<GitaVerse> = emptyList(),
-    val playerHost: MediaPlayerHost = MediaPlayerHost(),
+    val playerHost: MediaPlayerHost = MediaPlayerHost(isLooping = false),
     val verseCardState: VerseCardState = VerseCardState.SANSKRIT,
     val pagerState: PagerState = PagerState { 0 }
 )

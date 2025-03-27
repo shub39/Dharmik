@@ -15,30 +15,22 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import chaintech.videoplayer.host.MediaPlayerHost
-import com.shub39.dharmik.bhagvad_gita.domain.Audios
 import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
 import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
 import com.shub39.dharmik.bhagvad_gita.domain.Translations
-import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.bhagvad_gita.presentation.removeExtraLineBreaks
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.VersesAction
+import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Clipboard
-import compose.icons.fontawesomeicons.solid.Pause
-import compose.icons.fontawesomeicons.solid.Play
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.chapter_template
 import dharmik.composeapp.generated.resources.noto_regular
@@ -51,15 +43,12 @@ fun VerseCard(
     verse: GitaVerse,
     modifier: Modifier = Modifier,
     state: VerseCardState = VerseCardState.SANSKRIT,
-    audios: Audios? = null,
-    playerHost: MediaPlayerHost? = null,
     isFave: Boolean? = null,
     action: (VersesAction) -> Unit = {},
     onClick: () -> Unit = {},
     onCopy: () -> Unit = {},
+    playIcon: @Composable () -> Unit = {}
 ) {
-    var isPlaying by rememberSaveable(state) { mutableStateOf(false) }
-
     Card(
         shape = MaterialTheme.shapes.large,
         onClick = onClick,
@@ -114,34 +103,7 @@ fun VerseCard(
                         )
                     }
 
-                    if (audios != null && playerHost != null) {
-                        IconButton(
-                            onClick = {
-                                if (!isPlaying) {
-                                    playerHost.loadUrl(
-                                        when (state) {
-                                            VerseCardState.ENGLISH -> audios.englishTranslation
-                                            VerseCardState.HINDI -> audios.hindiTranslation
-                                            VerseCardState.SANSKRIT -> audios.moolSloka
-                                        }
-                                    )
-                                    playerHost.play()
-
-                                    isPlaying = true
-                                } else {
-                                    playerHost.pause()
-
-                                    isPlaying = false
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (isPlaying) FontAwesomeIcons.Solid.Pause else FontAwesomeIcons.Solid.Play,
-                                contentDescription = "Toggle pause or play",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
+                    playIcon()
                 }
             }
 
@@ -171,12 +133,7 @@ private fun Preview() {
                 commentaries = Commentaries(),
                 translations = Translations()
             ),
-            isFave = true,
-            audios = Audios(
-                moolSloka = "TODO()",
-                englishTranslation = "TODO()",
-                hindiTranslation = "TODO()"
-            )
+            isFave = true
         )
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,6 +22,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -42,17 +44,21 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import chaintech.videoplayer.host.MediaPlayerEvent
 import chaintech.videoplayer.ui.audio.AudioPlayer
-import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.CommentariesDisplay
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
-import com.shub39.dharmik.core.domain.LongPair
+import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.PageFill
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Pause
+import compose.icons.fontawesomeicons.solid.Play
+import compose.icons.fontawesomeicons.solid.SyncAlt
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
 import dharmik.composeapp.generated.resources.chapter_template
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,25 +69,9 @@ fun Verses(
     action: (VersesAction) -> Unit,
 ) = PageFill {
     val clipboardManager = LocalClipboardManager.current
-
     val coroutineScope = rememberCoroutineScope()
+
     var sliderPosition by remember { mutableFloatStateOf(0f) }
-
-    val changeVerse = { index: Int ->
-        coroutineScope.launch {
-            state.pagerState.animateScrollToPage(index)
-        }
-
-        state.playerHost.pause()
-
-        if (state.saveBookMarks) {
-            action(
-                VersesAction.SetIndex(
-                    LongPair(state.currentVerses.first().chapter, index.toLong())
-                )
-            )
-        }
-    }
 
     val verses = state.currentVerses
 
@@ -90,6 +80,17 @@ fun Verses(
     }
 
     AudioPlayer(state.playerHost)
+
+    state.playerHost.onEvent = { event ->
+        if (event == MediaPlayerEvent.MediaEnd && state.autoPlay) {
+            if (state.pagerState.currentPage < verses.size - 1) {
+                action(VersesAction.ChangeVerse((state.pagerState.currentPage + 1), coroutineScope))
+            } else {
+                action(VersesAction.Pause)
+            }
+        }
+    }
+
     BackHandler {
         state.playerHost.pause()
         navController.navigateUp()
@@ -110,6 +111,22 @@ fun Verses(
                             )
                         }
                     )
+                },
+                actions = {
+                    IconButton(
+                        onClick = { action(VersesAction.SetAutoPlay(!state.autoPlay)) },
+                        colors = if (state.autoPlay) {
+                            IconButtonDefaults.filledTonalIconButtonColors()
+                        } else {
+                            IconButtonDefaults.iconButtonColors()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                            contentDescription = "Autoplay",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(
@@ -133,7 +150,7 @@ fun Verses(
                 Row {
                     IconButton(
                         onClick = {
-                            changeVerse(state.pagerState.currentPage - 1)
+                            action(VersesAction.ChangeVerse(state.pagerState.currentPage - 1, coroutineScope))
                         },
                         enabled = state.pagerState.currentPage > 0
                     ) {
@@ -153,13 +170,13 @@ fun Verses(
                         }.coerceAtLeast(0),
                         valueRange = 0f..verses.size.toFloat().minus(1),
                         onValueChange = {
-                            changeVerse(it.toInt())
+                            action(VersesAction.ChangeVerse(it.toInt(), coroutineScope))
                         }
                     )
 
                     IconButton(
                         onClick = {
-                            changeVerse(state.pagerState.currentPage + 1)
+                            action(VersesAction.ChangeVerse(state.pagerState.currentPage + 1, coroutineScope))
                         },
                         enabled = state.pagerState.currentPage < verses.size - 1
                     ) {
@@ -179,7 +196,6 @@ fun Verses(
             userScrollEnabled = false
         ) { index ->
             val currentVerse by remember { mutableStateOf(verses[index]) }
-            val audioFiles by remember { mutableStateOf(state.audioFiles[index]) }
             val scrollState = rememberLazyListState()
 
             LazyColumn(
@@ -200,9 +216,17 @@ fun Verses(
                                     action(VersesAction.SetVerseCardState(vcState))
                                 },
                                 shape = when (vcState) {
-                                    VerseCardState.ENGLISH -> RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
+                                    VerseCardState.ENGLISH -> RoundedCornerShape(
+                                        topStart = 20.dp,
+                                        bottomStart = 20.dp
+                                    )
+
                                     VerseCardState.HINDI -> RectangleShape
-                                    VerseCardState.SANSKRIT -> RoundedCornerShape(topEnd = 20.dp, bottomEnd = 20.dp)
+
+                                    VerseCardState.SANSKRIT -> RoundedCornerShape(
+                                        topEnd = 20.dp,
+                                        bottomEnd = 20.dp
+                                    )
                                 },
                                 label = { Text(vcState.fullName) }
                             )
@@ -219,8 +243,6 @@ fun Verses(
                             modifier = Modifier.fillMaxWidth(),
                             isFave = state.favorites.contains(currentVerse),
                             state = vcState,
-                            audios = audioFiles,
-                            playerHost = state.playerHost,
                             action = action,
                             onClick = {},
                             onCopy = {
@@ -229,6 +251,27 @@ fun Verses(
                                         append(currentVerse.text)
                                     }
                                 )
+                            },
+                            playIcon = {
+                                IconButton(
+                                    onClick = {
+                                        if (state.isPlaying) {
+                                            action(VersesAction.Pause)
+                                        } else {
+                                            action(VersesAction.Play(index))
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = if (state.isPlaying) {
+                                            FontAwesomeIcons.Solid.Pause
+                                        } else {
+                                            FontAwesomeIcons.Solid.Play
+                                        },
+                                        contentDescription = "Play/Pause",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
                             }
                         )
                     }
