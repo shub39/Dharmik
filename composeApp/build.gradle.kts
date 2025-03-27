@@ -96,6 +96,7 @@ android {
     }
     buildTypes {
         create("release$variant") {
+            resValue("string", "app_name", appName)
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -144,23 +145,21 @@ buildkonfig {
     }
 }
 
-val sourceDir = file("$projectDir/gita_audio")
-val destination = file("$projectDir/src/commonMain/composeResources/files/gita_audio")
+if (variant == "offline") {
+    val sourceDir = file("$projectDir/gita_audio")
+    val destination = file("$projectDir/src/commonMain/composeResources/files/gita_audio")
 
-tasks.register<Copy>("PackageOfflineResources") {
-    onlyIf { project.findProperty("variant") == "Offline" }
-    into(destination)
-    from(sourceDir)
-}
+    tasks.register<Copy>("PackageOfflineResources") {
+        into(destination)
+        from(sourceDir)
+    }
 
-tasks.matching { it.name == "preBuild" }.configureEach {
-    dependsOn("PackageOfflineResources")
-}
+    tasks.matching { it.name == "copyNonXmlValueResourcesForCommonMain" }.configureEach {
+        dependsOn("PackageOfflineResources")
+        finalizedBy("CleanOfflineResources")
+    }
 
-tasks.register<Delete>("CleanOfflineResources") {
-    delete(destination)
-}
-
-tasks.matching { it.name == "clean" }.configureEach {
-    dependsOn("CleanOfflineResources")
+    tasks.register<Delete>("CleanOfflineResources") {
+        delete(destination)
+    }
 }
