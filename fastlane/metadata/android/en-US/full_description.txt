@@ -2,7 +2,9 @@ Dharmik is a simple app to browse the Bhagavad Gita easily
 
 Features:
 
-- Completely offline with no sketchy permissions or ads
+- No sketchy permissions or ads
 - View verses, commentaries and translations for over 2000 verses
 - Audio transcriptions in three languages (english, hindi and sanskrit)
 - Copy verses, commentaries and translations to clipboard
+
+The offline version of this app is availble on github

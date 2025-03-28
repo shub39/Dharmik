@@ -13,10 +13,13 @@ plugins {
     alias(libs.plugins.buildKonfig)
 }
 
-val appName = "Dharmik"
-val appPackageName = "com.shub39.dharmik"
-val appVersionName = "2.0.0"
-val appVersionCode = 2000
+val variant: String by project
+
+val appName = "Dharmik $variant"
+val appBasePackageName = "com.shub39.dharmik"
+val appPackageName = "$appBasePackageName.$variant"
+val appVersionName = "2.1.0-$variant"
+val appVersionCode = 2100
 
 kotlin {
     targets.all {
@@ -93,6 +96,7 @@ android {
     }
     buildTypes {
         getByName("release") {
+            resValue("string", "app_name", appName)
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -129,7 +133,7 @@ dependencies {
 }
 
 buildkonfig {
-    packageName = appPackageName
+    packageName = appBasePackageName
     objectName = "DharmikConfigs"
     exposeObjectWithName = "DharmikConfig"
 
@@ -137,5 +141,25 @@ buildkonfig {
         buildConfigField(STRING, "packageName", appPackageName)
         buildConfigField(STRING, "versionName", appVersionName)
         buildConfigField(STRING, "versionCode", appVersionCode.toString())
+        buildConfigField(STRING, "variant", variant)
+    }
+}
+
+if (variant == "offline") {
+    val sourceDir = file("$projectDir/gita_audio")
+    val destination = file("$projectDir/src/commonMain/composeResources/files/gita_audio")
+
+    tasks.register<Copy>("PackageOfflineResources") {
+        into(destination)
+        from(sourceDir)
+    }
+
+    tasks.matching { it.name == "copyNonXmlValueResourcesForCommonMain" }.configureEach {
+        dependsOn("PackageOfflineResources")
+        finalizedBy("CleanOfflineResources")
+    }
+
+    tasks.register<Delete>("CleanOfflineResources") {
+        delete(destination)
     }
 }

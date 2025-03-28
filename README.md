@@ -12,7 +12,7 @@
 > <a href="https://apt.izzysoft.de/packages/com.shub39.dharmik/latest"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
 > [<img src="https://www.openapk.net/images/openapk-badge.png" height=80>](https://www.openapk.net/dharmik/com.shub39.dharmik/)
 > [<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" height=80>](https://www.androidfreeware.net/download-dharmik-apk.html)
-> ### or latest [Github Release](https://github.com/shub39/Dharmik/releases)
+> ### or get the offline version from [Github Releases](https://github.com/shub39/Dharmik/releases)
 
 ### Screenshots
 | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
@@ -20,7 +20,7 @@
 | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
 
 ### Features
-- Completely offline with no sketchy permissions or ads
+- No sketchy permissions or ads
 - View verses, commentaries and translations for over 2000 verses
 - Audio transcriptions in three languages (english, hindi and sanskrit)
 - Copy verses, commentaries and translations to clipboard
