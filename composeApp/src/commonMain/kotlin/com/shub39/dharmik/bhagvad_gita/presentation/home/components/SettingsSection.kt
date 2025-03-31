@@ -322,10 +322,11 @@ fun SettingsSection(
         ) {
             LibrariesContainer(
                 colors = LibraryDefaults.libraryColors(
-                    backgroundColor = MaterialTheme.colorScheme.surface,
+                    backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onSurface,
                     badgeBackgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-                    badgeContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    badgeContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    dialogConfirmButtonColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
