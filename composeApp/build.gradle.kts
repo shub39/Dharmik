@@ -17,8 +17,8 @@ val variant: String by project
 val appName = "Dharmik"
 val appBasePackageName = "com.shub39.dharmik"
 val appPackageName = "$appBasePackageName.$variant"
-val appVersionName = "2.1.1-$variant"
-val appVersionCode = 2110
+val appVersionName = "2.1.2-$variant"
+val appVersionCode = 2120
 
 kotlin {
     targets.all {

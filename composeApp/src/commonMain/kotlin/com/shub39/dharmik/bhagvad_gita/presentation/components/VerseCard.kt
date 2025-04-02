@@ -94,7 +94,13 @@ fun VerseCard(
                     }
 
                     IconButton(
-                        onClick = { onCopy(verse.text) }
+                        onClick = { onCopy(
+                            when (state) {
+                                VerseCardState.ENGLISH -> verse.translations.shriPurohitSwami
+                                VerseCardState.HINDI -> verse.translations.swamiTejomayananda
+                                VerseCardState.SANSKRIT -> verse.text
+                            }
+                        ) }
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Clipboard,
