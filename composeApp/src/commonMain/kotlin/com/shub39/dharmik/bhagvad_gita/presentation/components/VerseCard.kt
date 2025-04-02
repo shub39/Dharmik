@@ -46,7 +46,7 @@ fun VerseCard(
     isFave: Boolean? = null,
     action: (VersesAction) -> Unit = {},
     onClick: () -> Unit = {},
-    onCopy: () -> Unit = {},
+    onCopy: (String) -> Unit = {},
     playIcon: @Composable () -> Unit = {}
 ) {
     Card(
@@ -94,7 +94,7 @@ fun VerseCard(
                     }
 
                     IconButton(
-                        onClick = onCopy
+                        onClick = { onCopy(verse.text) }
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Clipboard,
@@ -112,7 +112,7 @@ fun VerseCard(
                     VerseCardState.ENGLISH -> verse.translations.shriPurohitSwami
                     VerseCardState.HINDI -> verse.translations.swamiTejomayananda
                     VerseCardState.SANSKRIT -> verse.text
-                }!!.removeExtraLineBreaks(),
+                }.removeExtraLineBreaks(),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(Res.font.noto_regular))

@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
-    alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.buildKonfig)
 }
 
@@ -18,8 +17,8 @@ val variant: String by project
 val appName = "Dharmik"
 val appBasePackageName = "com.shub39.dharmik"
 val appPackageName = "$appBasePackageName.$variant"
-val appVersionName = "2.1.0-$variant"
-val appVersionCode = 2100
+val appVersionName = "2.1.1-$variant"
+val appVersionCode = 2110
 
 kotlin {
     targets.all {
@@ -69,7 +68,6 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.datetime)
             implementation(libs.composeIcons.fontAwesome)
-            implementation(libs.aboutLibraries)
             api(libs.koin.core)
         }
         dependencies {
@@ -121,11 +119,6 @@ android {
         includeInApk = false
         includeInBundle = false
     }
-}
-
-aboutLibraries {
-    // Remove the "generated" timestamp to allow for reproducible builds; from kaajjo/LibreSudoku
-    excludeFields = arrayOf("generated")
 }
 
 dependencies {

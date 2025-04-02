@@ -26,7 +26,8 @@ class VersesViewModel(
         .onStart {
             _state.update {
                 it.copy(
-                    currentVerses = repo.getChapter(1).gitaVerses
+                    currentVerses = repo.getChapter(1).gitaVerses,
+                    verseCardState = stateLayer.homeState.value.verseCardState
                 )
             }
         }

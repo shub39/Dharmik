@@ -250,7 +250,7 @@ fun Verses(
                             onCopy = {
                                 clipboardManager.setText(
                                     annotatedString = buildAnnotatedString {
-                                        append(currentVerse.text)
+                                        append(it)
                                     }
                                 )
                             },
