@@ -21,52 +21,52 @@ data class GitaVerse (
 @Serializable
 data class Commentaries (
     @SerialName("Swami Ramsukhdas")
-    val swamiRamsukhdas: String? = null,
+    val swamiRamsukhdas: String = "",
 
     @SerialName("Sri Harikrishnadas Goenka")
-    val sriHarikrishnadasGoenka: String? = null,
+    val sriHarikrishnadasGoenka: String = "",
 
     @SerialName("Sri Anandgiri")
-    val sriAnandgiri: String? = null,
+    val sriAnandgiri: String = "",
 
     @SerialName("Sri Dhanpati")
-    val sriDhanpati: String? = null,
+    val sriDhanpati: String = "",
 
     @SerialName("Sri Madhavacharya")
-    val sriMadhavacharya: String? = null,
+    val sriMadhavacharya: String = "",
 
     @SerialName("Sri Neelkanth")
-    val sriNeelkanth: String? = null,
+    val sriNeelkanth: String = "",
 
     @SerialName("Sri Ramanuja")
-    val sriRamanuja: String? = null,
+    val sriRamanuja: String = "",
 
     @SerialName("Sri Sridhara Swami")
-    val sriSridharaSwami: String? = null,
+    val sriSridharaSwami: String = "",
 
     @SerialName("Sri Vedantadeshikacharya Venkatanatha")
-    val sriVedantadeshikacharyaVenkatanatha: String? = null,
+    val sriVedantadeshikacharyaVenkatanatha: String = "",
 
     @SerialName("Swami Chinmayananda")
-    val swamiChinmayananda: String? = null,
+    val swamiChinmayananda: String = "",
 
     @SerialName("Sri Abhinavgupta")
-    val sriAbhinavgupta: String? = null,
+    val sriAbhinavgupta: String = "",
 
     @SerialName("Sri Jayatritha")
-    val sriJayatritha: String? = null,
+    val sriJayatritha: String = "",
 
     @SerialName("Sri Madhusudan Saraswati")
-    val sriMadhusudanSaraswati: String? = null,
+    val sriMadhusudanSaraswati: String = "",
 
     @SerialName("Sri Purushottamji")
-    val sriPurushottamji: String? = null,
+    val sriPurushottamji: String = "",
 
     @SerialName("Sri Shankaracharya")
-    val sriShankaracharya: String? = null,
+    val sriShankaracharya: String = "",
 
     @SerialName("Sri Vallabhacharya")
-    val sriVallabhacharya: String? = null,
+    val sriVallabhacharya: String = "",
 
     @SerialName("Swami Sivananda")
     val swamiSivananda: String? = null,
@@ -75,35 +75,35 @@ data class Commentaries (
     val swamiGambirananda: String? = null,
 
     @SerialName("Dr. S. Sankaranarayan")
-    val drSSankaranarayan: String? = null,
+    val drSSankaranarayan: String = "",
 
     @SerialName("Swami Adidevananda")
-    val swamiAdidevananda: String? = null
+    val swamiAdidevananda: String = ""
 )
 
 @Serializable
 data class Translations (
     @SerialName("sri harikrishnadas goenka")
-    val sriHarikrishnadasGoenka: String? = null,
+    val sriHarikrishnadasGoenka: String = "",
 
     @SerialName("swami ramsukhdas")
-    val swamiRamsukhdas: String? = null,
+    val swamiRamsukhdas: String = "",
 
     @SerialName("swami tejomayananda")
-    val swamiTejomayananda: String? = null,
+    val swamiTejomayananda: String = "",
 
     @SerialName("swami adidevananda")
-    val swamiAdidevananda: String? = null,
+    val swamiAdidevananda: String = "",
 
     @SerialName("swami gambirananda")
-    val swamiGambirananda: String? = null,
+    val swamiGambirananda: String = "",
 
     @SerialName("swami sivananda")
-    val swamiSivananda: String? = null,
+    val swamiSivananda: String = "",
 
     @SerialName("dr. s. sankaranarayan")
-    val drSSankaranarayan: String? = null,
+    val drSSankaranarayan: String = "",
 
     @SerialName("shri purohit swami")
-    val shriPurohitSwami: String? = null
+    val shriPurohitSwami: String = ""
 )

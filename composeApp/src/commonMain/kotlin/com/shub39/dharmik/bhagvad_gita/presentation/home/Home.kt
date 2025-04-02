@@ -22,7 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -158,12 +158,12 @@ fun Home(
     }
 }
 
-@PreviewLightDark
+@Preview
 @Composable
 private fun Preview() {
     DharmikTheme(
         theme = Theme(
-            appTheme = AppTheme.SYSTEM
+            appTheme = AppTheme.DARK
         )
     ) {
         Home(

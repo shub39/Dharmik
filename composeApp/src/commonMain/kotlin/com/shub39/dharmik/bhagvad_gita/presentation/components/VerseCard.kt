@@ -112,7 +112,7 @@ fun VerseCard(
                     VerseCardState.ENGLISH -> verse.translations.shriPurohitSwami
                     VerseCardState.HINDI -> verse.translations.swamiTejomayananda
                     VerseCardState.SANSKRIT -> verse.text
-                }!!.removeExtraLineBreaks(),
+                }.removeExtraLineBreaks(),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(Res.font.noto_regular))
