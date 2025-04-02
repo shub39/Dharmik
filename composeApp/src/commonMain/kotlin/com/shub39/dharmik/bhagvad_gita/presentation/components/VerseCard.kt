@@ -46,7 +46,7 @@ fun VerseCard(
     isFave: Boolean? = null,
     action: (VersesAction) -> Unit = {},
     onClick: () -> Unit = {},
-    onCopy: () -> Unit = {},
+    onCopy: (String) -> Unit = {},
     playIcon: @Composable () -> Unit = {}
 ) {
     Card(
@@ -94,7 +94,7 @@ fun VerseCard(
                     }
 
                     IconButton(
-                        onClick = onCopy
+                        onClick = { onCopy(verse.text) }
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Clipboard,

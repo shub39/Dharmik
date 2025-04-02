@@ -10,13 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,8 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
-import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import com.shub39.dharmik.DharmikConfig
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
@@ -56,7 +52,6 @@ fun SettingsSection(
 ) {
     val uriHandler = LocalUriHandler.current
 
-    var showLicences by remember { mutableStateOf(false) }
     var showThemePicker by remember { mutableStateOf(false) }
     var showLanguagePicker by remember { mutableStateOf(false) }
 
@@ -233,31 +228,6 @@ fun SettingsSection(
         }
 
         item {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = "About Libraries"
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "Open Source Licences"
-                    )
-                },
-                trailingContent = {
-                    FilledTonalIconButton(
-                        onClick = { showLicences = true }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = "Navigate"
-                        )
-                    }
-                }
-            )
-        }
-
-        item {
             Spacer(modifier = Modifier.padding(60.dp))
         }
     }
@@ -313,22 +283,6 @@ fun SettingsSection(
                     }
                 }
             }
-        }
-    }
-
-    if (showLicences) {
-        DharmikDialog(
-            onDismissRequest = { showLicences = false }
-        ) {
-            LibrariesContainer(
-                colors = LibraryDefaults.libraryColors(
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    badgeBackgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-                    badgeContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    dialogConfirmButtonColor = MaterialTheme.colorScheme.primary
-                )
-            )
         }
     }
 }
