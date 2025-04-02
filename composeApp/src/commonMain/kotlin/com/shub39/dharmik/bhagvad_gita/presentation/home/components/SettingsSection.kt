@@ -1,5 +1,6 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -241,7 +242,11 @@ fun SettingsSection(
             ) {
                 VerseCardState.entries.forEach { vcState ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onAction(HomeAction.OnSetVerseCardState(vcState))
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -268,7 +273,11 @@ fun SettingsSection(
             ) {
                 AppTheme.entries.forEach { theme ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onAction(HomeAction.OnSetAppTheme(theme))
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
