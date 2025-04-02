@@ -7,7 +7,7 @@ import com.shub39.dharmik.bhagvad_gita.domain.slokaNumbers
 class OnlineAudioSourceImpl: AudioSource {
     override suspend fun getAudios(index: Int): List<Audios> {
         val baseUrl = "https://www.gitasupersite.iitk.ac.in/sites/default/files/audio"
-        val slokaCount = slokaNumbers[index]
+        val slokaCount = slokaNumbers[index - 1]
 
         val audios = (1..slokaCount).map { slokaIndex ->
             val slokaStr = "%02d".format(slokaIndex)
