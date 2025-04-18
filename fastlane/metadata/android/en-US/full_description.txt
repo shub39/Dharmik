@@ -7,4 +7,4 @@ Features:
 - Audio transcriptions in three languages (english, hindi and sanskrit)
 - Copy verses, commentaries and translations to clipboard
 
-The offline version of this app is availble on github
+The offline version of this app is availble on github.
