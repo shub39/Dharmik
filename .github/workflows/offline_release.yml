@@ -35,20 +35,17 @@ jobs:
       - name: List files in $GITHUB_WORKSPACE
         run: ls -l $GITHUB_WORKSPACE
 
-#      - name: Grant execute permissions to Gradle wrapper
-#        run: chmod +x gradlew
-#
-#      - name: Build Release APK
-#        run: |
-#          ./gradlew assembleRelease \
-#          -Pvariant=offline
-#          -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/keystore.jks \
-#          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
-#          -Pandroid.injected.signing.key.alias=key0 \
-#          -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
-#
-#      - name: Upload Release APK
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: release-apk
-#          path: app/build/outputs/apk/release/composeApp-release.apk
+      - name: Build Release APK
+        run: |
+          ./gradlew assembleRelease \
+          -Pvariant=offline \
+          -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/keystore.jks \
+          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+          -Pandroid.injected.signing.key.alias=key0 \
+          -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/composeApp-release.apk
