@@ -173,7 +173,7 @@ private fun Preview() {
                     GitaVerse(
                         chapter = it.toLong(),
                         verse = it.toLong(),
-                        text = it.toString(),
+                        text = "Verse $it",
                         commentaries = Commentaries(),
                         translations = Translations()
                     )

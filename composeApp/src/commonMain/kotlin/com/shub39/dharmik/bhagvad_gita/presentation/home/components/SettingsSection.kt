@@ -110,7 +110,7 @@ fun SettingsSection(
             )
         }
 
-        item { HorizontalDivider() }
+        item { HorizontalDivider(modifier = Modifier.padding(32.dp)) }
 
         item {
             ListItem(

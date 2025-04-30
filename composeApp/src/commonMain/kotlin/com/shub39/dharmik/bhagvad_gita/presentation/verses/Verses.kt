@@ -1,5 +1,6 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
+import android.content.ClipData
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -40,8 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import chaintech.videoplayer.host.MediaPlayerEvent
@@ -59,6 +60,7 @@ import compose.icons.fontawesomeicons.solid.SyncAlt
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
 import dharmik.composeapp.generated.resources.chapter_template
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +70,7 @@ fun Verses(
     state: VersesState,
     action: (VersesAction) -> Unit,
 ) = PageFill {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -248,11 +250,13 @@ fun Verses(
                             action = action,
                             onClick = {},
                             onCopy = {
-                                clipboardManager.setText(
-                                    annotatedString = buildAnnotatedString {
-                                        append(it)
-                                    }
-                                )
+                                coroutineScope.launch {
+                                    clipboardManager.setClipEntry(
+                                        ClipEntry(
+                                            ClipData.newPlainText("Verse", it)
+                                        )
+                                    )
+                                }
                             },
                             playIcon = {
                                 IconButton(
@@ -283,11 +287,13 @@ fun Verses(
                     TranslationsDisplay(
                         translations = currentVerse.translations,
                         onCopy = {
-                            clipboardManager.setText(
-                                annotatedString = buildAnnotatedString {
-                                    append(it)
-                                }
-                            )
+                            coroutineScope.launch {
+                                clipboardManager.setClipEntry(
+                                    ClipEntry(
+                                        ClipData.newPlainText("Translation", it)
+                                    )
+                                )
+                            }
                         }
                     )
                 }
@@ -296,11 +302,13 @@ fun Verses(
                     CommentariesDisplay(
                         commentaries = currentVerse.commentaries,
                         onCopy = {
-                            clipboardManager.setText(
-                                annotatedString = buildAnnotatedString {
-                                    append(it)
-                                }
-                            )
+                            coroutineScope.launch {
+                                clipboardManager.setClipEntry(
+                                    ClipEntry(
+                                        ClipData.newPlainText("Commentary", it)
+                                    )
+                                )
+                            }
                         }
                     )
                 }
