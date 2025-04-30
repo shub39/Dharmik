@@ -7,6 +7,7 @@ import com.shub39.dharmik.core.presentation.theme.Theme
 
 data class HomeState(
     val theme: Theme = Theme(),
+    val fontSize: Float = 16f,
     val verseCardState: VerseCardState = VerseCardState.ENGLISH,
     val chapters: Int = 18,
     val favorites: List<GitaVerse> = emptyList(),

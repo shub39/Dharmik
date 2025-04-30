@@ -10,21 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.commentaries
-import dharmik.composeapp.generated.resources.noto_regular
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CommentariesDisplay(
     commentaries: Commentaries,
     onCopy: (String) -> Unit,
-    fontFamily: FontFamily = FontFamily(Font(Res.font.noto_regular))
+    fontSize: Float
 ) {
     val commentaryMap = mapOf(
         "Swami Ramsukhdas" to commentaries.swamiRamsukhdas,
@@ -70,7 +67,7 @@ fun CommentariesDisplay(
                         title = key,
                         translation = value,
                         onCopy = onCopy,
-                        fontFamily = fontFamily
+                        fontSize = fontSize
                     )
                 }
             }

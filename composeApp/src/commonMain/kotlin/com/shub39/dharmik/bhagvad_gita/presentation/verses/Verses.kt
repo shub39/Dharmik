@@ -54,9 +54,9 @@ import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.PageFill
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.FastForward
 import compose.icons.fontawesomeicons.solid.Pause
 import compose.icons.fontawesomeicons.solid.Play
-import compose.icons.fontawesomeicons.solid.SyncAlt
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
 import dharmik.composeapp.generated.resources.chapter_template
@@ -79,6 +79,7 @@ fun Verses(
 
     LaunchedEffect(state.pagerState.currentPage) {
         sliderPosition = state.pagerState.currentPage.toFloat()
+        action(VersesAction.ChangeVerse(state.pagerState.currentPage, coroutineScope))
     }
 
     AudioPlayer(state.playerHost)
@@ -126,7 +127,7 @@ fun Verses(
                         }
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                            imageVector = FontAwesomeIcons.Solid.FastForward,
                             contentDescription = "Autoplay",
                             modifier = Modifier.size(20.dp)
                         )
@@ -196,8 +197,7 @@ fun Verses(
         HorizontalPager(
             state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = padding,
-            userScrollEnabled = false
+            contentPadding = padding
         ) { index ->
             val currentVerse by remember { mutableStateOf(verses[index]) }
             val scrollState = rememberLazyListState()
@@ -244,6 +244,7 @@ fun Verses(
                     ) { vcState ->
                         VerseCard(
                             verse = currentVerse,
+                            fontSize = state.fontSize,
                             modifier = Modifier.fillMaxWidth(),
                             isFave = state.favorites.contains(currentVerse),
                             state = vcState,
@@ -294,7 +295,8 @@ fun Verses(
                                     )
                                 )
                             }
-                        }
+                        },
+                        fontSize = state.fontSize
                     )
                 }
 
@@ -309,7 +311,8 @@ fun Verses(
                                     )
                                 )
                             }
-                        }
+                        },
+                        fontSize = state.fontSize
                     )
                 }
 

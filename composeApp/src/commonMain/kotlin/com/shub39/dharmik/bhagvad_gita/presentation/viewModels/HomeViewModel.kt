@@ -88,12 +88,30 @@ class HomeViewModel(
             }
 
             is HomeAction.OnSetVerseCardState -> datastore.setVerseCardState(action.state)
+
+            is HomeAction.SetFontSize -> datastore.setFontSize(action.fontSize)
         }
     }
 
     private fun observeJob() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
+            datastore.getFontSize()
+                .onEach { size ->
+                    _state.update {
+                        it.copy(
+                            fontSize = size
+                        )
+                    }
+
+                    stateLayer.versesState.update {
+                        it.copy(
+                            fontSize = size
+                        )
+                    }
+                }
+                .launchIn(this)
+
             repo.getFavesFlow()
                 .onEach { faves ->
                     _state.update {
@@ -135,12 +153,6 @@ class HomeViewModel(
             datastore.getVerseCardState()
                 .onEach { state ->
                     _state.update {
-                        it.copy(
-                            verseCardState = state
-                        )
-                    }
-
-                    stateLayer.versesState.update {
                         it.copy(
                             verseCardState = state
                         )

@@ -112,6 +112,7 @@ fun HomeSection(
                     .padding(vertical = 8.dp)
                     .fillMaxWidth(),
                 verse = verse,
+                fontSize = homeState.fontSize,
                 state = homeState.verseCardState,
                 onClick = {
                     onAction(HomeAction.LoadVerse(verse))

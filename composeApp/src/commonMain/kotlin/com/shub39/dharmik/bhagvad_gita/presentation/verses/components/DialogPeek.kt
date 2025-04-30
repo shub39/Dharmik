@@ -20,9 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.core.presentation.components.DharmikDialog
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -34,7 +34,7 @@ fun DialogPeek(
     title: String,
     translation: String,
     onCopy: (String) -> Unit,
-    fontFamily: FontFamily
+    fontSize: Float = 16f
 ) {
     var showComplete by remember { mutableStateOf(false) }
 
@@ -47,7 +47,6 @@ fun DialogPeek(
     ) {
         Text(
             text = title,
-            fontFamily = fontFamily,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -81,7 +80,10 @@ fun DialogPeek(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = title)
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
                     IconButton(
                         onClick = { onCopy(translation) }
@@ -98,8 +100,9 @@ fun DialogPeek(
 
                 Text(
                     text = translation,
-                    fontFamily = fontFamily,
-                    style = MaterialTheme.typography.bodyLarge
+                    fontSize = fontSize.sp,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

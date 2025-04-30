@@ -3,6 +3,7 @@ package com.shub39.dharmik.core.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.dharmik.core.domain.AppTheme
 import com.shub39.dharmik.core.domain.LongPair
@@ -10,7 +11,6 @@ import com.shub39.dharmik.core.domain.PreferencesRepo
 import com.shub39.dharmik.core.domain.VerseCardState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class PreferencesRepoImpl(
@@ -21,6 +21,7 @@ class PreferencesRepoImpl(
         private val appThemeKey = stringPreferencesKey("is_dark_theme")
         private val bgBookMarkKey = stringPreferencesKey("bg_bookmark")
         private val verseCardStateKey = stringPreferencesKey("verse_card_state")
+        private val fontSizeKey = floatPreferencesKey("font_size")
     }
 
     override fun getAppTheme(): Flow<AppTheme> = dataStore.data.map {
@@ -50,9 +51,15 @@ class PreferencesRepoImpl(
             else -> VerseCardState.SANSKRIT
         }
     }
-
     override suspend fun setVerseCardState(state: VerseCardState) {
         dataStore.edit { it[verseCardStateKey] = state.name }
+    }
+
+    override fun getFontSize(): Flow<Float> = dataStore.data.map {
+        it[fontSizeKey] ?: 16f
+    }
+    override suspend fun setFontSize(size: Float) {
+        dataStore.edit { it[fontSizeKey] = size }
     }
 
 }
