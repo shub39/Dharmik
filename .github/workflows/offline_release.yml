@@ -3,7 +3,7 @@ name: Offline Release
 on:
   push:
     branches:
-      - dev # change later to master
+      - master
   workflow_dispatch: { }
 
 jobs:
