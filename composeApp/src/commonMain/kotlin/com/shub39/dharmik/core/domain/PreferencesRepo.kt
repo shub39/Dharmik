@@ -11,4 +11,7 @@ interface PreferencesRepo {
 
     fun getVerseCardState(): Flow<VerseCardState>
     suspend fun setVerseCardState(state: VerseCardState)
+
+    fun getFontSize(): Flow<Float>
+    suspend fun setFontSize(size: Float)
 }

@@ -21,7 +21,7 @@ fun DharmikDialog(
             modifier = Modifier
                 .heightIn(max = 700.dp)
                 .widthIn(max = 500.dp),
-            shape = MaterialTheme.shapes.extraLarge
+            shape = MaterialTheme.shapes.large
         ) { content() }
     }
 }

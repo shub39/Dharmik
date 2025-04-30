@@ -10,21 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.domain.Translations
 import dharmik.composeapp.generated.resources.Res
-import dharmik.composeapp.generated.resources.noto_regular
 import dharmik.composeapp.generated.resources.translations
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TranslationsDisplay(
     translations: Translations,
     onCopy: (String) -> Unit,
-    fontFamily: FontFamily = FontFamily(Font(Res.font.noto_regular))
+    fontSize: Float
 ) {
     val translationsMap = mapOf(
         "Sri Harikrishnadas Goenka" to translations.sriHarikrishnadasGoenka,
@@ -53,12 +50,12 @@ fun TranslationsDisplay(
             Spacer(modifier = Modifier.padding(6.dp))
 
             translationsMap.forEach { (key, value) ->
-                if (!value.isNullOrEmpty()) {
+                if (value.isNotEmpty()) {
                     DialogPeek(
                         title = key,
                         translation = value,
                         onCopy = onCopy,
-                        fontFamily = fontFamily
+                        fontSize = fontSize
                     )
                 }
             }

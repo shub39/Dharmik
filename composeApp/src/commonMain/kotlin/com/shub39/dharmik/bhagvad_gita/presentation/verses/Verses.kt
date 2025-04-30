@@ -1,5 +1,6 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
+import android.content.ClipData
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -40,8 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import chaintech.videoplayer.host.MediaPlayerEvent
@@ -53,12 +54,13 @@ import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.PageFill
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.FastForward
 import compose.icons.fontawesomeicons.solid.Pause
 import compose.icons.fontawesomeicons.solid.Play
-import compose.icons.fontawesomeicons.solid.SyncAlt
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bhagvad_gita
 import dharmik.composeapp.generated.resources.chapter_template
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +70,7 @@ fun Verses(
     state: VersesState,
     action: (VersesAction) -> Unit,
 ) = PageFill {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -77,6 +79,7 @@ fun Verses(
 
     LaunchedEffect(state.pagerState.currentPage) {
         sliderPosition = state.pagerState.currentPage.toFloat()
+        action(VersesAction.ChangeVerse(state.pagerState.currentPage, coroutineScope))
     }
 
     AudioPlayer(state.playerHost)
@@ -124,7 +127,7 @@ fun Verses(
                         }
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                            imageVector = FontAwesomeIcons.Solid.FastForward,
                             contentDescription = "Autoplay",
                             modifier = Modifier.size(20.dp)
                         )
@@ -194,8 +197,7 @@ fun Verses(
         HorizontalPager(
             state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = padding,
-            userScrollEnabled = false
+            contentPadding = padding
         ) { index ->
             val currentVerse by remember { mutableStateOf(verses[index]) }
             val scrollState = rememberLazyListState()
@@ -242,17 +244,20 @@ fun Verses(
                     ) { vcState ->
                         VerseCard(
                             verse = currentVerse,
+                            fontSize = state.fontSize,
                             modifier = Modifier.fillMaxWidth(),
                             isFave = state.favorites.contains(currentVerse),
                             state = vcState,
                             action = action,
                             onClick = {},
                             onCopy = {
-                                clipboardManager.setText(
-                                    annotatedString = buildAnnotatedString {
-                                        append(it)
-                                    }
-                                )
+                                coroutineScope.launch {
+                                    clipboardManager.setClipEntry(
+                                        ClipEntry(
+                                            ClipData.newPlainText("Verse", it)
+                                        )
+                                    )
+                                }
                             },
                             playIcon = {
                                 IconButton(
@@ -283,12 +288,15 @@ fun Verses(
                     TranslationsDisplay(
                         translations = currentVerse.translations,
                         onCopy = {
-                            clipboardManager.setText(
-                                annotatedString = buildAnnotatedString {
-                                    append(it)
-                                }
-                            )
-                        }
+                            coroutineScope.launch {
+                                clipboardManager.setClipEntry(
+                                    ClipEntry(
+                                        ClipData.newPlainText("Translation", it)
+                                    )
+                                )
+                            }
+                        },
+                        fontSize = state.fontSize
                     )
                 }
 
@@ -296,12 +304,15 @@ fun Verses(
                     CommentariesDisplay(
                         commentaries = currentVerse.commentaries,
                         onCopy = {
-                            clipboardManager.setText(
-                                annotatedString = buildAnnotatedString {
-                                    append(it)
-                                }
-                            )
-                        }
+                            coroutineScope.launch {
+                                clipboardManager.setClipEntry(
+                                    ClipEntry(
+                                        ClipData.newPlainText("Commentary", it)
+                                    )
+                                )
+                            }
+                        },
+                        fontSize = state.fontSize
                     )
                 }
 

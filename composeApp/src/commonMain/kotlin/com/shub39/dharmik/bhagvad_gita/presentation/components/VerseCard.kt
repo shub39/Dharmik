@@ -17,10 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
 import com.shub39.dharmik.bhagvad_gita.domain.GitaVerse
 import com.shub39.dharmik.bhagvad_gita.domain.Translations
@@ -33,15 +33,14 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Clipboard
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.chapter_template
-import dharmik.composeapp.generated.resources.noto_regular
 import dharmik.composeapp.generated.resources.verses_alt_template
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun VerseCard(
     verse: GitaVerse,
     modifier: Modifier = Modifier,
+    fontSize: Float = 16f,
     state: VerseCardState = VerseCardState.SANSKRIT,
     isFave: Boolean? = null,
     action: (VersesAction) -> Unit = {},
@@ -119,9 +118,9 @@ fun VerseCard(
                     VerseCardState.HINDI -> verse.translations.swamiTejomayananda
                     VerseCardState.SANSKRIT -> verse.text
                 }.removeExtraLineBreaks(),
+                fontSize = fontSize.sp,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(Res.font.noto_regular))
+                fontWeight = FontWeight.Bold
             )
         }
     }

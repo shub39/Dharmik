@@ -33,6 +33,7 @@ import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
 import com.shub39.dharmik.core.domain.AppTheme
 import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.DharmikDialog
+import com.shub39.dharmik.core.presentation.components.SettingSlider
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.Solid
@@ -44,6 +45,7 @@ import dharmik.composeapp.generated.resources.app_theme
 import dharmik.composeapp.generated.resources.app_theme_desc
 import dharmik.composeapp.generated.resources.verse_state
 import dharmik.composeapp.generated.resources.verse_state_desc
+import dharmik.composeapp.generated.resources.verses_font_size
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -60,6 +62,16 @@ fun SettingsSection(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        item {
+            SettingSlider(
+                title = stringResource(Res.string.verses_font_size),
+                value = state.fontSize,
+                valueRange = 12f..24f,
+                onValueChange = { onAction(HomeAction.SetFontSize(it)) },
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
         item {
             ListItem(
                 headlineContent = {
@@ -110,7 +122,7 @@ fun SettingsSection(
             )
         }
 
-        item { HorizontalDivider() }
+        item { HorizontalDivider(modifier = Modifier.padding(32.dp)) }
 
         item {
             ListItem(

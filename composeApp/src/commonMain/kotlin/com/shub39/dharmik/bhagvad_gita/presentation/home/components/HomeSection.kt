@@ -1,5 +1,6 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
+import android.content.ClipData
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,10 +17,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
@@ -32,6 +34,7 @@ import compose.icons.fontawesomeicons.solid.Heart
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bookmark
 import dharmik.composeapp.generated.resources.favorites_template
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -40,7 +43,8 @@ fun HomeSection(
     homeState: HomeState,
     onAction: (HomeAction) -> Unit
 ) = Box {
-    val clipboardManager = LocalClipboardManager.current
+    val coroutineScope = rememberCoroutineScope()
+    val clipboardManager = LocalClipboard.current
 
     LazyColumn(
         modifier = Modifier
@@ -108,17 +112,18 @@ fun HomeSection(
                     .padding(vertical = 8.dp)
                     .fillMaxWidth(),
                 verse = verse,
+                fontSize = homeState.fontSize,
                 state = homeState.verseCardState,
                 onClick = {
                     onAction(HomeAction.LoadVerse(verse))
                     onNavigateToVerses()
                 },
                 onCopy = {
-                    clipboardManager.setText(
-                        annotatedString = buildAnnotatedString {
-                            append(verse.text)
-                        }
-                    )
+                    coroutineScope.launch {
+                        clipboardManager.setClipEntry(
+                            ClipEntry(ClipData.newPlainText("Verse", it))
+                        )
+                    }
                 }
             )
         }

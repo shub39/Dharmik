@@ -15,5 +15,6 @@ data class VersesState(
     val favorites: List<GitaVerse> = emptyList(),
     val playerHost: MediaPlayerHost = MediaPlayerHost(isLooping = false),
     val verseCardState: VerseCardState = VerseCardState.SANSKRIT,
-    val pagerState: PagerState = PagerState { 0 }
+    val pagerState: PagerState = PagerState { 0 },
+    val fontSize: Float = 16f
 )
