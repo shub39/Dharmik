@@ -17,19 +17,19 @@ val variant: String by project
 val appName = "Dharmik"
 val appBasePackageName = "com.shub39.dharmik"
 val appPackageName = "$appBasePackageName.$variant"
-val appVersionName = "2.2.0"
-val appVersionCode = 2200
+val appVersionName = "2.2.1"
+val appVersionCode = 2210
 
 android {
     namespace = appPackageName
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.shub39.dharmik" // TODO: Update these when new version
+        applicationId = appPackageName
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2200 // TODO: Update these when new version
-        versionName = "2.2.0" // TODO: Update these when new version
+        versionCode = appVersionCode
+        versionName = appVersionName
     }
     packaging {
         resources {
