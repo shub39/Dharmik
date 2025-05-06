@@ -25,11 +25,11 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = appPackageName
+        applicationId = "com.shub39.dharmik" // TODO: Update these when new version
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 2200 // TODO: Update these when new version
-        versionName = "2.2.0"
+        versionName = "2.2.0" // TODO: Update these when new version
     }
     packaging {
         resources {
