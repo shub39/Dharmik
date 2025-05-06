@@ -20,6 +20,51 @@ val appPackageName = "$appBasePackageName.$variant"
 val appVersionName = "2.2.0"
 val appVersionCode = 2200
 
+android {
+    namespace = appPackageName
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    defaultConfig {
+        applicationId = appPackageName
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionCode = 2200 // TODO: Update these when new version
+        versionName = "2.2.0"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            resValue("string", "app_name", appName)
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "src/commonMain/proguard-rules.pro"
+            )
+        }
+        debug {
+            resValue("string", "app_name", "$appName Debug")
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        compose = true
+    }
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+}
+
 kotlin {
     targets.all {
         compilations.all {
@@ -73,51 +118,6 @@ kotlin {
         dependencies {
             ksp(libs.androidx.room.compiler)
         }
-    }
-}
-
-android {
-    namespace = appPackageName
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = appPackageName
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = appVersionCode
-        versionName = appVersionName
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            resValue("string", "app_name", appName)
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "src/commonMain/proguard-rules.pro"
-            )
-        }
-        debug {
-            resValue("string", "app_name", "$appName Debug")
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        compose = true
-    }
-    dependenciesInfo {
-        includeInApk = false
-        includeInBundle = false
     }
 }
 
