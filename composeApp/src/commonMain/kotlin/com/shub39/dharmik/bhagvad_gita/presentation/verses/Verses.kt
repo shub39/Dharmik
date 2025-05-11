@@ -1,7 +1,5 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
-import android.content.ClipData
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +29,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -41,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -52,6 +50,7 @@ import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.Commentari
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
 import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.PageFill
+import com.shub39.dharmik.core.presentation.copyToClipboard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.FastForward
@@ -96,9 +95,10 @@ fun Verses(
         }
     }
 
-    BackHandler {
-        state.playerHost.pause()
-        navController.navigateUp()
+    DisposableEffect(Unit) {
+        onDispose {
+            state.playerHost.pause()
+        }
     }
 
     Scaffold(
@@ -252,11 +252,7 @@ fun Verses(
                             onClick = {},
                             onCopy = {
                                 coroutineScope.launch {
-                                    clipboardManager.setClipEntry(
-                                        ClipEntry(
-                                            ClipData.newPlainText("Verse", it)
-                                        )
-                                    )
+                                    copyToClipboard(clipboardManager, it)
                                 }
                             },
                             playIcon = {
@@ -289,11 +285,7 @@ fun Verses(
                         translations = currentVerse.translations,
                         onCopy = {
                             coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText("Translation", it)
-                                    )
-                                )
+                                copyToClipboard(clipboardManager, it)
                             }
                         },
                         fontSize = state.fontSize
@@ -305,11 +297,7 @@ fun Verses(
                         commentaries = currentVerse.commentaries,
                         onCopy = {
                             coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText("Commentary", it)
-                                    )
-                                )
+                                copyToClipboard(clipboardManager, it)
                             }
                         },
                         fontSize = state.fontSize

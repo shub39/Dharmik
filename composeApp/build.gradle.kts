@@ -1,4 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -10,6 +12,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.hotreload)
 }
 
 val variant: String by project
@@ -74,6 +77,8 @@ kotlin {
         }
     }
 
+    jvm("desktop")
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -85,6 +90,8 @@ kotlin {
     }
 
     sourceSets {
+        val desktopMain by getting
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -114,6 +121,11 @@ kotlin {
             implementation(libs.datetime)
             implementation(libs.composeIcons.fontAwesome)
             api(libs.koin.core)
+            implementation(libs.material.icons.core)
+        }
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
         }
         dependencies {
             ksp(libs.androidx.room.compiler)
@@ -138,6 +150,23 @@ buildkonfig {
     }
 }
 
+compose.desktop {
+    application {
+        mainClass = "com.shub39.dharmik.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = appPackageName
+            packageVersion = appVersionName
+        }
+    }
+}
+
+tasks.register<ComposeHotRun>("runHot") {
+    mainClass.set("com.shub39.dharmik.MainKt")
+}
+
+// offline variant tasks
 if (variant == "offline") {
     val sourceDir = file("$projectDir/gita_audio")
     val destination = file("$projectDir/src/commonMain/composeResources/files/gita_audio")

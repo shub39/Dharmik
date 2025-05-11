@@ -1,6 +1,5 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
-import android.content.ClipData
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,12 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
+import com.shub39.dharmik.core.presentation.copyToClipboard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowRight
@@ -120,9 +119,7 @@ fun HomeSection(
                 },
                 onCopy = {
                     coroutineScope.launch {
-                        clipboardManager.setClipEntry(
-                            ClipEntry(ClipData.newPlainText("Verse", it))
-                        )
+                        copyToClipboard(clipboardManager, it)
                     }
                 }
             )

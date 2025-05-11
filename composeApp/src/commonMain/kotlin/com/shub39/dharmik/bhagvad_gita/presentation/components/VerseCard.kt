@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
@@ -35,6 +34,7 @@ import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.chapter_template
 import dharmik.composeapp.generated.resources.verses_alt_template
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun VerseCard(
@@ -126,7 +126,7 @@ fun VerseCard(
     }
 }
 
-@PreviewLightDark
+@Preview
 @Composable
 private fun Preview() {
     DharmikTheme {
