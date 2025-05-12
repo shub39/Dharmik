@@ -31,10 +31,8 @@ jobs:
           chcp 65001
           echo ("PACKAGE_JAVA_HOME=" + $env:JAVA_HOME_23_X64) >> $env:GITHUB_ENV
 
-      - run: dir composeApp\build\package\windows
-
       - name: Build zip and exe
-        run: .\gradlew.bat desktopApp:packageReleaseZip desktopApp:packageReleaseExe -PGIT_TAG_OVERRIDE="v0.4.0"
+        run: .\gradlew.bat composeApp:packageReleaseZip composeApp:packageReleaseExe
 
       - name: Upload zip artifact
         uses: actions/upload-artifact@v4
