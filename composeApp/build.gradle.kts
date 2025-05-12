@@ -158,6 +158,17 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = appPackageName
             packageVersion = appVersionName
+
+            windows {
+                iconFile.set(rootProject.file("fastlane/metadata/android/en-US/images/icon.png"))
+                shortcut = true
+                dirChooser = true
+                exePackageVersion = appVersionName
+            }
+        }
+
+        buildTypes.release {
+            proguard { isEnabled = false }
         }
     }
 }
