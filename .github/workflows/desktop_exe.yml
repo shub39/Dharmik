@@ -32,7 +32,7 @@ jobs:
           echo ("PACKAGE_JAVA_HOME=" + $env:JAVA_HOME_23_X64) >> $env:GITHUB_ENV
 
       - name: Build zip and exe
-        run: .\gradlew.bat composeApp:packageReleaseZip composeApp:packageReleaseExe
+        run: .\gradlew.bat composeApp:packageReleaseExe
 
       - name: Upload zip artifact
         uses: actions/upload-artifact@v4
