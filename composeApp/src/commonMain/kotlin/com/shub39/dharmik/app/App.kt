@@ -13,8 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.dharmik.bhagvad_gita.presentation.home.Home
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.Verses
-import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.VersesViewModel
 import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.HomeViewModel
+import com.shub39.dharmik.bhagvad_gita.presentation.viewModels.VersesViewModel
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -55,9 +55,13 @@ fun App(
 
             composable<Routes.Verses> {
                 Verses(
-                    navController = navController,
                     state = bgState,
-                    action = bgvm::onAction
+                    action = bgvm::onAction,
+                    onBack = {
+                        navController.navigate(Routes.Home) {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
         }

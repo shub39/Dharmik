@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import chaintech.videoplayer.host.MediaPlayerEvent
 import chaintech.videoplayer.ui.audio.AudioPlayer
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
@@ -65,9 +64,9 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Verses(
-    navController: NavController,
     state: VersesState,
     action: (VersesAction) -> Unit,
+    onBack: () -> Unit
 ) = PageFill {
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
@@ -102,7 +101,7 @@ fun Verses(
     }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 500.dp),
+        modifier = Modifier.widthIn(max = 700.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -137,7 +136,7 @@ fun Verses(
                     IconButton(
                         onClick = {
                             state.playerHost.pause()
-                            navController.navigateUp()
+                            onBack()
                         }
                     ) {
                         Icon(
