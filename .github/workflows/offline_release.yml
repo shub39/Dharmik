@@ -53,7 +53,7 @@ jobs:
       - name: Upload msi artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dharmik-windows-release-msi
+          name: windows-release-msi
           path: composeApp/build/compose/binaries/main-release/msi/*.msi
 
   android:
@@ -96,5 +96,5 @@ jobs:
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
+          name: android-release-apk
           path: composeApp/build/outputs/apk/release/composeApp-release.apk

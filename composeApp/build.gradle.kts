@@ -158,17 +158,21 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.AppImage, TargetFormat.Msi)
             packageName = appPackageName
             packageVersion = appVersionName
+            licenseFile.set(project.file("../LICENSE"))
 
             windows {
-                iconFile.set(rootProject.file("fastlane/metadata/android/en-US/images/icon.png"))
+                iconFile.set(rootProject.file("../fastlane/metadata/android/en-US/images/icon.png"))
                 shortcut = true
-                dirChooser = true
+                console = false
                 exePackageVersion = appVersionName
             }
         }
 
-        buildTypes.release {
-            proguard { isEnabled = false }
+        buildTypes.release.proguard {
+            isEnabled = false
+            obfuscate = false
+            optimize = true
+            configurationFiles.setFrom("src/commonMain/proguard-rules.pro")
         }
     }
 }
