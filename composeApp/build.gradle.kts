@@ -155,7 +155,7 @@ compose.desktop {
         mainClass = "com.shub39.dharmik.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
+            targetFormats(TargetFormat.Dmg, TargetFormat.AppImage, TargetFormat.Msi)
             packageName = appPackageName
             packageVersion = appVersionName
 

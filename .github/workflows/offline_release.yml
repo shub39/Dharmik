@@ -4,11 +4,60 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch: { }
+  workflow_dispatch: {}
 
 jobs:
-  build:
-    name: Build Beta APK
+  windows:
+    name: Build Windows distribution
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Package Windows ".msi" distribution
+        run: ./gradlew :desktop:packageReleaseMsi
+
+      - name: Rename Artifact
+        shell: cmd
+        run: |
+          setlocal enabledelayedexpansion
+          
+          set "pattern=dharmik-*.msi"
+          set "newName=dharmik.msi"
+          set "foundFile="
+          
+          for /r %%i in (%pattern%) do (
+            set "foundFile=%%i"
+          )
+          
+          if defined foundFile (
+          echo Renaming !foundFile! to %newName%
+            ren "!foundFile!" "%newName%"
+          ) else (
+            echo No file matching pattern found.
+          )
+          
+          endlocal
+          
+          echo Successfully renamed file to "dharmik.msi"
+
+      - name: Upload msi artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dharmik-windows-release-msi
+          path: composeApp/build/compose/binaries/main-release/msi/*.msi
+
+  android:
+    name: Build Android distribution
     runs-on: ubuntu-latest
 
     steps:
