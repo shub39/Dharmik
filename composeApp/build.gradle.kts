@@ -161,7 +161,7 @@ compose.desktop {
             licenseFile.set(project.file("../LICENSE"))
 
             windows {
-                iconFile.set(rootProject.file("../fastlane/metadata/android/en-US/images/icon.png"))
+                iconFile.set(rootProject.file("fastlane/metadata/android/en-US/images/icon.png"))
                 shortcut = true
                 console = false
                 exePackageVersion = appVersionName
