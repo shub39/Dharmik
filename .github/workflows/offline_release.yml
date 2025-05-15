@@ -24,7 +24,7 @@ jobs:
           cache: 'gradle'
 
       - name: Package Windows ".msi" distribution
-        run: ./gradlew :desktop:packageReleaseMsi
+        run: ./gradlew packageReleaseMsi -Pvariant=offline
 
       - name: Rename Artifact
         shell: cmd
