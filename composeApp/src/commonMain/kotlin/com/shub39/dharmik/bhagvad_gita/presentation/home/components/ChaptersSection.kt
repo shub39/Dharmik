@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
+import com.shub39.dharmik.core.presentation.components.simpleVerticalScrollbar
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowRight
@@ -32,8 +34,12 @@ fun ChaptersSection(
     state: HomeState,
     onAction: (HomeAction) -> Unit
 ) {
+    val listState = rememberLazyListState()
+
     LazyColumn(
+        state = listState,
         modifier = Modifier
+            .simpleVerticalScrollbar(listState)
             .animateContentSize()
             .fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp),

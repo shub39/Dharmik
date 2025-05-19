@@ -53,7 +53,7 @@ fun TranslationsDisplay(
                 if (value.isNotEmpty()) {
                     DialogPeek(
                         title = key,
-                        translation = value,
+                        content = value,
                         onCopy = onCopy,
                         fontSize = fontSize
                     )

@@ -65,7 +65,7 @@ fun CommentariesDisplay(
                 if (!value.isNullOrEmpty()) {
                     DialogPeek(
                         title = key,
-                        translation = value,
+                        content = value,
                         onCopy = onCopy,
                         fontSize = fontSize
                     )

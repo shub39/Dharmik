@@ -49,6 +49,7 @@ import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.Commentari
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.components.TranslationsDisplay
 import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.PageFill
+import com.shub39.dharmik.core.presentation.components.simpleVerticalScrollbar
 import com.shub39.dharmik.core.presentation.copyToClipboard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -204,6 +205,7 @@ fun Verses(
             LazyColumn(
                 state = scrollState,
                 modifier = Modifier
+                    .simpleVerticalScrollbar(scrollState)
                     .fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

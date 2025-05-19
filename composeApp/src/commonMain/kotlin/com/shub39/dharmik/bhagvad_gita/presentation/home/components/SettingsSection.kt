@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.FilledTonalIconButton
@@ -34,6 +35,7 @@ import com.shub39.dharmik.core.domain.AppTheme
 import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.components.DharmikDialog
 import com.shub39.dharmik.core.presentation.components.SettingSlider
+import com.shub39.dharmik.core.presentation.components.simpleVerticalScrollbar
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.Solid
@@ -53,13 +55,17 @@ fun SettingsSection(
     state: HomeState,
     onAction: (HomeAction) -> Unit
 ) {
+    val listState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
 
     var showThemePicker by remember { mutableStateOf(false) }
     var showLanguagePicker by remember { mutableStateOf(false) }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        state = listState,
+        modifier = Modifier
+            .simpleVerticalScrollbar(listState)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {

@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,16 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shub39.dharmik.core.presentation.components.DharmikDialog
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Clipboard
 import compose.icons.fontawesomeicons.solid.Eye
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogPeek(
     title: String,
-    translation: String,
+    content: String,
     onCopy: (String) -> Unit,
     fontSize: Float = 16f
 ) {
@@ -65,28 +68,27 @@ fun DialogPeek(
     }
 
     if (showComplete) {
-        DharmikDialog(
+        ModalBottomSheet (
             onDismissRequest = { showComplete = false }
         ) {
-            val scrollState = rememberScrollState()
-
             Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .padding(16.dp)
+                modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleMedium
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.weight(1f)
                     )
 
-                    IconButton(
-                        onClick = { onCopy(translation) }
+                    FilledTonalIconButton (
+                        onClick = { onCopy(content) }
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Clipboard,
@@ -96,14 +98,13 @@ fun DialogPeek(
                     }
                 }
 
-                Spacer(modifier = Modifier.padding(8.dp))
-
                 Text(
-                    text = translation,
+                    text = content,
                     fontSize = fontSize.sp,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp)
                 )
+
+                Spacer(modifier = Modifier.padding(16.dp))
             }
         }
     }
