@@ -24,15 +24,15 @@ jobs:
           cache: 'gradle'
 
       - name: Package Windows ".msi" distribution
-        run: ./gradlew packageReleaseMsi -Pvariant=offline
+        run: ./gradlew packageReleaseExe -Pvariant=offline
 
       - name: Rename Artifact
         shell: cmd
         run: |
           setlocal enabledelayedexpansion
           
-          set "pattern=dharmik-*.msi"
-          set "newName=dharmik.msi"
+          set "pattern=dharmik-*.exe"
+          set "newName=dharmik.exe"
           set "foundFile="
           
           for /r %%i in (%pattern%) do (
@@ -48,13 +48,13 @@ jobs:
           
           endlocal
           
-          echo Successfully renamed file to "dharmik.msi"
+          echo Successfully renamed file to "dharmik.exe"
 
-      - name: Upload msi artifact
+      - name: Upload exe artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-release-msi
-          path: composeApp/build/compose/binaries/main-release/msi/*.msi
+          name: windows-release-exe
+          path: composeApp/build/compose/binaries/main-release/exe/*.exe
 
   android:
     name: Build Android distribution

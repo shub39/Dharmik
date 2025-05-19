@@ -155,7 +155,8 @@ compose.desktop {
         mainClass = "com.shub39.dharmik.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.AppImage, TargetFormat.Msi)
+            targetFormats(TargetFormat.Dmg, TargetFormat.AppImage, TargetFormat.Exe)
+            modules("java.base", "java.desktop")
             packageName = appPackageName
             packageVersion = appVersionName
             licenseFile.set(project.file("../LICENSE"))
