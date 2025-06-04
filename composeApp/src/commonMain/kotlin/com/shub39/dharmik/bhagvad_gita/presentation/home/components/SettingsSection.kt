@@ -13,10 +13,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.DharmikConfig
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
@@ -40,11 +47,13 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.brands.Github
+import compose.icons.fontawesomeicons.solid.Coffee
 import compose.icons.fontawesomeicons.solid.Globe
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.app_name
 import dharmik.composeapp.generated.resources.app_theme
 import dharmik.composeapp.generated.resources.app_theme_desc
+import dharmik.composeapp.generated.resources.support
 import dharmik.composeapp.generated.resources.verse_state
 import dharmik.composeapp.generated.resources.verse_state_desc
 import dharmik.composeapp.generated.resources.verses_font_size
@@ -68,6 +77,72 @@ fun SettingsSection(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        item {
+            Card(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                ListItem(
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        headlineColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        supportingColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        trailingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    headlineContent = {
+                        Text(
+                            text = stringResource(Res.string.app_name),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "${DharmikConfig.packageName} (${DharmikConfig.versionCode})"
+                        )
+                    },
+                    trailingContent = {
+                        OutlinedIconButton(
+                            onClick = {
+                                uriHandler.openUri("https://github.com/shub39/Dharmik")
+                            }
+                        ) {
+                            Icon(
+                                imageVector = FontAwesomeIcons.Brands.Github,
+                                contentDescription = "Github",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                )
+
+                Button(
+                    onClick = {
+                        uriHandler.openUri("https://buymeacoffee.com/shub39")
+                    },
+                    modifier = Modifier.padding(16.dp).fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Coffee,
+                            contentDescription = "Coffee",
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Text(text = stringResource(Res.string.support))
+                    }
+                }
+            }
+        }
+
+        item { HorizontalDivider(modifier = Modifier.padding(32.dp)) }
+
         item {
             SettingSlider(
                 title = stringResource(Res.string.verses_font_size),
@@ -129,64 +204,6 @@ fun SettingsSection(
         }
 
         item { HorizontalDivider(modifier = Modifier.padding(32.dp)) }
-
-        item {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.app_name)
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "${DharmikConfig.packageName} (${DharmikConfig.versionCode})"
-                    )
-                },
-                trailingContent = {
-                    FilledTonalIconButton(
-                        onClick = {
-                            uriHandler.openUri("https://github.com/shub39/Dharmik")
-                        }
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Brands.Github,
-                            contentDescription = "Github",
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-            )
-        }
-
-        item {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = "Made by shub39"
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        "Maybe follow me on Github?"
-                    )
-                },
-                trailingContent = {
-                    Row {
-                        FilledTonalIconButton(
-                            onClick = {
-                                uriHandler.openUri("https://github.com/shub39")
-                            }
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Brands.Github,
-                                contentDescription = "Github",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                }
-            )
-        }
 
         item {
             ListItem(

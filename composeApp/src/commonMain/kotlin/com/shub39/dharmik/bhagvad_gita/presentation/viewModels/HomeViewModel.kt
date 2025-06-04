@@ -60,13 +60,13 @@ class HomeViewModel(
             }
 
             is HomeAction.ChapterChange -> {
+                println("Chapter changed to ${action.index}")
                 val file = repo.getChapter(action.index)
-                val audios = repo.getAudios(action.index)
 
                 stateLayer.versesState.update {
                     it.copy(
                         currentVerses = file.gitaVerses,
-                        audioFiles = audios,
+                        audioFiles = repo.getAudios(action.index),
                         saveBookMarks = true,
                         pagerState = PagerState { file.gitaVerses.size }
                     )
@@ -75,12 +75,11 @@ class HomeViewModel(
 
             is HomeAction.LoadVerse -> {
                 val file = repo.getChapter(action.verse.chapter.toInt())
-                val audios = repo.getAudios(action.verse.chapter.toInt())
 
                 stateLayer.versesState.update {
                     it.copy(
                         currentVerses = file.gitaVerses,
-                        audioFiles = audios,
+                        audioFiles = repo.getAudios(action.verse.chapter.toInt()),
                         saveBookMarks = false,
                         pagerState = PagerState(action.verse.verse.toInt().minus(1).coerceAtLeast(0)) { file.gitaVerses.size }
                     )

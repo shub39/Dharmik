@@ -26,4 +26,5 @@
     <string name="verses_template">%1$d Verses</string>
     <string name="verses_alt_template">Verse %1$d</string>
     <string name="verses_font_size">Verses Font size</string>
+    <string name="support">Support</string>
 </resources>

@@ -23,7 +23,7 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
-      - name: Package Windows ".msi" distribution
+      - name: Package Windows ".exe" distribution
         run: ./gradlew packageReleaseExe -Pvariant=offline
 
       - name: Rename Artifact

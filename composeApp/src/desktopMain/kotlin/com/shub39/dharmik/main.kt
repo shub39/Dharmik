@@ -11,7 +11,7 @@ fun main() {
     initKoin()
 
     singleWindowApplication(
-        state = WindowState(size = DpSize(width = 700.dp, height = 700.dp)),
+        state = WindowState(size = DpSize(width = 400.dp, height = 800.dp)),
         title = "Dharmik"
     ) {
         App()

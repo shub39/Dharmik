@@ -1,5 +1,6 @@
 package com.shub39.dharmik.app
 
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -35,10 +36,10 @@ fun App(
             navController = navController,
             startDestination = Routes.Home,
             modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-            enterTransition = { fadeIn() },
-            exitTransition = { fadeOut() },
-            popEnterTransition = { fadeIn() },
-            popExitTransition = { fadeOut() }
+            enterTransition = { fadeIn(tween(300)) },
+            exitTransition = { fadeOut(tween(300)) },
+            popEnterTransition = { fadeIn(tween(300)) },
+            popExitTransition = { fadeOut(tween(300)) }
         ) {
             composable<Routes.Home> {
                 Home(

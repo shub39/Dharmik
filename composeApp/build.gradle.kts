@@ -20,8 +20,8 @@ val variant: String by project
 val appName = "Dharmik"
 val appBasePackageName = "com.shub39.dharmik"
 val appPackageName = "$appBasePackageName.$variant"
-val appVersionName = "2.2.1"
-val appVersionCode = 2210
+val appVersionName = "2.3.0"
+val appVersionCode = 2300
 
 android {
     namespace = appPackageName

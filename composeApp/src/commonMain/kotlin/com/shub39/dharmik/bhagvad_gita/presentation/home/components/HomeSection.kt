@@ -1,6 +1,7 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,27 +59,30 @@ fun HomeSection(
     ) {
         item {
             ListItem(
+                modifier = Modifier.clickable {
+                    onAction(HomeAction.LoadBookMark)
+                    onNavigateToVerses()
+                },
                 headlineContent = {
                     Text(
                         text = stringResource(Res.string.bookmark)
                     )
                 },
                 supportingContent = {
-                    Text(text = "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second.plus(1)}")
+                    Text(
+                        text = "${homeState.currentBookMark.first} : ${
+                            homeState.currentBookMark.second.plus(
+                                1
+                            )
+                        }"
+                    )
                 },
                 trailingContent = {
-                    IconButton(
-                        onClick = {
-                            onAction(HomeAction.LoadBookMark)
-                            onNavigateToVerses()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Solid.ArrowRight,
-                            contentDescription = "Open Bookmark",
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                        contentDescription = "Open Bookmark",
+                        modifier = Modifier.size(20.dp)
+                    )
                 },
                 leadingContent = {
                     Icon(
@@ -98,7 +101,12 @@ fun HomeSection(
         item {
             ListItem(
                 headlineContent = {
-                    Text(text = stringResource(Res.string.favorites_template, homeState.favorites.size))
+                    Text(
+                        text = stringResource(
+                            Res.string.favorites_template,
+                            homeState.favorites.size
+                        )
+                    )
                 },
                 leadingContent = {
                     Icon(

@@ -1,6 +1,6 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.verses.components
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -41,34 +42,31 @@ fun DialogPeek(
 ) {
     var showComplete by remember { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier
-            .padding(vertical = 4.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        IconButton(
-            onClick = {
-                showComplete = true
-            }
-        ) {
+    ListItem(
+        modifier = Modifier.clickable { showComplete = true },
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            headlineColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        headlineContent = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        trailingContent = {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Eye,
                 contentDescription = "Show",
                 modifier = Modifier.size(20.dp)
             )
         }
-    }
+    )
 
     if (showComplete) {
-        ModalBottomSheet (
+        ModalBottomSheet(
             onDismissRequest = { showComplete = false }
         ) {
             Column(
@@ -87,7 +85,7 @@ fun DialogPeek(
                         modifier = Modifier.weight(1f)
                     )
 
-                    FilledTonalIconButton (
+                    FilledTonalIconButton(
                         onClick = { onCopy(content) }
                     ) {
                         Icon(

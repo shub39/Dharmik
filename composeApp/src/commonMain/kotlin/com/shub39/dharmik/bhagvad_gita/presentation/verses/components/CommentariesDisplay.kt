@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.domain.Commentaries
@@ -61,14 +62,18 @@ fun CommentariesDisplay(
 
             Spacer(modifier = Modifier.padding(6.dp))
 
-            commentaryMap.forEach { (key, value) ->
-                if (!value.isNullOrEmpty()) {
-                    DialogPeek(
-                        title = key,
-                        content = value,
-                        onCopy = onCopy,
-                        fontSize = fontSize
-                    )
+            Column(
+                modifier = Modifier.clip(MaterialTheme.shapes.medium)
+            ) {
+                commentaryMap.forEach { (key, value) ->
+                    if (!value.isNullOrEmpty()) {
+                        DialogPeek(
+                            title = key,
+                            content = value,
+                            onCopy = onCopy,
+                            fontSize = fontSize
+                        )
+                    }
                 }
             }
         }

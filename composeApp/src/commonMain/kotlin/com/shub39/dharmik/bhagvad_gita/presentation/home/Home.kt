@@ -1,5 +1,6 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home
 
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.padding
@@ -104,6 +105,7 @@ fun Home(
                                 modifier = Modifier.size(24.dp)
                             )
                         },
+                        alwaysShowLabel = false,
                         label = {
                             Text(
                                 text = stringResource(
@@ -124,10 +126,10 @@ fun Home(
             modifier = Modifier.padding(padding),
             navController = homeNavController,
             startDestination = HomeRoutes.HomeSection,
-            enterTransition = { slideInVertically(initialOffsetY = { it / 2 }) },
-            exitTransition = { fadeOut() },
-            popEnterTransition = { slideInVertically(initialOffsetY = { it / 2 }) },
-            popExitTransition = { fadeOut() }
+            enterTransition = { slideInVertically(tween(300), initialOffsetY = { it / 2 }) },
+            exitTransition = { fadeOut(tween(300)) },
+            popEnterTransition = { slideInVertically(tween(300), initialOffsetY = { it / 2 }) },
+            popExitTransition = { fadeOut(tween(300)) }
         ) {
             composable<HomeRoutes.HomeSection> {
                 currentDest = HomeRoutes.HomeSection

@@ -1,6 +1,8 @@
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +12,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
@@ -43,13 +48,28 @@ fun ChaptersSection(
             .animateContentSize()
             .fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items((1..state.chapters).toList(), key = { it }) { chapter ->
             ListItem(
+                colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    headlineColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    leadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable {
+                        onAction(HomeAction.ChapterChange(chapter))
+                        onNavigateToVerses()
+                    },
                 headlineContent = {
                     Text(
-                        text = stringResource(Res.string.chapter_template, chapter)
+                        text = stringResource(Res.string.chapter_template, chapter),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
                 },
                 leadingContent = {
@@ -60,18 +80,11 @@ fun ChaptersSection(
                     )
                 },
                 trailingContent = {
-                    IconButton(
-                        onClick = {
-                            onAction(HomeAction.ChapterChange(chapter))
-                            onNavigateToVerses()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Solid.ArrowRight,
-                            contentDescription = "Open Chapter",
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                        contentDescription = "Open Chapter",
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             )
         }
