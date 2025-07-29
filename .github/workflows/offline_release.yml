@@ -7,55 +7,6 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  windows:
-    name: Build Windows distribution
-    runs-on: windows-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-          cache: 'gradle'
-
-      - name: Package Windows ".exe" distribution
-        run: ./gradlew packageReleaseExe -Pvariant=offline
-
-      - name: Rename Artifact
-        shell: cmd
-        run: |
-          setlocal enabledelayedexpansion
-          
-          set "pattern=dharmik-*.exe"
-          set "newName=dharmik.exe"
-          set "foundFile="
-          
-          for /r %%i in (%pattern%) do (
-            set "foundFile=%%i"
-          )
-          
-          if defined foundFile (
-          echo Renaming !foundFile! to %newName%
-            ren "!foundFile!" "%newName%"
-          ) else (
-            echo No file matching pattern found.
-          )
-          
-          endlocal
-          
-          echo Successfully renamed file to "dharmik.exe"
-
-      - name: Upload exe artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-release-exe
-          path: composeApp/build/compose/binaries/main-release/exe/*.exe
-
   android:
     name: Build Android distribution
     runs-on: ubuntu-latest

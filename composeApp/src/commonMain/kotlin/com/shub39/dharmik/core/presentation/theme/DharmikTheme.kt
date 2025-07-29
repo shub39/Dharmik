@@ -1,18 +1,16 @@
 package com.shub39.dharmik.core.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.runtime.*
-import com.materialkolor.DynamicMaterialExpressiveTheme
+import androidx.compose.runtime.Composable
+import com.materialkolor.DynamicMaterialTheme
 import com.shub39.dharmik.core.domain.AppTheme
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DharmikTheme(
     theme: Theme = Theme(),
     content: @Composable () -> Unit
 ) {
-    DynamicMaterialExpressiveTheme(
+    DynamicMaterialTheme(
         isDark = when(theme.appTheme) {
             AppTheme.LIGHT -> false
             AppTheme.DARK -> true
