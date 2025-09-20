@@ -1,6 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -15,13 +14,10 @@ plugins {
     alias(libs.plugins.hotreload)
 }
 
-val variant: String by project
-
 val appName = "Dharmik"
-val appBasePackageName = "com.shub39.dharmik"
-val appPackageName = "$appBasePackageName.$variant"
-val appVersionName = "2.3.0"
-val appVersionCode = 2300
+val appPackageName = "com.shub39.dharmik.online"
+val appVersionName = "3.0.0"
+val appVersionCode = 3000
 
 android {
     namespace = appPackageName
@@ -100,6 +96,7 @@ kotlin {
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
+            implementation(libs.material3)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
@@ -138,7 +135,7 @@ dependencies {
 }
 
 buildkonfig {
-    packageName = appBasePackageName
+    packageName = appPackageName
     objectName = "DharmikConfigs"
     exposeObjectWithName = "DharmikConfig"
 
@@ -146,7 +143,6 @@ buildkonfig {
         buildConfigField(STRING, "packageName", appPackageName)
         buildConfigField(STRING, "versionName", appVersionName)
         buildConfigField(STRING, "versionCode", appVersionCode.toString())
-        buildConfigField(STRING, "variant", variant)
     }
 }
 
@@ -175,29 +171,5 @@ compose.desktop {
             optimize = true
             configurationFiles.setFrom("src/commonMain/proguard-rules.pro")
         }
-    }
-}
-
-tasks.register<ComposeHotRun>("runHot") {
-    mainClass.set("com.shub39.dharmik.MainKt")
-}
-
-// offline variant tasks
-if (variant == "offline") {
-    val sourceDir = file("$projectDir/gita_audio")
-    val destination = file("$projectDir/src/commonMain/composeResources/files/gita_audio")
-
-    tasks.register<Copy>("PackageOfflineResources") {
-        into(destination)
-        from(sourceDir)
-    }
-
-    tasks.matching { it.name == "copyNonXmlValueResourcesForCommonMain" }.configureEach {
-        dependsOn("PackageOfflineResources")
-        finalizedBy("CleanOfflineResources")
-    }
-
-    tasks.register<Delete>("CleanOfflineResources") {
-        delete(destination)
     }
 }

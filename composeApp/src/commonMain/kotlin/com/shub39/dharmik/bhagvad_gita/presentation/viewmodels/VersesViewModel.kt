@@ -1,4 +1,4 @@
-package com.shub39.dharmik.bhagvad_gita.presentation.viewModels
+package com.shub39.dharmik.bhagvad_gita.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
