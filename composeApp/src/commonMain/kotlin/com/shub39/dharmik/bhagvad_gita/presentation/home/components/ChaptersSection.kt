@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
-import com.shub39.dharmik.core.presentation.components.simpleVerticalScrollbar
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowRight
@@ -44,7 +43,6 @@ fun ChaptersSection(
     LazyColumn(
         state = listState,
         modifier = Modifier
-            .simpleVerticalScrollbar(listState)
             .animateContentSize()
             .fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp),
