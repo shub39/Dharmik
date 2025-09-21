@@ -10,8 +10,8 @@ import org.jetbrains.compose.resources.FontResource
 data class Theme(
     val appTheme: AppTheme = AppTheme.SYSTEM,
     val withAmoled: Boolean = false,
-    val seedColor: Color = Color.Yellow,
-    val paletteStyle: PaletteStyle = PaletteStyle.Fidelity,
+    val seedColor: Color = Color(0xFFEBDBB2),
+    val paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
     val fontResource: FontResource = Res.font.noto_regular,
     val materialYou: Boolean = false
 )

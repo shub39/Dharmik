@@ -18,15 +18,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -38,7 +39,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import chaintech.videoplayer.host.MediaPlayerEvent
@@ -60,7 +60,7 @@ import dharmik.composeapp.generated.resources.chapter_template
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Verses(
     state: VersesState,
@@ -208,30 +208,20 @@ fun Verses(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.fillMaxWidth()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement
                     ) {
                         VerseCardState.entries.forEach { vcState ->
-                            SegmentedButton(
-                                selected = vcState == state.verseCardState,
-                                onClick = {
+                            ToggleButton(
+                                checked = vcState == state.verseCardState,
+                                onCheckedChange = {
                                     action(VersesAction.SetVerseCardState(vcState))
                                 },
-                                shape = when (vcState) {
-                                    VerseCardState.ENGLISH -> RoundedCornerShape(
-                                        topStart = 20.dp,
-                                        bottomStart = 20.dp
-                                    )
-
-                                    VerseCardState.HINDI -> RectangleShape
-
-                                    VerseCardState.SANSKRIT -> RoundedCornerShape(
-                                        topEnd = 20.dp,
-                                        bottomEnd = 20.dp
-                                    )
-                                },
-                                label = { Text(vcState.fullName) }
-                            )
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(text = vcState.fullName)
+                            }
                         }
                     }
                 }

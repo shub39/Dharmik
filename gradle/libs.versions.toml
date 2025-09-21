@@ -24,7 +24,7 @@ datetime = "0.7.1"
 composeIcons = "1.1.1"
 buildKonfig = "0.17.1"
 kotlinx-coroutines = "1.10.2"
-hotreload = "1.0.0-beta07"
+hotreload = "1.0.0-beta08"
 
 [libraries]
 # Jetbrains and Android

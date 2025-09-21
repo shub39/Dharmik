@@ -3,9 +3,11 @@ package com.shub39.dharmik.bhagvad_gita.data
 import com.shub39.dharmik.bhagvad_gita.domain.AudioSource
 import com.shub39.dharmik.bhagvad_gita.domain.Audios
 import com.shub39.dharmik.bhagvad_gita.domain.slokaNumbers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class OnlineAudioSourceImpl: AudioSource {
-    override suspend fun getAudios(index: Int): List<Audios> {
+    override suspend fun getAudios(index: Int): List<Audios> = withContext(Dispatchers.Default) {
         val baseUrl = "https://www.gitasupersite.iitk.ac.in/sites/default/files/audio"
         val slokaCount = slokaNumbers[index - 1]
 
@@ -18,6 +20,6 @@ class OnlineAudioSourceImpl: AudioSource {
             )
         }
 
-        return audios
+        return@withContext audios
     }
 }

@@ -44,7 +44,7 @@ fun TranslationsDisplay(
         ) {
             Text(
                 text = stringResource(Res.string.translations),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
 
