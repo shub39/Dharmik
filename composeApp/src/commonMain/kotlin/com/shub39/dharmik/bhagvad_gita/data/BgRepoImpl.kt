@@ -19,7 +19,7 @@ class BgRepoImpl(
     private val bgDao: BgDao,
     private val audioSource: AudioSource
 ) : BgRepo {
-    override suspend fun getChapter(index: Int): GitaFile = withContext(Dispatchers.IO) {
+    override suspend fun getChapter(index: Int): GitaFile = withContext(Dispatchers.Default) {
         val decoder = Json {
             ignoreUnknownKeys = true
         }

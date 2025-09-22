@@ -1,7 +1,7 @@
 [versions]
 agp = "8.13.0"
 android-compileSdk = "36"
-android-minSdk = "29"
+android-minSdk = "27"
 android-targetSdk = "36"
 androidx-activityCompose = "1.11.0"
 androidx-lifecycle = "2.9.4"
@@ -10,6 +10,7 @@ compose-adaptive = "1.1.2"
 koin = "4.1.1"
 datastore = "1.2.0-alpha02"
 kotlin = "2.2.20"
+material3 = "1.10.0-alpha01"
 materialIconsCore = "1.7.3"
 navigationCompose = "2.9.0"
 kotlinSerialization = "1.9.0"
@@ -23,7 +24,7 @@ datetime = "0.7.1"
 composeIcons = "1.1.1"
 buildKonfig = "0.17.1"
 kotlinx-coroutines = "1.10.2"
-hotreload = "1.0.0-beta07"
+hotreload = "1.0.0-beta08"
 
 [libraries]
 # Jetbrains and Android
@@ -51,6 +52,7 @@ androidx-datastore-core = { module = "androidx.datastore:datastore-preferences-c
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
+material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 # Other

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,9 +28,6 @@ import com.shub39.dharmik.bhagvad_gita.presentation.removeExtraLineBreaks
 import com.shub39.dharmik.bhagvad_gita.presentation.verses.VersesAction
 import com.shub39.dharmik.core.domain.VerseCardState
 import com.shub39.dharmik.core.presentation.theme.DharmikTheme
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Clipboard
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.chapter_template
 import dharmik.composeapp.generated.resources.verses_alt_template
@@ -54,7 +52,7 @@ fun VerseCard(
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -66,7 +64,7 @@ fun VerseCard(
                 Column {
                     Text(
                         text = stringResource(Res.string.chapter_template, verse.chapter),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     Text(
@@ -102,9 +100,9 @@ fun VerseCard(
                         ) }
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.Clipboard,
+                            imageVector = Icons.Rounded.ContentCopy,
                             contentDescription = "Copy",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
 

@@ -4,7 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
+import androidx.compose.material.icons.rounded.Bookmarks
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -25,12 +27,9 @@ import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.bhagvad_gita.presentation.components.VerseCard
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeAction
 import com.shub39.dharmik.bhagvad_gita.presentation.home.HomeState
-import com.shub39.dharmik.core.presentation.components.simpleVerticalScrollbar
 import com.shub39.dharmik.core.presentation.copyToClipboard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowRight
-import compose.icons.fontawesomeicons.solid.Bookmark
 import compose.icons.fontawesomeicons.solid.Heart
 import dharmik.composeapp.generated.resources.Res
 import dharmik.composeapp.generated.resources.bookmark
@@ -51,18 +50,18 @@ fun HomeSection(
     LazyColumn(
         state = listState,
         modifier = Modifier
-            .simpleVerticalScrollbar(listState)
             .animateContentSize()
             .fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             ListItem(
-                modifier = Modifier.clickable {
-                    onAction(HomeAction.LoadBookMark)
-                    onNavigateToVerses()
-                },
+                modifier = Modifier
+                    .clickable {
+                        onAction(HomeAction.LoadBookMark)
+                        onNavigateToVerses()
+                    },
                 headlineContent = {
                     Text(
                         text = stringResource(Res.string.bookmark)
@@ -70,24 +69,20 @@ fun HomeSection(
                 },
                 supportingContent = {
                     Text(
-                        text = "${homeState.currentBookMark.first} : ${
-                            homeState.currentBookMark.second.plus(
-                                1
-                            )
-                        }"
+                        text = "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second.plus(1)}"
                     )
                 },
                 trailingContent = {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.ArrowRight,
-                        contentDescription = "Open Bookmark",
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
+                        contentDescription = "Open Bookmarks",
                         modifier = Modifier.size(20.dp)
                     )
                 },
                 leadingContent = {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Bookmark,
-                        contentDescription = "Bookmark",
+                        imageVector = Icons.Rounded.Bookmarks,
+                        contentDescription = "Bookmarks",
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -105,23 +100,23 @@ fun HomeSection(
                         text = stringResource(
                             Res.string.favorites_template,
                             homeState.favorites.size
-                        )
+                        ),
                     )
                 },
                 leadingContent = {
                     Icon(
                         imageVector = FontAwesomeIcons.Solid.Heart,
                         contentDescription = "Favorites",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(24.dp)
                     )
-                }
+                },
             )
         }
 
         items(homeState.favorites) { verse ->
             VerseCard(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 4.dp, horizontal = 16.dp)
                     .fillMaxWidth(),
                 verse = verse,
                 fontSize = homeState.fontSize,
@@ -136,10 +131,6 @@ fun HomeSection(
                     }
                 }
             )
-        }
-
-        item {
-            Spacer(modifier = Modifier.padding(60.dp))
         }
     }
 }

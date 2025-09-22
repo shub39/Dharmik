@@ -56,7 +56,7 @@ fun CommentariesDisplay(
         ) {
             Text(
                 text = stringResource(Res.string.commentaries),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
 
