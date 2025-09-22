@@ -4,10 +4,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,7 +52,7 @@ fun HomeSection(
         modifier = Modifier
             .animateContentSize()
             .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp),
+        contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -133,10 +131,6 @@ fun HomeSection(
                     }
                 }
             )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }

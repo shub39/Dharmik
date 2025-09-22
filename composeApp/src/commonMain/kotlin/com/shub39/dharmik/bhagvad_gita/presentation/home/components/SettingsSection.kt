@@ -2,11 +2,9 @@ package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -53,6 +51,7 @@ fun SettingsSection(
 
     LazyColumn(
         state = listState,
+        contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -79,7 +78,7 @@ fun SettingsSection(
                             text = stringResource(Res.string.verse_state_desc)
                         )
 
-                        FlowRow(horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement) {
+                        Row(horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement) {
                             VerseCardState.entries.forEach { vcState ->
                                 ToggleButton(
                                     checked = vcState == state.verseCardState,
@@ -111,7 +110,7 @@ fun SettingsSection(
                             text = stringResource(Res.string.app_theme_desc)
                         )
 
-                        FlowRow(horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement) {
+                        Row(horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement) {
                             AppTheme.entries.forEach { theme ->
                                 ToggleButton(
                                     checked = theme == state.theme.appTheme,
@@ -187,10 +186,6 @@ fun SettingsSection(
                     }
                 }
             )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }

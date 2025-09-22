@@ -3,9 +3,8 @@ package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,6 +38,7 @@ fun ChaptersSection(
         modifier = Modifier
             .animateContentSize()
             .fillMaxSize(),
+        contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -69,10 +69,6 @@ fun ChaptersSection(
                     )
                 }
             )
-        }
-
-        item {
-            Spacer(modifier = Modifier.padding(60.dp))
         }
     }
 }
