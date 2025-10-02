@@ -78,7 +78,7 @@ fun SettingsSection(
                             text = stringResource(Res.string.verse_state_desc)
                         )
 
-                        Row(horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
                             VerseCardState.entries.forEach { vcState ->
                                 ToggleButton(
                                     checked = vcState == state.verseCardState,
@@ -110,7 +110,7 @@ fun SettingsSection(
                             text = stringResource(Res.string.app_theme_desc)
                         )
 
-                        Row(horizontalArrangement = ButtonGroupDefaults.HorizontalArrangement) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
                             AppTheme.entries.forEach { theme ->
                                 ToggleButton(
                                     checked = theme == state.theme.appTheme,
