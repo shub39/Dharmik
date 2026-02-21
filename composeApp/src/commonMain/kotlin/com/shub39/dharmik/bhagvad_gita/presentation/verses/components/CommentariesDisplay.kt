@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.verses.components
 
 import androidx.compose.foundation.layout.Column
@@ -19,59 +35,53 @@ import dharmik.composeapp.generated.resources.commentaries
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CommentariesDisplay(
-    commentaries: Commentaries,
-    onCopy: (String) -> Unit,
-    fontSize: Float
-) {
-    val commentaryMap = mapOf(
-        "Swami Ramsukhdas" to commentaries.swamiRamsukhdas,
-        "Sri Harikrishnadas Goenka" to commentaries.sriHarikrishnadasGoenka,
-        "Sri Anandgiri" to commentaries.sriAnandgiri,
-        "Sri Dhanpati" to commentaries.sriDhanpati,
-        "Sri Madhavacharya" to commentaries.sriMadhavacharya,
-        "Sri Neelkanth" to commentaries.sriNeelkanth,
-        "Sri Ramanuja" to commentaries.sriRamanuja,
-        "Sri Sridhara Swami" to commentaries.sriSridharaSwami,
-        "Sri Vedantadeshikacharya Venkatanatha" to commentaries.sriVedantadeshikacharyaVenkatanatha,
-        "Swami Chinmayananda" to commentaries.swamiChinmayananda,
-        "Sri Abhinavgupta" to commentaries.sriAbhinavgupta,
-        "Sri Jayatritha" to commentaries.sriJayatritha,
-        "Sri Madhusudan Saraswati" to commentaries.sriMadhusudanSaraswati,
-        "Sri Purushottamji" to commentaries.sriPurushottamji,
-        "Sri Shankaracharya" to commentaries.sriShankaracharya,
-        "Sri Vallabhacharya" to commentaries.sriVallabhacharya,
-        "Swami Sivananda" to commentaries.swamiSivananda,
-        "Swami Gambirananda" to commentaries.swamiGambirananda,
-        "Dr. S Sankaranarayan" to commentaries.drSSankaranarayan,
-        "Swami Adidevananda" to commentaries.swamiAdidevananda
-    )
+fun CommentariesDisplay(commentaries: Commentaries, onCopy: (String) -> Unit, fontSize: Float) {
+    val commentaryMap =
+        mapOf(
+            "Swami Ramsukhdas" to commentaries.swamiRamsukhdas,
+            "Sri Harikrishnadas Goenka" to commentaries.sriHarikrishnadasGoenka,
+            "Sri Anandgiri" to commentaries.sriAnandgiri,
+            "Sri Dhanpati" to commentaries.sriDhanpati,
+            "Sri Madhavacharya" to commentaries.sriMadhavacharya,
+            "Sri Neelkanth" to commentaries.sriNeelkanth,
+            "Sri Ramanuja" to commentaries.sriRamanuja,
+            "Sri Sridhara Swami" to commentaries.sriSridharaSwami,
+            "Sri Vedantadeshikacharya Venkatanatha" to
+                commentaries.sriVedantadeshikacharyaVenkatanatha,
+            "Swami Chinmayananda" to commentaries.swamiChinmayananda,
+            "Sri Abhinavgupta" to commentaries.sriAbhinavgupta,
+            "Sri Jayatritha" to commentaries.sriJayatritha,
+            "Sri Madhusudan Saraswati" to commentaries.sriMadhusudanSaraswati,
+            "Sri Purushottamji" to commentaries.sriPurushottamji,
+            "Sri Shankaracharya" to commentaries.sriShankaracharya,
+            "Sri Vallabhacharya" to commentaries.sriVallabhacharya,
+            "Swami Sivananda" to commentaries.swamiSivananda,
+            "Swami Gambirananda" to commentaries.swamiGambirananda,
+            "Dr. S Sankaranarayan" to commentaries.drSSankaranarayan,
+            "Swami Adidevananda" to commentaries.swamiAdidevananda,
+        )
 
     Card(shape = MaterialTheme.shapes.large) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
         ) {
             Text(
                 text = stringResource(Res.string.commentaries),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
 
             Spacer(modifier = Modifier.padding(6.dp))
 
-            Column(
-                modifier = Modifier.clip(MaterialTheme.shapes.medium)
-            ) {
+            Column(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
                 commentaryMap.forEach { (key, value) ->
                     if (!value.isNullOrEmpty()) {
                         DialogPeek(
                             title = key,
                             content = value,
                             onCopy = onCopy,
-                            fontSize = fontSize
+                            fontSize = fontSize,
                         )
                     }
                 }

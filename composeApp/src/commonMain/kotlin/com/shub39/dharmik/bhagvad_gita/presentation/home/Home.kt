@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.home
 
 import androidx.compose.animation.core.tween
@@ -49,137 +65,134 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun Home(
-    onNavigateToVerses: () -> Unit,
-    homeState: HomeState,
-    onAction: (HomeAction) -> Unit
-) = PageFill {
-    val homeNavController = rememberNavController()
+fun Home(onNavigateToVerses: () -> Unit, homeState: HomeState, onAction: (HomeAction) -> Unit) =
+    PageFill {
+        val homeNavController = rememberNavController()
 
-    var currentDest: HomeRoutes by remember { mutableStateOf(HomeRoutes.HomeSection) }
+        var currentDest: HomeRoutes by remember { mutableStateOf(HomeRoutes.HomeSection) }
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            listOf(
-                HomeRoutes.HomeSection,
-                HomeRoutes.ChaptersSection,
-                HomeRoutes.SettingsSection
-            ).forEach { route ->
-                item(
-                    selected = currentDest == route,
-                    onClick = {
-                        if (currentDest != route) {
-                            homeNavController.navigate(route) {
-                                launchSingleTop = true
-                                popUpTo(HomeRoutes.HomeSection)
-                            }
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = when (route) {
-                                HomeRoutes.HomeSection -> Icons.Rounded.Home
-                                HomeRoutes.ChaptersSection -> Icons.Rounded.Book
-                                HomeRoutes.SettingsSection -> Icons.Default.Settings
-                            },
-                            contentDescription = "Sections",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    alwaysShowLabel = false,
-                    label = {
-                        Text(
-                            text = stringResource(
-                                when (route) {
-                                    HomeRoutes.HomeSection -> Res.string.home
-                                    HomeRoutes.ChaptersSection -> Res.string.chapters
-                                    HomeRoutes.SettingsSection -> Res.string.settings
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                listOf(
+                        HomeRoutes.HomeSection,
+                        HomeRoutes.ChaptersSection,
+                        HomeRoutes.SettingsSection,
+                    )
+                    .forEach { route ->
+                        item(
+                            selected = currentDest == route,
+                            onClick = {
+                                if (currentDest != route) {
+                                    homeNavController.navigate(route) {
+                                        launchSingleTop = true
+                                        popUpTo(HomeRoutes.HomeSection)
+                                    }
                                 }
-                            )
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector =
+                                        when (route) {
+                                            HomeRoutes.HomeSection -> Icons.Rounded.Home
+                                            HomeRoutes.ChaptersSection -> Icons.Rounded.Book
+                                            HomeRoutes.SettingsSection -> Icons.Default.Settings
+                                        },
+                                    contentDescription = "Sections",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            alwaysShowLabel = false,
+                            label = {
+                                Text(
+                                    text =
+                                        stringResource(
+                                            when (route) {
+                                                HomeRoutes.HomeSection -> Res.string.home
+                                                HomeRoutes.ChaptersSection -> Res.string.chapters
+                                                HomeRoutes.SettingsSection -> Res.string.settings
+                                            }
+                                        )
+                                )
+                            },
                         )
                     }
-                )
             }
-        },
-    ) {
-        Scaffold(
-            modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                LargeFlexibleTopAppBar(
-                    title = {
-                        Text(stringResource(Res.string.app_name))
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        scrolledContainerColor = MaterialTheme.colorScheme.background
-                    ),
-                    actions = {
-                        val uriHandler = LocalUriHandler.current
+        ) {
+            Scaffold(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                topBar = {
+                    LargeFlexibleTopAppBar(
+                        title = { Text(stringResource(Res.string.app_name)) },
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                scrolledContainerColor = MaterialTheme.colorScheme.background
+                            ),
+                        actions = {
+                            val uriHandler = LocalUriHandler.current
 
-                        IconButton(
-                            onClick = {
-                                uriHandler.openUri("https://github.com/shub39/Dharmik")
+                            IconButton(
+                                onClick = {
+                                    uriHandler.openUri("https://github.com/shub39/Dharmik")
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = FontAwesomeIcons.Brands.Github,
+                                    contentDescription = "Github",
+                                    modifier = Modifier.size(24.dp),
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Brands.Github,
-                                contentDescription = "Github",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
 
-                        IconButton(
-                            onClick = {
-                                uriHandler.openUri("https://buymeacoffee.com/shub39")
+                            IconButton(
+                                onClick = { uriHandler.openUri("https://buymeacoffee.com/shub39") }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Coffee,
+                                    contentDescription = "Github",
+                                    modifier = Modifier.size(24.dp),
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Coffee,
-                                contentDescription = "Github",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
+                        },
+                        scrollBehavior = scrollBehavior,
+                    )
+                },
+            ) { padding ->
+                NavHost(
+                    modifier = Modifier.padding(padding),
+                    navController = homeNavController,
+                    startDestination = HomeRoutes.HomeSection,
+                    enterTransition = {
+                        slideInVertically(tween(300), initialOffsetY = { it / 2 })
                     },
-                    scrollBehavior = scrollBehavior,
-                )
-            }
-        ) { padding ->
-            NavHost(
-                modifier = Modifier.padding(padding),
-                navController = homeNavController,
-                startDestination = HomeRoutes.HomeSection,
-                enterTransition = { slideInVertically(tween(300), initialOffsetY = { it / 2 }) },
-                exitTransition = { fadeOut(tween(300)) },
-                popEnterTransition = { slideInVertically(tween(300), initialOffsetY = { it / 2 }) },
-                popExitTransition = { fadeOut(tween(300)) }
-            ) {
-                composable<HomeRoutes.HomeSection> {
-                    currentDest = HomeRoutes.HomeSection
-                    HomeSection(
-                        onNavigateToVerses = onNavigateToVerses,
-                        homeState = homeState,
-                        onAction = onAction
-                    )
-                }
+                    exitTransition = { fadeOut(tween(300)) },
+                    popEnterTransition = {
+                        slideInVertically(tween(300), initialOffsetY = { it / 2 })
+                    },
+                    popExitTransition = { fadeOut(tween(300)) },
+                ) {
+                    composable<HomeRoutes.HomeSection> {
+                        currentDest = HomeRoutes.HomeSection
+                        HomeSection(
+                            onNavigateToVerses = onNavigateToVerses,
+                            homeState = homeState,
+                            onAction = onAction,
+                        )
+                    }
 
-                composable<HomeRoutes.ChaptersSection> {
-                    currentDest = HomeRoutes.ChaptersSection
-                    ChaptersSection(
-                        onNavigateToVerses = onNavigateToVerses,
-                        state = homeState,
-                        onAction = onAction
-                    )
-                }
+                    composable<HomeRoutes.ChaptersSection> {
+                        currentDest = HomeRoutes.ChaptersSection
+                        ChaptersSection(
+                            onNavigateToVerses = onNavigateToVerses,
+                            state = homeState,
+                            onAction = onAction,
+                        )
+                    }
 
-                composable<HomeRoutes.SettingsSection> {
-                    currentDest = HomeRoutes.SettingsSection
-                    SettingsSection(
-                        state = homeState,
-                        onAction = onAction
-                    )
+                    composable<HomeRoutes.SettingsSection> {
+                        currentDest = HomeRoutes.SettingsSection
+                        SettingsSection(state = homeState, onAction = onAction)
+                    }
                 }
             }
         }
     }
-}

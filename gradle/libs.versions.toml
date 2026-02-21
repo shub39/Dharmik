@@ -25,6 +25,8 @@ composeIcons = "1.1.1"
 buildKonfig = "0.17.1"
 kotlinx-coroutines = "1.10.2"
 hotreload = "1.0.0-rc02"
+spotless = "8.2.1"
+ktfmt = "0.61"
 
 [libraries]
 # Jetbrains and Android
@@ -71,3 +73,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
