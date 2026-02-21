@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
@@ -17,25 +33,23 @@ import kotlinx.coroutines.launch
 class VersesViewModel(
     private val stateLayer: StateLayer,
     private val repo: BgRepo,
-    private val datastore: PreferencesRepo
+    private val datastore: PreferencesRepo,
 ) : ViewModel() {
 
     private val _state = stateLayer.versesState
 
-    val state = _state.asStateFlow()
-        .onStart {
-            _state.update {
-                it.copy(
-                    currentVerses = repo.getChapter(1).gitaVerses,
-                    verseCardState = stateLayer.homeState.value.verseCardState
-                )
+    val state =
+        _state
+            .asStateFlow()
+            .onStart {
+                _state.update {
+                    it.copy(
+                        currentVerses = repo.getChapter(1).gitaVerses,
+                        verseCardState = stateLayer.homeState.value.verseCardState,
+                    )
+                }
             }
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Companion.WhileSubscribed(5000),
-            _state.value
-        )
+            .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), _state.value)
 
     fun onAction(action: VersesAction) {
         viewModelScope.launch {
@@ -53,31 +67,18 @@ class VersesViewModel(
                 }
 
                 is VersesAction.SetVerseCardState -> {
-                    _state.update {
-                        it.copy(
-                            verseCardState = action.state,
-                            isPlaying = false
-                        )
-                    }
+                    _state.update { it.copy(verseCardState = action.state, isPlaying = false) }
 
                     _state.value.playerHost.pause()
                 }
 
                 is VersesAction.SetAutoPlay -> {
-                    _state.update {
-                        it.copy(
-                            autoPlay = action.autoPlay
-                        )
-                    }
+                    _state.update { it.copy(autoPlay = action.autoPlay) }
                 }
 
                 VersesAction.Pause -> {
                     _state.value.playerHost.pause()
-                    _state.update {
-                        it.copy(
-                            isPlaying = false
-                        )
-                    }
+                    _state.update { it.copy(isPlaying = false) }
                 }
 
                 is VersesAction.ChangeVerse -> {
@@ -85,11 +86,7 @@ class VersesViewModel(
                         _state.value.pagerState.animateScrollToPage(action.index)
                         _state.value.playerHost.pause()
 
-                        _state.update {
-                            it.copy(
-                                isPlaying = false
-                            )
-                        }
+                        _state.update { it.copy(isPlaying = false) }
 
                         if (_state.value.autoPlay) {
                             val audios = _state.value.audioFiles[action.index]
@@ -103,18 +100,14 @@ class VersesViewModel(
                             )
                             _state.value.playerHost.play()
 
-                            _state.update {
-                                it.copy(
-                                    isPlaying = true
-                                )
-                            }
+                            _state.update { it.copy(isPlaying = true) }
                         }
 
                         if (_state.value.saveBookMarks) {
                             datastore.setBgBookMark(
                                 LongPair(
                                     _state.value.currentVerses.first().chapter,
-                                    action.index.toLong()
+                                    action.index.toLong(),
                                 )
                             )
                         }
@@ -132,11 +125,7 @@ class VersesViewModel(
                         }
                     )
                     _state.value.playerHost.play()
-                    _state.update {
-                        it.copy(
-                            isPlaying = true
-                        )
-                    }
+                    _state.update { it.copy(isPlaying = true) }
                 }
             }
         }

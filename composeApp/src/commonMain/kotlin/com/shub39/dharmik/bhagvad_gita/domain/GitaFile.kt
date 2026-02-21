@@ -1,109 +1,69 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.domain
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GitaFile (
-    @SerialName("BhagavadGitaChapter")
-    val gitaVerses: List<GitaVerse>
-)
+data class GitaFile(@SerialName("BhagavadGitaChapter") val gitaVerses: List<GitaVerse>)
 
 @Serializable
-data class GitaVerse (
+data class GitaVerse(
     val chapter: Long,
     val verse: Long,
     val text: String,
     val commentaries: Commentaries,
-    val translations: Translations
+    val translations: Translations,
 )
 
 @Serializable
-data class Commentaries (
-    @SerialName("Swami Ramsukhdas")
-    val swamiRamsukhdas: String = "",
-
-    @SerialName("Sri Harikrishnadas Goenka")
-    val sriHarikrishnadasGoenka: String = "",
-
-    @SerialName("Sri Anandgiri")
-    val sriAnandgiri: String = "",
-
-    @SerialName("Sri Dhanpati")
-    val sriDhanpati: String = "",
-
-    @SerialName("Sri Madhavacharya")
-    val sriMadhavacharya: String = "",
-
-    @SerialName("Sri Neelkanth")
-    val sriNeelkanth: String = "",
-
-    @SerialName("Sri Ramanuja")
-    val sriRamanuja: String = "",
-
-    @SerialName("Sri Sridhara Swami")
-    val sriSridharaSwami: String = "",
-
+data class Commentaries(
+    @SerialName("Swami Ramsukhdas") val swamiRamsukhdas: String = "",
+    @SerialName("Sri Harikrishnadas Goenka") val sriHarikrishnadasGoenka: String = "",
+    @SerialName("Sri Anandgiri") val sriAnandgiri: String = "",
+    @SerialName("Sri Dhanpati") val sriDhanpati: String = "",
+    @SerialName("Sri Madhavacharya") val sriMadhavacharya: String = "",
+    @SerialName("Sri Neelkanth") val sriNeelkanth: String = "",
+    @SerialName("Sri Ramanuja") val sriRamanuja: String = "",
+    @SerialName("Sri Sridhara Swami") val sriSridharaSwami: String = "",
     @SerialName("Sri Vedantadeshikacharya Venkatanatha")
     val sriVedantadeshikacharyaVenkatanatha: String = "",
-
-    @SerialName("Swami Chinmayananda")
-    val swamiChinmayananda: String = "",
-
-    @SerialName("Sri Abhinavgupta")
-    val sriAbhinavgupta: String = "",
-
-    @SerialName("Sri Jayatritha")
-    val sriJayatritha: String = "",
-
-    @SerialName("Sri Madhusudan Saraswati")
-    val sriMadhusudanSaraswati: String = "",
-
-    @SerialName("Sri Purushottamji")
-    val sriPurushottamji: String = "",
-
-    @SerialName("Sri Shankaracharya")
-    val sriShankaracharya: String = "",
-
-    @SerialName("Sri Vallabhacharya")
-    val sriVallabhacharya: String = "",
-
-    @SerialName("Swami Sivananda")
-    val swamiSivananda: String? = null,
-
-    @SerialName("Swami Gambirananda")
-    val swamiGambirananda: String? = null,
-
-    @SerialName("Dr. S. Sankaranarayan")
-    val drSSankaranarayan: String = "",
-
-    @SerialName("Swami Adidevananda")
-    val swamiAdidevananda: String = ""
+    @SerialName("Swami Chinmayananda") val swamiChinmayananda: String = "",
+    @SerialName("Sri Abhinavgupta") val sriAbhinavgupta: String = "",
+    @SerialName("Sri Jayatritha") val sriJayatritha: String = "",
+    @SerialName("Sri Madhusudan Saraswati") val sriMadhusudanSaraswati: String = "",
+    @SerialName("Sri Purushottamji") val sriPurushottamji: String = "",
+    @SerialName("Sri Shankaracharya") val sriShankaracharya: String = "",
+    @SerialName("Sri Vallabhacharya") val sriVallabhacharya: String = "",
+    @SerialName("Swami Sivananda") val swamiSivananda: String? = null,
+    @SerialName("Swami Gambirananda") val swamiGambirananda: String? = null,
+    @SerialName("Dr. S. Sankaranarayan") val drSSankaranarayan: String = "",
+    @SerialName("Swami Adidevananda") val swamiAdidevananda: String = "",
 )
 
 @Serializable
-data class Translations (
-    @SerialName("sri harikrishnadas goenka")
-    val sriHarikrishnadasGoenka: String = "",
-
-    @SerialName("swami ramsukhdas")
-    val swamiRamsukhdas: String = "",
-
-    @SerialName("swami tejomayananda")
-    val swamiTejomayananda: String = "",
-
-    @SerialName("swami adidevananda")
-    val swamiAdidevananda: String = "",
-
-    @SerialName("swami gambirananda")
-    val swamiGambirananda: String = "",
-
-    @SerialName("swami sivananda")
-    val swamiSivananda: String = "",
-
-    @SerialName("dr. s. sankaranarayan")
-    val drSSankaranarayan: String = "",
-
-    @SerialName("shri purohit swami")
-    val shriPurohitSwami: String = ""
+data class Translations(
+    @SerialName("sri harikrishnadas goenka") val sriHarikrishnadasGoenka: String = "",
+    @SerialName("swami ramsukhdas") val swamiRamsukhdas: String = "",
+    @SerialName("swami tejomayananda") val swamiTejomayananda: String = "",
+    @SerialName("swami adidevananda") val swamiAdidevananda: String = "",
+    @SerialName("swami gambirananda") val swamiGambirananda: String = "",
+    @SerialName("swami sivananda") val swamiSivananda: String = "",
+    @SerialName("dr. s. sankaranarayan") val drSSankaranarayan: String = "",
+    @SerialName("shri purohit swami") val shriPurohitSwami: String = "",
 )

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.verses.components
 
 import androidx.compose.foundation.clickable
@@ -33,60 +49,52 @@ import compose.icons.fontawesomeicons.solid.Eye
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogPeek(
-    title: String,
-    content: String,
-    onCopy: (String) -> Unit,
-    fontSize: Float = 16f
-) {
+fun DialogPeek(title: String, content: String, onCopy: (String) -> Unit, fontSize: Float = 16f) {
     var showComplete by remember { mutableStateOf(false) }
 
     ListItem(
         modifier = Modifier.clickable { showComplete = true },
-        colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            headlineColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
+        colors =
+            ListItemDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                headlineColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
         headlineContent = {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         },
         trailingContent = {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Eye,
                 contentDescription = "Show",
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
-        }
+        },
     )
 
     if (showComplete) {
-        ModalBottomSheet(
-            onDismissRequest = { showComplete = false }
-        ) {
+        ModalBottomSheet(onDismissRequest = { showComplete = false }) {
             LazyColumn(
                 modifier = Modifier.heightIn(max = 500.dp),
-                contentPadding = PaddingValues(24.dp)
+                contentPadding = PaddingValues(24.dp),
             ) {
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = title,
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
 
-                        IconButton(
-                            onClick = { onCopy(content) }
-                        ) {
+                        IconButton(onClick = { onCopy(content) }) {
                             Icon(
                                 imageVector = Icons.Rounded.ContentCopy,
                                 contentDescription = "Copy",
@@ -95,12 +103,7 @@ fun DialogPeek(
                     }
                 }
 
-                item {
-                    Text(
-                        text = content,
-                        fontSize = fontSize.sp
-                    )
-                }
+                item { Text(text = content, fontSize = fontSize.sp) }
             }
         }
     }

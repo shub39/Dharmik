@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -42,10 +58,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SettingsSection(
-    state: HomeState,
-    onAction: (HomeAction) -> Unit
-) {
+fun SettingsSection(state: HomeState, onAction: (HomeAction) -> Unit) {
     val listState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
 
@@ -61,65 +74,56 @@ fun SettingsSection(
                 value = state.fontSize,
                 valueRange = 12f..24f,
                 onValueChange = { onAction(HomeAction.SetFontSize(it)) },
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
 
         item {
             ListItem(
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.verse_state)
-                    )
-                },
+                headlineContent = { Text(text = stringResource(Res.string.verse_state)) },
                 supportingContent = {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = stringResource(Res.string.verse_state_desc)
-                        )
+                        Text(text = stringResource(Res.string.verse_state_desc))
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
+                        Row(
+                            horizontalArrangement =
+                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                        ) {
                             VerseCardState.entries.forEach { vcState ->
                                 ToggleButton(
                                     checked = vcState == state.verseCardState,
-                                    onCheckedChange = { onAction(HomeAction.OnSetVerseCardState(vcState)) },
-                                    modifier = Modifier.weight(1f)
+                                    onCheckedChange = {
+                                        onAction(HomeAction.OnSetVerseCardState(vcState))
+                                    },
+                                    modifier = Modifier.weight(1f),
                                 ) {
-                                    Text(
-                                        text = vcState.fullName
-                                    )
+                                    Text(text = vcState.fullName)
                                 }
                             }
                         }
                     }
                 },
-
             )
         }
 
         item {
             ListItem(
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.app_theme)
-                    )
-                },
+                headlineContent = { Text(text = stringResource(Res.string.app_theme)) },
                 supportingContent = {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = stringResource(Res.string.app_theme_desc)
-                        )
+                        Text(text = stringResource(Res.string.app_theme_desc))
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
+                        Row(
+                            horizontalArrangement =
+                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                        ) {
                             AppTheme.entries.forEach { theme ->
                                 ToggleButton(
                                     checked = theme == state.theme.appTheme,
                                     onCheckedChange = { onAction(HomeAction.OnSetAppTheme(theme)) },
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
                                 ) {
-                                    Text(
-                                        text = stringResource(theme.label)
-                                    )
+                                    Text(text = stringResource(theme.label))
                                 }
                             }
                         }
@@ -132,16 +136,8 @@ fun SettingsSection(
 
         item {
             ListItem(
-                headlineContent = {
-                    Text(
-                        text = "Dharmic Data"
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "by bhavyakhatri"
-                    )
-                },
+                headlineContent = { Text(text = "Dharmic Data") },
+                supportingContent = { Text(text = "by bhavyakhatri") },
                 trailingContent = {
                     Row {
                         FilledTonalIconButton(
@@ -152,39 +148,29 @@ fun SettingsSection(
                             Icon(
                                 imageVector = FontAwesomeIcons.Brands.Github,
                                 contentDescription = "Github",
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(20.dp),
                             )
                         }
                     }
-                }
+                },
             )
         }
 
         item {
             ListItem(
-                headlineContent = {
-                    Text(
-                        text = "Gita Supersite"
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text = "by IIT Kanpur"
-                    )
-                },
+                headlineContent = { Text(text = "Gita Supersite") },
+                supportingContent = { Text(text = "by IIT Kanpur") },
                 trailingContent = {
                     FilledTonalIconButton(
-                        onClick = {
-                            uriHandler.openUri("https://www.gitasupersite.iitk.ac.in/")
-                        }
+                        onClick = { uriHandler.openUri("https://www.gitasupersite.iitk.ac.in/") }
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Globe,
                             contentDescription = "Open In Browser",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp),
                         )
                     }
-                }
+                },
             )
         }
     }

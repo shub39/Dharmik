@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+import com.diffplug.gradle.spotless.SpotlessExtension
+
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -9,4 +27,30 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
+    alias(libs.plugins.spotless) apply false
+}
+
+allprojects {
+    apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
+    configure<SpotlessExtension> {
+        kotlin {
+            ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
+            target("src/**/*.kt")
+            targetExclude("${layout.buildDirectory}/**/*.kt")
+            licenseHeaderFile(rootProject.file("spotless/copyright.txt"))
+        }
+        kotlinGradle {
+            ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
+            target("*.kts")
+            targetExclude("${layout.buildDirectory}/**/*.kts")
+            licenseHeaderFile(rootProject.file("spotless/copyright.txt"), "(^(?![\\/ ]\\*).*$)")
+            toggleOffOn()
+        }
+        format("xml") {
+            target("src/**/*.xml")
+            targetExclude("**/build/", ".idea/")
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
 }

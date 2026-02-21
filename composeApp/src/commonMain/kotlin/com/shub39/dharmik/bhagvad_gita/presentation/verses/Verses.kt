@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.verses
 
 import androidx.compose.animation.AnimatedContent
@@ -62,11 +78,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun Verses(
-    state: VersesState,
-    action: (VersesAction) -> Unit,
-    onBack: () -> Unit
-) = PageFill {
+fun Verses(state: VersesState, action: (VersesAction) -> Unit, onBack: () -> Unit) = PageFill {
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -93,11 +105,7 @@ fun Verses(
         }
     }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            state.playerHost.pause()
-        }
-    }
+    DisposableEffect(Unit) { onDispose { state.playerHost.pause() } }
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -105,29 +113,28 @@ fun Verses(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (!state.saveBookMarks) {
-                            stringResource(Res.string.bhagvad_gita)
-                        } else {
-                            stringResource(
-                                Res.string.chapter_template,
-                                verses.first().chapter
-                            )
-                        }
+                        text =
+                            if (!state.saveBookMarks) {
+                                stringResource(Res.string.bhagvad_gita)
+                            } else {
+                                stringResource(Res.string.chapter_template, verses.first().chapter)
+                            }
                     )
                 },
                 actions = {
                     IconButton(
                         onClick = { action(VersesAction.SetAutoPlay(!state.autoPlay)) },
-                        colors = if (state.autoPlay) {
-                            IconButtonDefaults.filledTonalIconButtonColors()
-                        } else {
-                            IconButtonDefaults.iconButtonColors()
-                        }
+                        colors =
+                            if (state.autoPlay) {
+                                IconButtonDefaults.filledTonalIconButtonColors()
+                            } else {
+                                IconButtonDefaults.iconButtonColors()
+                            },
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.FastForward,
                             contentDescription = "Autoplay",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp),
                         )
                     }
                 },
@@ -140,10 +147,10 @@ fun Verses(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Go Back"
+                            contentDescription = "Go Back",
                         )
                     }
-                }
+                },
             )
         },
         bottomBar = {
@@ -153,64 +160,75 @@ fun Verses(
                 Row {
                     IconButton(
                         onClick = {
-                            action(VersesAction.ChangeVerse(state.pagerState.currentPage - 1, coroutineScope))
+                            action(
+                                VersesAction.ChangeVerse(
+                                    state.pagerState.currentPage - 1,
+                                    coroutineScope,
+                                )
+                            )
                         },
-                        enabled = state.pagerState.currentPage > 0
+                        enabled = state.pagerState.currentPage > 0,
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Previous"
+                            contentDescription = "Previous",
                         )
                     }
 
                     Slider(
                         modifier = Modifier.weight(1f),
                         value = sliderPosition,
-                        steps = when {
-                            verses.size > 100 -> (verses.size - 2) / 5
-                            verses.size > 50 -> (verses.size - 2) / 3
-                            else -> verses.size - 2
-                        }.coerceAtLeast(0),
+                        steps =
+                            when {
+                                verses.size > 100 -> (verses.size - 2) / 5
+                                verses.size > 50 -> (verses.size - 2) / 3
+                                else -> verses.size - 2
+                            }.coerceAtLeast(0),
                         valueRange = 0f..verses.size.toFloat().minus(1),
                         onValueChange = {
                             action(VersesAction.ChangeVerse(it.toInt(), coroutineScope))
-                        }
+                        },
                     )
 
                     IconButton(
                         onClick = {
-                            action(VersesAction.ChangeVerse(state.pagerState.currentPage + 1, coroutineScope))
+                            action(
+                                VersesAction.ChangeVerse(
+                                    state.pagerState.currentPage + 1,
+                                    coroutineScope,
+                                )
+                            )
                         },
-                        enabled = state.pagerState.currentPage < verses.size - 1
+                        enabled = state.pagerState.currentPage < verses.size - 1,
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                            contentDescription = "Next"
+                            contentDescription = "Next",
                         )
                     }
                 }
             }
-        }
+        },
     ) { padding ->
         HorizontalPager(
             state = state.pagerState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = padding
+            contentPadding = padding,
         ) { index ->
             val currentVerse = verses[index]
             val scrollState = rememberLazyListState()
 
             LazyColumn(
                 state = scrollState,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                        horizontalArrangement =
+                            Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                     ) {
                         VerseCardState.entries.forEach { vcState ->
                             ToggleButton(
@@ -218,7 +236,7 @@ fun Verses(
                                 onCheckedChange = {
                                     action(VersesAction.SetVerseCardState(vcState))
                                 },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
                             ) {
                                 Text(text = vcState.fullName)
                             }
@@ -227,9 +245,7 @@ fun Verses(
                 }
 
                 item {
-                    AnimatedContent(
-                        targetState = state.verseCardState
-                    ) { vcState ->
+                    AnimatedContent(targetState = state.verseCardState) { vcState ->
                         VerseCard(
                             verse = currentVerse,
                             fontSize = state.fontSize,
@@ -239,9 +255,7 @@ fun Verses(
                             action = action,
                             onClick = {},
                             onCopy = {
-                                coroutineScope.launch {
-                                    copyToClipboard(clipboardManager, it)
-                                }
+                                coroutineScope.launch { copyToClipboard(clipboardManager, it) }
                             },
                             playIcon = {
                                 IconButton(
@@ -254,16 +268,17 @@ fun Verses(
                                     }
                                 ) {
                                     Icon(
-                                        imageVector = if (state.isPlaying) {
-                                            FontAwesomeIcons.Solid.Pause
-                                        } else {
-                                            FontAwesomeIcons.Solid.Play
-                                        },
+                                        imageVector =
+                                            if (state.isPlaying) {
+                                                FontAwesomeIcons.Solid.Pause
+                                            } else {
+                                                FontAwesomeIcons.Solid.Play
+                                            },
                                         contentDescription = "Play/Pause",
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.size(20.dp),
                                     )
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -272,11 +287,9 @@ fun Verses(
                     TranslationsDisplay(
                         translations = currentVerse.translations,
                         onCopy = {
-                            coroutineScope.launch {
-                                copyToClipboard(clipboardManager, it)
-                            }
+                            coroutineScope.launch { copyToClipboard(clipboardManager, it) }
                         },
-                        fontSize = state.fontSize
+                        fontSize = state.fontSize,
                     )
                 }
 
@@ -284,17 +297,13 @@ fun Verses(
                     CommentariesDisplay(
                         commentaries = currentVerse.commentaries,
                         onCopy = {
-                            coroutineScope.launch {
-                                copyToClipboard(clipboardManager, it)
-                            }
+                            coroutineScope.launch { copyToClipboard(clipboardManager, it) }
                         },
-                        fontSize = state.fontSize
+                        fontSize = state.fontSize,
                     )
                 }
 
-                item {
-                    Spacer(modifier = Modifier.padding(16.dp))
-                }
+                item { Spacer(modifier = Modifier.padding(16.dp)) }
             }
         }
     }

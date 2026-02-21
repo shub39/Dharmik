@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.animation.animateContentSize
@@ -29,45 +45,41 @@ import org.jetbrains.compose.resources.stringResource
 fun ChaptersSection(
     onNavigateToVerses: () -> Unit,
     state: HomeState,
-    onAction: (HomeAction) -> Unit
+    onAction: (HomeAction) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .animateContentSize()
-            .fillMaxSize(),
+        modifier = Modifier.animateContentSize().fillMaxSize(),
         contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         items((1..state.chapters).toList(), key = { it }) { chapter ->
             ListItem(
-                modifier = Modifier
-                    .clickable {
+                modifier =
+                    Modifier.clickable {
                         onAction(HomeAction.ChapterChange(chapter))
                         onNavigateToVerses()
                     },
                 headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.chapter_template, chapter)
-                    )
+                    Text(text = stringResource(Res.string.chapter_template, chapter))
                 },
                 leadingContent = {
                     Icon(
                         imageVector = Icons.Rounded.Book,
                         contentDescription = "Chapter",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
                 },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
                         contentDescription = "Open Chapter",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
-                }
+                },
             )
         }
     }

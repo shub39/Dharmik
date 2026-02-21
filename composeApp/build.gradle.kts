@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -30,11 +46,7 @@ android {
         versionCode = appVersionCode
         versionName = appVersionName
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
     buildTypes {
         getByName("release") {
             resValue("string", "app_name", appName)
@@ -42,7 +54,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "src/commonMain/proguard-rules.pro"
+                "src/commonMain/proguard-rules.pro",
             )
         }
         debug {
@@ -55,9 +67,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildFeatures {
-        compose = true
-    }
+    buildFeatures { compose = true }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
@@ -75,15 +85,9 @@ kotlin {
 
     jvm("desktop")
 
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
+    androidTarget { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
 
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+    room { schemaDirectory("$projectDir/schemas") }
 
     sourceSets {
         val desktopMain by getting
@@ -125,15 +129,11 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
-        dependencies {
-            ksp(libs.androidx.room.compiler)
-        }
+        dependencies { ksp(libs.androidx.room.compiler) }
     }
 }
 
-dependencies {
-    debugImplementation(compose.uiTooling)
-}
+dependencies { debugImplementation(compose.uiTooling) }
 
 buildkonfig {
     packageName = appPackageName

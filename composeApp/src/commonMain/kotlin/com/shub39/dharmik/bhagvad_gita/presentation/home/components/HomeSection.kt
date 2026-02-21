@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.dharmik.bhagvad_gita.presentation.home.components
 
 import androidx.compose.animation.animateContentSize
@@ -41,7 +57,7 @@ import org.jetbrains.compose.resources.stringResource
 fun HomeSection(
     onNavigateToVerses: () -> Unit,
     homeState: HomeState,
-    onAction: (HomeAction) -> Unit
+    onAction: (HomeAction) -> Unit,
 ) = Box {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -49,65 +65,56 @@ fun HomeSection(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .animateContentSize()
-            .fillMaxSize(),
+        modifier = Modifier.animateContentSize().fillMaxSize(),
         contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             ListItem(
-                modifier = Modifier
-                    .clickable {
+                modifier =
+                    Modifier.clickable {
                         onAction(HomeAction.LoadBookMark)
                         onNavigateToVerses()
                     },
-                headlineContent = {
-                    Text(
-                        text = stringResource(Res.string.bookmark)
-                    )
-                },
+                headlineContent = { Text(text = stringResource(Res.string.bookmark)) },
                 supportingContent = {
                     Text(
-                        text = "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second.plus(1)}"
+                        text =
+                            "${homeState.currentBookMark.first} : ${homeState.currentBookMark.second.plus(1)}"
                     )
                 },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
                         contentDescription = "Open Bookmarks",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp),
                     )
                 },
                 leadingContent = {
                     Icon(
                         imageVector = Icons.Rounded.Bookmarks,
                         contentDescription = "Bookmarks",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp),
                     )
-                }
+                },
             )
         }
 
-        item {
-            HorizontalDivider()
-        }
+        item { HorizontalDivider() }
 
         item {
             ListItem(
                 headlineContent = {
                     Text(
-                        text = stringResource(
-                            Res.string.favorites_template,
-                            homeState.favorites.size
-                        ),
+                        text =
+                            stringResource(Res.string.favorites_template, homeState.favorites.size)
                     )
                 },
                 leadingContent = {
                     Icon(
                         imageVector = FontAwesomeIcons.Solid.Heart,
                         contentDescription = "Favorites",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
                 },
             )
@@ -115,9 +122,7 @@ fun HomeSection(
 
         items(homeState.favorites) { verse ->
             VerseCard(
-                modifier = Modifier
-                    .padding(vertical = 4.dp, horizontal = 16.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp).fillMaxWidth(),
                 verse = verse,
                 fontSize = homeState.fontSize,
                 state = homeState.verseCardState,
@@ -125,11 +130,7 @@ fun HomeSection(
                     onAction(HomeAction.LoadVerse(verse))
                     onNavigateToVerses()
                 },
-                onCopy = {
-                    coroutineScope.launch {
-                        copyToClipboard(clipboardManager, it)
-                    }
-                }
+                onCopy = { coroutineScope.launch { copyToClipboard(clipboardManager, it) } },
             )
         }
     }
