@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.dharmik.shared.logic.di
+
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.shub39.dharmik.shared.core.media.MediaPlayer
+import com.shub39.dharmik.shared.core.media.NoOpMediaPlayer
+import com.shub39.dharmik.shared.logic.data.BgDao
+import com.shub39.dharmik.shared.logic.data.DataStoreFactory
+import com.shub39.dharmik.shared.logic.data.DatabaseFactory
+import com.shub39.dharmik.shared.logic.data.DharmikDb
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
+
+@Module
+@ComponentScan("com.shub39.dharmik.shared.logic")
+class LogicModules {
+
+    @Single
+    fun getDharmikDb(factory: DatabaseFactory): DharmikDb =
+        factory
+            .create()
+            .fallbackToDestructiveMigration(true)
+            .fallbackToDestructiveMigrationOnDowngrade(true)
+            .setDriver(BundledSQLiteDriver())
+            .build()
+
+    @Single fun getBgDao(db: DharmikDb): BgDao = db.bgDao
+
+    @Single
+    fun getPreferencesDataStore(factory: DataStoreFactory): DataStore<Preferences> =
+        factory.getPreferencesDataStore()
+
+    // Audio playback is intentionally inert for now; a real implementation (with user-initiated
+    // downloads) will replace this stub later.
+    @Single fun getMediaPlayer(): MediaPlayer = NoOpMediaPlayer()
+}

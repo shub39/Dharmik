@@ -1,0 +1,20 @@
+[
+  {"chapter": 1, "title": "Arjuna Vishada Yoga", "verses": 47, "file": "bhagavad_gita_chapter_1.json"},
+  {"chapter": 2, "title": "Sankhya Yoga", "verses": 72, "file": "bhagavad_gita_chapter_2.json"},
+  {"chapter": 3, "title": "Karma Yoga", "verses": 43, "file": "bhagavad_gita_chapter_3.json"},
+  {"chapter": 4, "title": "Jnana Karma Sanyasa Yoga", "verses": 42, "file": "bhagavad_gita_chapter_4.json"},
+  {"chapter": 5, "title": "Karma Sanyasa Yoga", "verses": 29, "file": "bhagavad_gita_chapter_5.json"},
+  {"chapter": 6, "title": "Atma Samyama Yoga", "verses": 47, "file": "bhagavad_gita_chapter_6.json"},
+  {"chapter": 7, "title": "Jnana Vijnana Yoga", "verses": 30, "file": "bhagavad_gita_chapter_7.json"},
+  {"chapter": 8, "title": "Aksara Brahma Yoga", "verses": 28, "file": "bhagavad_gita_chapter_8.json"},
+  {"chapter": 9, "title": "Raja Vidya Raja Guhya Yoga", "verses": 34, "file": "bhagavad_gita_chapter_9.json"},
+  {"chapter": 10, "title": "Vibhuti Yoga", "verses": 42, "file": "bhagavad_gita_chapter_10.json"},
+  {"chapter": 11, "title": "Vishvarupa Darshana Yoga", "verses": 55, "file": "bhagavad_gita_chapter_11.json"},
+  {"chapter": 12, "title": "Bhakti Yoga", "verses": 20, "file": "bhagavad_gita_chapter_12.json"},
+  {"chapter": 13, "title": "Kshetra Kshetrajna Vibhaga Yoga", "verses": 35, "file": "bhagavad_gita_chapter_13.json"},
+  {"chapter": 14, "title": "Gunatraya Vibhaga Yoga", "verses": 27, "file": "bhagavad_gita_chapter_14.json"},
+  {"chapter": 15, "title": "Purushottama Yoga", "verses": 20, "file": "bhagavad_gita_chapter_15.json"},
+  {"chapter": 16, "title": "Daivasura Sampad Vibhaga Yoga", "verses": 24, "file": "bhagavad_gita_chapter_16.json"},
+  {"chapter": 17, "title": "Shraddhatraya Vibhaga Yoga", "verses": 28, "file": "bhagavad_gita_chapter_17.json"},
+  {"chapter": 18, "title": "Moksha Sanyasa Yoga", "verses": 78, "file": "bhagavad_gita_chapter_18.json"}
+]

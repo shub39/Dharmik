@@ -42,10 +42,9 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
-        maven("https://jogamp.org/deployment/maven")
     }
 }
 
-plugins { id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0" }
+include(":androidApp", ":desktopApp")
 
-include(":composeApp")
+include(":shared:ui", ":shared:core", ":shared:logic")
