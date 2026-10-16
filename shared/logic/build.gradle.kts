@@ -53,6 +53,9 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.coroutines)
 
+            implementation(libs.ktor.client.core)
+            implementation(libs.okio)
+
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.androidx.datastore.preferences.core)
@@ -63,8 +66,15 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.annotations)
         }
-        androidMain.dependencies { implementation(libs.koin.android) }
-        jvmMain.dependencies { implementation(libs.kotlinx.coroutines.swing) }
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.media3.exoplayer)
+        }
+        jvmMain.dependencies {
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.cio)
+        }
     }
 }
 

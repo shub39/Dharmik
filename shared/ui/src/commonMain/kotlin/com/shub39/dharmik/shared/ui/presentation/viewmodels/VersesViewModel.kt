@@ -18,14 +18,15 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.dharmik.shared.core.domain.Audios
+import com.shub39.dharmik.shared.core.domain.AudioRepository
 import com.shub39.dharmik.shared.core.domain.BgRepo
 import com.shub39.dharmik.shared.core.domain.LongPair
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
-import com.shub39.dharmik.shared.core.domain.VerseCardState
+import com.shub39.dharmik.shared.core.domain.audioVariant
 import com.shub39.dharmik.shared.core.media.MediaPlayer
 import com.shub39.dharmik.shared.core.media.MediaSource
 import com.shub39.dharmik.shared.ui.presentation.verses.VersesAction
+import com.shub39.dharmik.shared.ui.presentation.verses.VersesState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -41,6 +42,7 @@ class VersesViewModel(
     @Provided private val repo: BgRepo,
     @Provided private val datastore: PreferencesRepo,
     @Provided private val player: MediaPlayer,
+    @Provided private val audioRepository: AudioRepository,
 ) : ViewModel() {
 
     private val _state = stateLayer.versesState
@@ -97,7 +99,9 @@ class VersesViewModel(
                         _state.update { it.copy(isPlaying = false) }
 
                         if (_state.value.autoPlay) {
-                            player.setSource(_state.value.audioSourceFor(action.index))
+                            player.setSource(
+                                audioSourceFor(_state.value, action.index, audioRepository)
+                            )
                             player.play()
 
                             _state.update { it.copy(isPlaying = true) }
@@ -115,9 +119,10 @@ class VersesViewModel(
                 }
 
                 is VersesAction.Play -> {
-                    player.setSource(_state.value.audioSourceFor(action.index))
+                    _state.update { it.copy(isPreparing = true) }
+                    player.setSource(audioSourceFor(_state.value, action.index, audioRepository))
                     player.play()
-                    _state.update { it.copy(isPlaying = true) }
+                    _state.update { it.copy(isPlaying = true, isPreparing = false) }
                 }
             }
         }
@@ -125,21 +130,16 @@ class VersesViewModel(
 }
 
 /**
- * Resolves the audio URL for [index] in the currently selected language.
- *
- * Playback itself is stubbed out for now - audio is not bundled with the app and will become a user
- * initiated download later on.
+ * Resolves the playable source for [index], downloading the track from the legacy Gita Supersite
+ * host first when it is not already stored locally.
  */
-private fun com.shub39.dharmik.shared.ui.presentation.verses.VersesState.audioSourceFor(
-    index: Int
+private suspend fun audioSourceFor(
+    state: VersesState,
+    index: Int,
+    repository: AudioRepository,
 ): MediaSource {
-    val audios: Audios = audioFiles[index]
+    val verse = state.currentVerses.getOrNull(index) ?: state.currentVerses.first()
+    val uri = repository.resolve(verse.chapter, verse.verse, state.verseCardState.audioVariant)
 
-    return MediaSource.Url(
-        when (verseCardState) {
-            VerseCardState.ENGLISH -> audios.englishTranslation
-            VerseCardState.HINDI -> audios.hindiTranslation
-            VerseCardState.SANSKRIT -> audios.moolSloka
-        }
-    )
+    return MediaSource.Url(uri)
 }

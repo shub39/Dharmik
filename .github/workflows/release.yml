@@ -58,6 +58,24 @@ jobs:
 
           echo "Changelog extracted to commit.txt"
 
+      - name: Package Gita audio
+        run: |
+          ( cd gita/audio && zip -r -0 "$GITHUB_WORKSPACE/gita-audio.zip" . )
+
+          SIZE=$(stat -c%s gita-audio.zip)
+          SHA=$(sha256sum gita-audio.zip | awk '{print $1}')
+          FINGERPRINT=$(find gita/audio -type f -printf '%P %s\n' | sort | sha256sum | awk '{print $1}')
+
+          cat > gita-audio.json <<EOF
+          {
+            "version": "${FINGERPRINT}",
+            "file": "gita-audio.zip",
+            "sizeBytes": ${SIZE},
+            "sha256": "${SHA}",
+            "url": "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION_NAME }}/gita-audio.zip"
+          }
+          EOF
+
       - name: Cook KeyStore
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/signing-key.jks
 
@@ -94,7 +112,10 @@ jobs:
           tag_name: ${{ env.VERSION_NAME }}
           name: ${{ env.VERSION_NAME }}
           body_path: commit.txt
-          files: ${{ env.APK_PATH }}
+          files: |
+            ${{ env.APK_PATH }}
+            gita-audio.zip
+            gita-audio.json
 
       - name: Notify on Discord
         shell: bash

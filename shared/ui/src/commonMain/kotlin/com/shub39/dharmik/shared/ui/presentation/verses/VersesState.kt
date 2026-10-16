@@ -29,6 +29,7 @@ data class VersesState(
     val saveBookMarks: Boolean = true,
     val autoPlay: Boolean = false,
     val isPlaying: Boolean = false,
+    val isPreparing: Boolean = false,
     val favorites: List<GitaVerse> = emptyList(),
     val player: MediaPlayer = NoOpMediaPlayer(),
     val verseCardState: VerseCardState = VerseCardState.SANSKRIT,

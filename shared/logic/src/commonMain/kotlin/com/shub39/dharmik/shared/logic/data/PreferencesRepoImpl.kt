@@ -38,6 +38,7 @@ class PreferencesRepoImpl(private val dataStore: DataStore<Preferences>) : Prefe
         private val bgBookMarkKey = stringPreferencesKey("bg_bookmark")
         private val verseCardStateKey = stringPreferencesKey("verse_card_state")
         private val fontSizeKey = floatPreferencesKey("font_size")
+        private val bulkAudioVersionKey = stringPreferencesKey("bulk_audio_version")
     }
 
     override fun getAppTheme(): Flow<AppTheme> =
@@ -79,5 +80,15 @@ class PreferencesRepoImpl(private val dataStore: DataStore<Preferences>) : Prefe
 
     override suspend fun setFontSize(size: Float) {
         dataStore.edit { it[fontSizeKey] = size }
+    }
+
+    override fun getBulkAudioVersion(): Flow<String?> =
+        dataStore.data.map { it[bulkAudioVersionKey] }
+
+    override suspend fun setBulkAudioVersion(version: String?) {
+        dataStore.edit { prefs ->
+            if (version == null) prefs.remove(bulkAudioVersionKey)
+            else prefs[bulkAudioVersionKey] = version
+        }
     }
 }

@@ -34,4 +34,12 @@ sealed interface HomeAction {
     data object LoadBookMark : HomeAction
 
     data class LoadVerse(val verse: GitaVerse) : HomeAction
+
+    data object OnRefreshAudioManifest : HomeAction
+
+    data object OnDownloadAudio : HomeAction
+
+    data object OnCancelAudioDownload : HomeAction
+
+    data object OnDeleteAudio : HomeAction
 }

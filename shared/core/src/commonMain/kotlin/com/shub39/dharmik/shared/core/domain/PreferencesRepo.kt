@@ -34,4 +34,8 @@ interface PreferencesRepo {
     fun getFontSize(): Flow<Float>
 
     suspend fun setFontSize(size: Float)
+
+    fun getBulkAudioVersion(): Flow<String?>
+
+    suspend fun setBulkAudioVersion(version: String?)
 }

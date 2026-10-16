@@ -18,3 +18,21 @@ package com.shub39.dharmik.shared.core.domain
 
 val slokaNumbers: List<Int> =
     listOf(47, 72, 43, 42, 29, 47, 30, 28, 34, 42, 55, 20, 35, 27, 20, 24, 28, 78)
+
+// ---- Audio sources ---------------------------------------------------------
+
+/** GitHub repository that publishes the bulk audio asset. */
+const val DHARMIK_REPO = "shub39/Dharmik"
+
+/** Base URL of the GitHub Releases page (stable `latest/download` path). */
+const val GITHUB_RELEASES_URL = "https://github.com/$DHARMIK_REPO/releases"
+
+/** Manifest describing the current bulk audio asset. */
+const val GITA_AUDIO_MANIFEST_URL = "$GITHUB_RELEASES_URL/latest/download/gita-audio.json"
+
+/**
+ * Legacy Gita Supersite host that still serves the per-verse MP3s.
+ *
+ * The modern `www.gitasupersite.iitk.ac.in` host now returns a landing page instead of media.
+ */
+const val GITA_AUDIO_BASE_URL = "https://old.gitasupersite.in/sites/default/files/audio"

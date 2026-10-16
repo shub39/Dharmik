@@ -20,11 +20,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.shub39.dharmik.shared.core.media.MediaPlayer
-import com.shub39.dharmik.shared.core.media.NoOpMediaPlayer
+import com.shub39.dharmik.shared.core.media.MediaPlayerFactory
 import com.shub39.dharmik.shared.logic.data.BgDao
 import com.shub39.dharmik.shared.logic.data.DataStoreFactory
 import com.shub39.dharmik.shared.logic.data.DatabaseFactory
 import com.shub39.dharmik.shared.logic.data.DharmikDb
+import io.ktor.client.HttpClient
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -48,7 +49,7 @@ class LogicModules {
     fun getPreferencesDataStore(factory: DataStoreFactory): DataStore<Preferences> =
         factory.getPreferencesDataStore()
 
-    // Audio playback is intentionally inert for now; a real implementation (with user-initiated
-    // downloads) will replace this stub later.
-    @Single fun getMediaPlayer(): MediaPlayer = NoOpMediaPlayer()
+    @Single fun getHttpClient(): HttpClient = HttpClient()
+
+    @Single fun getMediaPlayer(factory: MediaPlayerFactory): MediaPlayer = factory.create()
 }

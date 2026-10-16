@@ -19,6 +19,7 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.dharmik.shared.core.domain.AudioBulkRepo
 import com.shub39.dharmik.shared.core.domain.BgRepo
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.ui.presentation.home.HomeAction
@@ -39,6 +40,7 @@ class HomeViewModel(
     @Provided private val repo: BgRepo,
     @Provided private val stateLayer: StateLayer,
     @Provided private val datastore: PreferencesRepo,
+    @Provided private val audioRepo: AudioBulkRepo,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -115,6 +117,14 @@ class HomeViewModel(
                 is HomeAction.OnSetVerseCardState -> datastore.setVerseCardState(action.state)
 
                 is HomeAction.SetFontSize -> datastore.setFontSize(action.fontSize)
+
+                HomeAction.OnRefreshAudioManifest -> audioRepo.refresh()
+
+                HomeAction.OnDownloadAudio -> audioRepo.start()
+
+                HomeAction.OnCancelAudioDownload -> audioRepo.cancel()
+
+                HomeAction.OnDeleteAudio -> audioRepo.delete()
             }
         }
 
@@ -156,6 +166,12 @@ class HomeViewModel(
                     .getVerseCardState()
                     .onEach { state -> _state.update { it.copy(verseCardState = state) } }
                     .launchIn(this)
+
+                audioRepo.state
+                    .onEach { bulk -> _state.update { it.copy(bulkAudio = bulk) } }
+                    .launchIn(this)
+
+                launch { audioRepo.refresh() }
             }
         }
 }
