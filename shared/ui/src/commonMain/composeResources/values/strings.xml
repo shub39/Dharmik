@@ -16,7 +16,8 @@
     <string name="commentaries">Commentaries</string>
     <string name="translations">Translations</string>
     <string name="chapter_template">Chapter %1$d</string>
-    <string name="favorites_template">%1$d Favorites</string>
+    <string name="favorites">Favorites</string>
+    <string name="favorites_empty">Verses you like will appear here</string>
     <string name="verses_alt_template">Verse %1$d</string>
     <string name="verses_font_size">Verses Font size</string>
     <string name="offline_audio">Offline audio</string>

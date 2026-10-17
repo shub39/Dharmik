@@ -50,18 +50,7 @@ class HomeViewModel(
             .onStart { observeState() }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
-    fun onAction(action: HomeAction) =
-        viewModelScope.launch {
-            when (action) {
-                is HomeAction.SetFave -> {
-                    if (_state.value.favorites.contains(action.verse)) {
-                        repo.deleteFave(action.verse)
-                    } else {
-                        repo.setFave(action.verse)
-                    }
-                }
-            }
-        }
+    fun onAction(action: HomeAction) = viewModelScope.launch {}
 
     private fun observeState() =
         viewModelScope.launch {

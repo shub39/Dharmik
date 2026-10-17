@@ -112,7 +112,6 @@ private fun EntryProviderScope<Route>.homeScreens(stack: TopLevelBackStack) {
 
         Home(
             state = state,
-            onAction = viewModel::onAction,
             onNavigateToSettings = { stack.add(Settings) },
             onNavigateToVerses = { stack.add(it) },
         )

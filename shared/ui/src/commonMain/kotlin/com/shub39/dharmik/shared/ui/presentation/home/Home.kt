@@ -18,51 +18,59 @@ package com.shub39.dharmik.shared.ui.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.shub39.dharmik.shared.core.domain.VerseCardState.ENGLISH
+import com.shub39.dharmik.shared.core.domain.VerseCardState.HINDI
+import com.shub39.dharmik.shared.core.domain.VerseCardState.SANSKRIT
 import com.shub39.dharmik.shared.ui.navigation.Verses
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
-import com.shub39.dharmik.shared.ui.presentation.components.VerseCard
+import com.shub39.dharmik.shared.ui.presentation.removeExtraLineBreaks
+import com.shub39.dharmik.shared.ui.segmentedListItemShapes
+import com.shub39.dharmik.shared.ui.theme.getHindiFont
+import com.shub39.dharmik.shared.ui.theme.getSanskritFont
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
-import com.shub39.dharmik.shared.ui.util.copyToClipboard
 import dharmik.shared.ui.generated.resources.Res
 import dharmik.shared.ui.generated.resources.app_name
 import dharmik.shared.ui.generated.resources.arrow_forward_ios
 import dharmik.shared.ui.generated.resources.bookmark
 import dharmik.shared.ui.generated.resources.favorite
-import dharmik.shared.ui.generated.resources.favorites_template
+import dharmik.shared.ui.generated.resources.favorites
+import dharmik.shared.ui.generated.resources.favorites_empty
 import dharmik.shared.ui.generated.resources.settings
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -71,14 +79,10 @@ import org.jetbrains.compose.resources.vectorResource
 fun Home(
     modifier: Modifier = Modifier,
     state: HomeState,
-    onAction: (HomeAction) -> Unit,
     onNavigateToVerses: (Verses) -> Unit,
     onNavigateToSettings: () -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
-        val coroutineScope = rememberCoroutineScope()
-        val clipboardManager = LocalClipboard.current
-
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Scaffold(
             modifier =
@@ -116,11 +120,11 @@ fun Home(
                         bottom = padding.calculateBottomPadding() + 60.dp,
                         start = padding.calculateStartPadding(LocalLayoutDirection.current) + 8.dp,
                         end = padding.calculateEndPadding(LocalLayoutDirection.current) + 8.dp,
-                    )
+                    ),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 item {
-                    Card(
-                        shape = MaterialTheme.shapes.large,
+                    ListItem(
                         onClick = {
                             onNavigateToVerses(
                                 Verses(
@@ -130,78 +134,68 @@ fun Home(
                                 )
                             )
                         },
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
+                        leadingContent = {
                             Icon(
                                 imageVector = vectorResource(Res.drawable.bookmark),
                                 contentDescription = null,
-                                tint = colorScheme.primary,
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                        },
+                        content = { Text(text = stringResource(Res.string.bookmark)) },
+                        supportingContent = {
+                            val chapter = state.currentBookMark.first
+                            val verse = state.currentBookMark.second.plus(1)
+                            Text(
+                                text = "Chapter $chapter, Verse $verse",
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                        },
+                        trailingContent = {
+                            Icon(
+                                imageVector = vectorResource(Res.drawable.arrow_forward_ios),
+                                contentDescription = null,
+                            )
+                        },
+                    )
+                }
 
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Continue Reading",
-                                    style = MaterialTheme.typography.titleMedium,
-                                )
-                                val chapter = state.currentBookMark.first
-                                val verse = state.currentBookMark.second.plus(1)
-                                Text(
-                                    text = "Chapter $chapter, Verse $verse",
-                                    style = MaterialTheme.typography.labelMedium,
-                                )
-                            }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
 
-                            IconButton(
-                                onClick = {
-                                    onNavigateToVerses(
-                                        Verses(
-                                            chapter = state.currentBookMark.first,
-                                            verse = state.currentBookMark.second,
-                                            saveBookmarks = true,
-                                        )
-                                    )
-                                }
+                if (state.favorites.isEmpty()) {
+                    item {
+                        Column(
+                            modifier =
+                                Modifier.heightIn(min = 400.dp)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Box(
+                                modifier =
+                                    Modifier.size(48.dp)
+                                        .background(
+                                            color = colorScheme.primaryContainer,
+                                            shape = MaterialShapes.Sunny.toShape(),
+                                        ),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
-                                    imageVector = vectorResource(Res.drawable.arrow_forward_ios),
-                                    contentDescription = null,
+                                    painter = painterResource(Res.drawable.favorite),
+                                    contentDescription = "Favorites",
+                                    tint = colorScheme.onPrimaryContainer,
                                 )
                             }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = stringResource(Res.string.favorites_empty),
+                                textAlign = TextAlign.Center,
+                            )
                         }
                     }
                 }
 
-                item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.favorite),
-                            contentDescription = "Favorites",
-                        )
-                        Text(
-                            text =
-                                stringResource(Res.string.favorites_template, state.favorites.size),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
-                }
-
-                items(state.favorites) { verse ->
-                    VerseCard(
-                        modifier =
-                            Modifier.padding(vertical = 4.dp, horizontal = 16.dp).fillMaxWidth(),
-                        verse = verse,
-                        fontSize = state.fontSize,
-                        state = state.verseCardState,
-                        isFave = true,
-                        onToggleFave = { onAction(HomeAction.SetFave(verse)) },
+                itemsIndexed(state.favorites) { index, verse ->
+                    SegmentedListItem(
                         onClick = {
                             onNavigateToVerses(
                                 Verses(
@@ -211,7 +205,31 @@ fun Home(
                                 )
                             )
                         },
-                        onCopy = { coroutineScope.launch { copyToClipboard(clipboardManager, it) } },
+                        colors =
+                            ListItemDefaults.colors(containerColor = colorScheme.surfaceContainer),
+                        content = {
+                            Text(
+                                text =
+                                    when (state.verseCardState) {
+                                        ENGLISH -> verse.translations.shriPurohitSwami
+                                        HINDI -> verse.translations.swamiTejomayananda
+                                        SANSKRIT -> verse.text
+                                    }.removeExtraLineBreaks(),
+                                fontFamily =
+                                    when (state.verseCardState) {
+                                        ENGLISH,
+                                        HINDI -> getHindiFont()
+                                        SANSKRIT -> getSanskritFont()
+                                    },
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = "Chapter ${verse.chapter}, Verse ${verse.verse}",
+                                color = colorScheme.primary,
+                            )
+                        },
+                        shapes = segmentedListItemShapes(index, state.favorites.size),
                     )
                 }
             }

@@ -16,9 +16,4 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.home
 
-import com.shub39.dharmik.shared.core.domain.GitaVerse
-
-sealed interface HomeAction {
-    /** Adds [verse] to the favourites, or removes it when it is already a favourite. */
-    data class SetFave(val verse: GitaVerse) : HomeAction
-}
+sealed interface HomeAction {}

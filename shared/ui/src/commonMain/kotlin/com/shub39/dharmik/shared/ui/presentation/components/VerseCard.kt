@@ -76,7 +76,11 @@ fun VerseCard(
                     isFave?.let {
                         IconButton(onClick = onToggleFave) {
                             Icon(
-                                painter = painterResource(Res.drawable.favorite),
+                                painter =
+                                    painterResource(
+                                        if (it) Res.drawable.favorite
+                                        else Res.drawable.favorite_border
+                                    ),
                                 contentDescription = "Favorite",
                                 modifier = Modifier.size(20.dp),
                             )
