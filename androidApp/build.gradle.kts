@@ -131,21 +131,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.compose.material3)
-    implementation(libs.compose.runtime)
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.components.resources)
-    implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.ui.tooling.preview)
-
-    implementation(libs.jetbrains.navigation3.ui)
-    implementation(libs.compose.windowsizeclass)
-
-    implementation(libs.androidx.datastore.preferences.core)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.serialization.json)
-
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.koin.compose)

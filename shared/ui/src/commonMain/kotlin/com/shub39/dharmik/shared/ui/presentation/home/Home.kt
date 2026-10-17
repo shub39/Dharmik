@@ -16,164 +16,114 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.home
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
-import com.shub39.dharmik.shared.ui.navigation.HomeRoutes
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
-import com.shub39.dharmik.shared.ui.presentation.home.components.ChaptersSection
-import com.shub39.dharmik.shared.ui.presentation.home.components.HomeSection
-import com.shub39.dharmik.shared.ui.presentation.home.components.SettingsSection
+import com.shub39.dharmik.shared.ui.presentation.components.VerseCard
+import com.shub39.dharmik.shared.ui.util.copyToClipboard
 import dharmik.shared.ui.generated.resources.Res
-import dharmik.shared.ui.generated.resources.app_name
-import dharmik.shared.ui.generated.resources.book
-import dharmik.shared.ui.generated.resources.buymeacoffee
-import dharmik.shared.ui.generated.resources.chapters
-import dharmik.shared.ui.generated.resources.github
-import dharmik.shared.ui.generated.resources.home
-import dharmik.shared.ui.generated.resources.settings
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
+import dharmik.shared.ui.generated.resources.arrow_forward_ios
+import dharmik.shared.ui.generated.resources.bookmark
+import dharmik.shared.ui.generated.resources.favorite
+import dharmik.shared.ui.generated.resources.favorites_template
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun Home(onNavigateToVerses: () -> Unit, homeState: HomeState, onAction: (HomeAction) -> Unit) =
+fun Home(onNavigateToVerses: () -> Unit, state: HomeState, onAction: (HomeAction) -> Unit) =
     PageFill {
-        var currentDest: HomeRoutes by remember { mutableStateOf(HomeRoutes.HomeSection) }
+        val listState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+        val clipboardManager = LocalClipboard.current
 
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-        NavigationSuiteScaffold(
-            navigationSuiteItems = {
-                listOf(
-                        HomeRoutes.HomeSection,
-                        HomeRoutes.ChaptersSection,
-                        HomeRoutes.SettingsSection,
-                    )
-                    .forEach { route ->
-                        item(
-                            selected = currentDest == route,
-                            onClick = { currentDest = route },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(route.iconRes()),
-                                    contentDescription = "Sections",
-                                    modifier = Modifier.size(24.dp),
-                                )
-                            },
-                            alwaysShowLabel = false,
-                            label = { Text(text = stringResource(route.labelRes())) },
-                        )
-                    }
-            }
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.animateContentSize().fillMaxSize(),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Scaffold(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                topBar = {
-                    LargeFlexibleTopAppBar(
-                        title = { Text(stringResource(Res.string.app_name)) },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                scrolledContainerColor = MaterialTheme.colorScheme.background
-                            ),
-                        actions = {
-                            val uriHandler = LocalUriHandler.current
-
-                            IconButton(
-                                onClick = {
-                                    uriHandler.openUri("https://github.com/shub39/Dharmik")
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.github),
-                                    contentDescription = "Github",
-                                    modifier = Modifier.size(24.dp),
-                                )
-                            }
-
-                            IconButton(
-                                onClick = { uriHandler.openUri("https://buymeacoffee.com/shub39") }
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.buymeacoffee),
-                                    contentDescription = "Buy me a coffee",
-                                    modifier = Modifier.size(24.dp),
-                                )
-                            }
+            item {
+                ListItem(
+                    modifier =
+                        Modifier.clickable {
+                            onAction(LoadBookMark)
+                            onNavigateToVerses()
                         },
-                        scrollBehavior = scrollBehavior,
-                    )
-                },
-            ) { padding ->
-                AnimatedContent(
-                    targetState = currentDest,
-                    modifier = Modifier.padding(padding),
-                    transitionSpec = {
-                        (slideInVertically(tween(300), initialOffsetY = { it / 2 }) +
-                                fadeIn(tween(300)))
-                            .togetherWith(fadeOut(tween(300)))
+                    headlineContent = { Text(text = stringResource(Res.string.bookmark)) },
+                    supportingContent = {
+                        Text(
+                            text =
+                                "${state.currentBookMark.first} : ${state.currentBookMark.second.plus(1)}"
+                        )
                     },
-                    label = "homeSections",
-                ) { dest ->
-                    when (dest) {
-                        HomeRoutes.HomeSection ->
-                            HomeSection(
-                                onNavigateToVerses = onNavigateToVerses,
-                                homeState = homeState,
-                                onAction = onAction,
-                            )
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(Res.drawable.arrow_forward_ios),
+                            contentDescription = "Open Bookmarks",
+                            modifier = Modifier.size(20.dp),
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(Res.drawable.bookmark),
+                            contentDescription = "Bookmarks",
+                            modifier = Modifier.size(20.dp),
+                        )
+                    },
+                )
+            }
 
-                        HomeRoutes.ChaptersSection ->
-                            ChaptersSection(
-                                onNavigateToVerses = onNavigateToVerses,
-                                state = homeState,
-                                onAction = onAction,
-                            )
+            item { HorizontalDivider() }
 
-                        HomeRoutes.SettingsSection ->
-                            SettingsSection(state = homeState, onAction = onAction)
-                    }
-                }
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text =
+                                stringResource(Res.string.favorites_template, state.favorites.size)
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(Res.drawable.favorite),
+                            contentDescription = "Favorites",
+                            modifier = Modifier.size(24.dp),
+                        )
+                    },
+                )
+            }
+
+            items(state.favorites) { verse ->
+                VerseCard(
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp).fillMaxWidth(),
+                    verse = verse,
+                    fontSize = state.fontSize,
+                    state = state.verseCardState,
+                    onClick = {
+                        onAction(HomeAction.LoadVerse(verse))
+                        onNavigateToVerses()
+                    },
+                    onCopy = { coroutineScope.launch { copyToClipboard(clipboardManager, it) } },
+                )
             }
         }
-    }
-
-private fun HomeRoutes.iconRes(): DrawableResource =
-    when (this) {
-        HomeRoutes.HomeSection -> Res.drawable.home
-        HomeRoutes.ChaptersSection -> Res.drawable.book
-        HomeRoutes.SettingsSection -> Res.drawable.settings
-    }
-
-private fun HomeRoutes.labelRes(): StringResource =
-    when (this) {
-        HomeRoutes.HomeSection -> Res.string.home
-        HomeRoutes.ChaptersSection -> Res.string.chapters
-        HomeRoutes.SettingsSection -> Res.string.settings
     }

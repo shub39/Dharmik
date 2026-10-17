@@ -63,6 +63,7 @@ kotlin {
 
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.navigation3.viewmodel)
+            implementation(libs.jetbrains.navigation3.adaptive)
 
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
