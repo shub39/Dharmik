@@ -56,6 +56,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.shared.core.domain.VerseCardState.ENGLISH
 import com.shub39.dharmik.shared.core.domain.VerseCardState.HINDI
 import com.shub39.dharmik.shared.core.domain.VerseCardState.SANSKRIT
@@ -237,6 +238,8 @@ fun Home(
                                             HINDI -> getHindiFont()
                                             SANSKRIT -> getSanskritFont()
                                         },
+                                    fontSize = state.fontSize.sp,
+                                    lineHeight = state.fontSize.plus(3).sp
                                 )
                             },
                             supportingContent = {
