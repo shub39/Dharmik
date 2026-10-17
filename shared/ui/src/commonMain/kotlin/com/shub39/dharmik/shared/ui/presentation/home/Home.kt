@@ -18,7 +18,6 @@ package com.shub39.dharmik.shared.ui.presentation.home
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,17 +71,16 @@ fun Home(
         ) {
             item {
                 ListItem(
-                    modifier =
-                        Modifier.clickable {
-                            onNavigateToVerses(
-                                Verses(
-                                    chapter = state.currentBookMark.first,
-                                    verse = state.currentBookMark.second,
-                                    saveBookmarks = true,
-                                )
+                    onClick = {
+                        onNavigateToVerses(
+                            Verses(
+                                chapter = state.currentBookMark.first,
+                                verse = state.currentBookMark.second,
+                                saveBookmarks = true,
                             )
-                        },
-                    headlineContent = { Text(text = stringResource(Res.string.bookmark)) },
+                        )
+                    },
+                    content = { Text(text = stringResource(Res.string.bookmark)) },
                     supportingContent = {
                         Text(
                             text =

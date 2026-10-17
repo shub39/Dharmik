@@ -30,12 +30,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.ui.presentation.removeExtraLineBreaks
+import com.shub39.dharmik.shared.ui.theme.getHindiFont
+import com.shub39.dharmik.shared.ui.theme.getSanskritFont
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -111,9 +112,16 @@ fun VerseCard(
                         VerseCardState.HINDI -> verse.translations.swamiTejomayananda
                         VerseCardState.SANSKRIT -> verse.text
                     }.removeExtraLineBreaks(),
-                fontSize = fontSize.sp,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
+                style =
+                    MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = fontSize.sp,
+                        fontFamily =
+                            when (state) {
+                                VerseCardState.ENGLISH -> getHindiFont()
+                                VerseCardState.HINDI -> getHindiFont()
+                                VerseCardState.SANSKRIT -> getSanskritFont()
+                            },
+                    ),
             )
         }
     }

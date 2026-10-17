@@ -22,20 +22,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import dharmik.shared.ui.generated.resources.Res
-import dharmik.shared.ui.generated.resources.noto_regular
-import dharmik.shared.ui.generated.resources.zen_antique
+import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.Font
+
+@Composable fun getSanskritFont() = FontFamily(Font(Res.font.sanskrit_font, FontWeight.Normal))
+
+@Composable fun getHindiFont() = FontFamily(Font(Res.font.hindi_font, FontWeight.Normal))
 
 @Composable
 fun provideTypography(scale: Float = 1f): Typography {
-    val bodyFont = FontFamily(Font(Res.font.noto_regular, FontWeight.Normal))
-    val titleFont = FontFamily(Font(Res.font.zen_antique, FontWeight.Bold))
+    val bodyFont = FontFamily(Font(Res.font.google_sans_flex, FontWeight.Normal))
 
     return Typography(
         displayLarge =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Bold,
                 fontSize = 57.sp * scale,
                 lineHeight = 64.sp * scale,
@@ -43,49 +44,49 @@ fun provideTypography(scale: Float = 1f): Typography {
             ),
         displayMedium =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Bold,
                 fontSize = 45.sp * scale,
                 lineHeight = 52.sp * scale,
             ),
         displaySmall =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Bold,
                 fontSize = 36.sp * scale,
                 lineHeight = 44.sp * scale,
             ),
         headlineLarge =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp * scale,
                 lineHeight = 40.sp * scale,
             ),
         headlineMedium =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp * scale,
                 lineHeight = 36.sp * scale,
             ),
         headlineSmall =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp * scale,
                 lineHeight = 32.sp * scale,
             ),
         titleLarge =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Medium,
                 fontSize = 22.sp * scale,
                 lineHeight = 28.sp * scale,
             ),
         titleMedium =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp * scale,
                 lineHeight = 24.sp * scale,
@@ -93,7 +94,7 @@ fun provideTypography(scale: Float = 1f): Typography {
             ),
         titleSmall =
             TextStyle(
-                fontFamily = titleFont,
+                fontFamily = bodyFont,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp * scale,
                 lineHeight = 20.sp * scale,

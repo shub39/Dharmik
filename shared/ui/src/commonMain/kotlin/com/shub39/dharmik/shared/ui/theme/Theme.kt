@@ -19,15 +19,11 @@ package com.shub39.dharmik.shared.ui.theme
 import androidx.compose.ui.graphics.Color
 import com.materialkolor.PaletteStyle
 import com.shub39.dharmik.shared.core.domain.AppTheme
-import dharmik.shared.ui.generated.resources.Res
-import dharmik.shared.ui.generated.resources.noto_regular
-import org.jetbrains.compose.resources.FontResource
 
 data class Theme(
     val appTheme: AppTheme = AppTheme.SYSTEM,
     val withAmoled: Boolean = false,
     val seedColor: Color = Color(0xFFEBDBB2),
     val paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
-    val fontResource: FontResource = Res.font.noto_regular,
     val materialYou: Boolean = false,
 )
