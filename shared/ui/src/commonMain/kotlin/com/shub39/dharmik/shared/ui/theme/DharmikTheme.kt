@@ -33,7 +33,7 @@ fun DharmikTheme(theme: Theme = Theme(), content: @Composable () -> Unit) {
         isAmoled = theme.withAmoled,
         seedColor = theme.seedColor,
         style = theme.paletteStyle,
-        typography = provideTypography(1f),
+        typography = provideTypography(),
         content = content,
     )
 }

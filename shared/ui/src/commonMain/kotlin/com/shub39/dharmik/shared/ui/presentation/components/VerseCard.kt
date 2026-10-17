@@ -108,18 +108,18 @@ fun VerseCard(
             Text(
                 text =
                     when (state) {
-                        VerseCardState.ENGLISH -> verse.translations.shriPurohitSwami
-                        VerseCardState.HINDI -> verse.translations.swamiTejomayananda
-                        VerseCardState.SANSKRIT -> verse.text
+                        ENGLISH -> verse.translations.shriPurohitSwami
+                        HINDI -> verse.translations.swamiTejomayananda
+                        SANSKRIT -> verse.text
                     }.removeExtraLineBreaks(),
                 style =
                     MaterialTheme.typography.bodyLarge.copy(
                         fontSize = fontSize.sp,
                         fontFamily =
                             when (state) {
-                                VerseCardState.ENGLISH -> getHindiFont()
-                                VerseCardState.HINDI -> getHindiFont()
-                                VerseCardState.SANSKRIT -> getSanskritFont()
+                                ENGLISH,
+                                HINDI -> getHindiFont()
+                                SANSKRIT -> getSanskritFont()
                             },
                     ),
             )

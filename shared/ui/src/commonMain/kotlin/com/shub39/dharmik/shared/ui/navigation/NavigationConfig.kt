@@ -39,7 +39,7 @@ data object Chapters : Route
 
 data object Settings : Route
 
-val baseRoutes = listOf(Home, Chapters, Settings)
+val baseRoutes = listOf(Home, Chapters)
 
 class TopLevelBackStack(private val startKey: Route = Home) {
     val backStack = mutableStateListOf(startKey)

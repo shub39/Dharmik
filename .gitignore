@@ -11,6 +11,7 @@ local.properties
 captures
 .externalNativeBuild
 .cxx
+.run
 
 # Generated at build time from repo-root gita/text
 shared/logic/src/commonMain/composeResources/files/bhagvad_gita/

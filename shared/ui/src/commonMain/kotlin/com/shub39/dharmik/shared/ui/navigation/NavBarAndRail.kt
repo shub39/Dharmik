@@ -46,7 +46,6 @@ private val NAV_ITEMS =
     listOf(
         NavItem(Home, Res.string.home, Res.drawable.home),
         NavItem(Chapters, Res.string.chapters, Res.drawable.book),
-        NavItem(Settings, Res.string.settings, Res.drawable.settings),
     )
 
 @Composable

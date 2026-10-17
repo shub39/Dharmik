@@ -110,7 +110,12 @@ private fun EntryProviderScope<Route>.homeScreens(stack: TopLevelBackStack) {
         val viewModel = koinViewModel<HomeViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
-        Home(state = state, onAction = viewModel::onAction, onNavigateToVerses = { stack.add(it) })
+        Home(
+            state = state,
+            onAction = viewModel::onAction,
+            onNavigateToSettings = { stack.add(Settings) },
+            onNavigateToVerses = { stack.add(it) },
+        )
     }
 }
 
