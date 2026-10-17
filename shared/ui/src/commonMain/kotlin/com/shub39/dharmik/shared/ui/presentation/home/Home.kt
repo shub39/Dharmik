@@ -239,7 +239,7 @@ fun Home(
                                             SANSKRIT -> getSanskritFont()
                                         },
                                     fontSize = state.fontSize.sp,
-                                    lineHeight = state.fontSize.plus(3).sp
+                                    lineHeight = state.fontSize.plus(3).sp,
                                 )
                             },
                             supportingContent = {
