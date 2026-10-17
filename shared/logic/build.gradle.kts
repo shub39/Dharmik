@@ -90,8 +90,8 @@ room3 { schemaDirectory("$projectDir/schemas") }
 // resources for the build and deleted again afterwards, so the source tree stays clean.
 val gitaTextDir = layout.projectDirectory.dir("src/commonMain/composeResources/files/bhagvad_gita")
 
-val copyGitaTexts by
-    tasks.registering(Copy::class) {
+val copyGitaTexts =
+    tasks.register<Copy>("CopyGitaTexts") {
         description = "Copy Gita chapter JSONs from repo-root gita/text into Compose resources"
         group = "build"
         from(rootProject.file("gita/text"))
@@ -99,8 +99,8 @@ val copyGitaTexts by
         include("*.json")
     }
 
-val deleteGitaTexts by
-    tasks.registering(Delete::class) {
+val deleteGitaTexts =
+    tasks.register<Delete>("DeleteGitaTexts") {
         description = "Remove the Gita chapter JSONs generated into Compose resources"
         group = "build"
         delete(gitaTextDir)
