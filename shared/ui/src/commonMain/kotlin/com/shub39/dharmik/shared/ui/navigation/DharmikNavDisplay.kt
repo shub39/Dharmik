@@ -123,10 +123,12 @@ private fun EntryProviderScope<Route>.chaptersScreens(stack: TopLevelBackStack) 
     entry<Chapters>(metadata = ListDetailScene.listPane() + fadeTransitionMetadata()) {
         val viewModel = koinViewModel<ChaptersViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val currentSelected = stack.backStack.lastOrNull() as? Verses
 
         Chapters(
             state = state,
             onAction = viewModel::onAction,
+            currentSelected = currentSelected?.chapter?.toInt()?.minus(1),
             onNavigateToVerses = { stack.add(Verses(chapter = it)) },
         )
     }
