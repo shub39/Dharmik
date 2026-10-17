@@ -67,7 +67,9 @@ fun NavBar(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Rou
                         if (selected) return@NavigationBarItem
                         onNavigate(item.route)
                     },
-                    icon = { Icon(imageVector = vectorResource(item.icon), contentDescription = null) },
+                    icon = {
+                        Icon(imageVector = vectorResource(item.icon), contentDescription = null)
+                    },
                     label = { Text(text = stringResource(item.title)) },
                     alwaysShowLabel = false,
                 )
@@ -95,7 +97,9 @@ fun NavRail(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Ro
                         if (selected) return@NavigationRailItem
                         onNavigate(item.route)
                     },
-                    icon = { Icon(imageVector = vectorResource(item.icon), contentDescription = null) },
+                    icon = {
+                        Icon(imageVector = vectorResource(item.icon), contentDescription = null)
+                    },
                     label = { Text(text = stringResource(item.title)) },
                     alwaysShowLabel = false,
                 )

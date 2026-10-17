@@ -17,18 +17,21 @@
 package com.shub39.dharmik.shared.ui.presentation.home
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,15 +53,20 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Home(state: HomeState, onAction: (HomeAction) -> Unit, onNavigateToVerses: (Verses) -> Unit) =
-    PageFill {
+fun Home(
+    modifier: Modifier = Modifier,
+    state: HomeState,
+    onAction: (HomeAction) -> Unit,
+    onNavigateToVerses: (Verses) -> Unit,
+) =
+    PageFill(modifier = modifier.background(colorScheme.background)) {
         val listState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
         val clipboardManager = LocalClipboard.current
 
         LazyColumn(
             state = listState,
-            modifier = Modifier.animateContentSize().fillMaxSize(),
+            modifier = Modifier.animateContentSize().widthIn(max = 700.dp).fillMaxSize(),
             contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

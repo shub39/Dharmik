@@ -16,6 +16,7 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
@@ -33,6 +35,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ToggleButton
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.AppTheme
 import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
+import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.SettingSlider
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
@@ -51,165 +55,172 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Settings(state: SettingsState, onAction: (SettingsAction) -> Unit) {
-    val listState = rememberLazyListState()
-    val uriHandler = LocalUriHandler.current
+fun Settings(
+    modifier: Modifier = Modifier,
+    state: SettingsState,
+    onAction: (SettingsAction) -> Unit,
+) =
+    PageFill(modifier = modifier.background(colorScheme.background)) {
+        val listState = rememberLazyListState()
+        val uriHandler = LocalUriHandler.current
 
-    LazyColumn(
-        state = listState,
-        contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        item {
-            SettingSlider(
-                title = stringResource(Res.string.verses_font_size),
-                value = state.fontSize,
-                valueRange = 12f..24f,
-                onValueChange = { onAction(SettingsAction.SetFontSize(it)) },
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-        }
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+            modifier = Modifier.widthIn(max = 700.dp).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            item {
+                SettingSlider(
+                    title = stringResource(Res.string.verses_font_size),
+                    value = state.fontSize,
+                    valueRange = 12f..24f,
+                    onValueChange = { onAction(SettingsAction.SetFontSize(it)) },
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
 
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(Res.string.offline_audio)) },
-                supportingContent = {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = bulkAudioText(state.bulkAudio))
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(Res.string.offline_audio)) },
+                    supportingContent = {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(text = bulkAudioText(state.bulkAudio))
 
-                        val bulkAudio = state.bulkAudio
-                        if (bulkAudio is BulkAudioState.Downloading) {
-                            LinearProgressIndicator(
-                                progress = { bulkAudio.progress },
-                                modifier = Modifier.fillMaxWidth(),
-                            )
+                            val bulkAudio = state.bulkAudio
+                            if (bulkAudio is BulkAudioState.Downloading) {
+                                LinearProgressIndicator(
+                                    progress = { bulkAudio.progress },
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                            }
                         }
-                    }
-                },
-                trailingContent = {
-                    when (state.bulkAudio) {
-                        is BulkAudioState.Downloading,
-                        BulkAudioState.Extracting ->
-                            TextButton(
-                                onClick = { onAction(SettingsAction.OnCancelAudioDownload) }
+                    },
+                    trailingContent = {
+                        when (state.bulkAudio) {
+                            is BulkAudioState.Downloading,
+                            BulkAudioState.Extracting ->
+                                TextButton(
+                                    onClick = { onAction(SettingsAction.OnCancelAudioDownload) }
+                                ) {
+                                    Text(text = stringResource(Res.string.audio_cancel))
+                                }
+
+                            is BulkAudioState.Downloaded ->
+                                TextButton(onClick = { onAction(SettingsAction.OnDeleteAudio) }) {
+                                    Text(text = stringResource(Res.string.audio_delete))
+                                }
+
+                            else ->
+                                Button(onClick = { onAction(SettingsAction.OnDownloadAudio) }) {
+                                    Text(text = stringResource(Res.string.audio_download))
+                                }
+                        }
+                    },
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(Res.string.verse_state)) },
+                    supportingContent = {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(text = stringResource(Res.string.verse_state_desc))
+
+                            Row(
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
                             ) {
-                                Text(text = stringResource(Res.string.audio_cancel))
-                            }
-
-                        is BulkAudioState.Downloaded ->
-                            TextButton(onClick = { onAction(SettingsAction.OnDeleteAudio) }) {
-                                Text(text = stringResource(Res.string.audio_delete))
-                            }
-
-                        else ->
-                            Button(onClick = { onAction(SettingsAction.OnDownloadAudio) }) {
-                                Text(text = stringResource(Res.string.audio_download))
-                            }
-                    }
-                },
-            )
-        }
-
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(Res.string.verse_state)) },
-                supportingContent = {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = stringResource(Res.string.verse_state_desc))
-
-                        Row(
-                            horizontalArrangement =
-                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-                        ) {
-                            VerseCardState.entries.forEach { vcState ->
-                                ToggleButton(
-                                    checked = vcState == state.verseCardState,
-                                    onCheckedChange = {
-                                        onAction(SettingsAction.OnSetVerseCardState(vcState))
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Text(text = vcState.fullName)
+                                VerseCardState.entries.forEach { vcState ->
+                                    ToggleButton(
+                                        checked = vcState == state.verseCardState,
+                                        onCheckedChange = {
+                                            onAction(SettingsAction.OnSetVerseCardState(vcState))
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Text(text = vcState.fullName)
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-            )
-        }
+                    },
+                )
+            }
 
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(Res.string.app_theme)) },
-                supportingContent = {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = stringResource(Res.string.app_theme_desc))
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(Res.string.app_theme)) },
+                    supportingContent = {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(text = stringResource(Res.string.app_theme_desc))
 
-                        Row(
-                            horizontalArrangement =
-                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-                        ) {
-                            AppTheme.entries.forEach { appTheme ->
-                                ToggleButton(
-                                    checked = appTheme == state.theme.appTheme,
-                                    onCheckedChange = {
-                                        onAction(SettingsAction.OnSetAppTheme(appTheme))
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Text(text = stringResource(appTheme.labelRes()))
+                            Row(
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                            ) {
+                                AppTheme.entries.forEach { appTheme ->
+                                    ToggleButton(
+                                        checked = appTheme == state.theme.appTheme,
+                                        onCheckedChange = {
+                                            onAction(SettingsAction.OnSetAppTheme(appTheme))
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Text(text = stringResource(appTheme.labelRes()))
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-            )
-        }
+                    },
+                )
+            }
 
-        item { HorizontalDivider() }
+            item { HorizontalDivider() }
 
-        item {
-            ListItem(
-                headlineContent = { Text(text = "Dharmic Data") },
-                supportingContent = { Text(text = "by bhavyakhatri") },
-                trailingContent = {
-                    Row {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Dharmic Data") },
+                    supportingContent = { Text(text = "by bhavyakhatri") },
+                    trailingContent = {
+                        Row {
+                            FilledTonalIconButton(
+                                onClick = {
+                                    uriHandler.openUri("https://github.com/bhavykhatri/DharmicData")
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.github),
+                                    contentDescription = "Github",
+                                    modifier = Modifier.size(20.dp),
+                                )
+                            }
+                        }
+                    },
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Gita Supersite") },
+                    supportingContent = { Text(text = "by IIT Kanpur") },
+                    trailingContent = {
                         FilledTonalIconButton(
                             onClick = {
-                                uriHandler.openUri("https://github.com/bhavykhatri/DharmicData")
+                                uriHandler.openUri("https://www.gitasupersite.iitk.ac.in/")
                             }
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.github),
-                                contentDescription = "Github",
+                                painter = painterResource(Res.drawable.globe),
+                                contentDescription = "Open In Browser",
                                 modifier = Modifier.size(20.dp),
                             )
                         }
-                    }
-                },
-            )
-        }
-
-        item {
-            ListItem(
-                headlineContent = { Text(text = "Gita Supersite") },
-                supportingContent = { Text(text = "by IIT Kanpur") },
-                trailingContent = {
-                    FilledTonalIconButton(
-                        onClick = { uriHandler.openUri("https://www.gitasupersite.iitk.ac.in/") }
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.globe),
-                            contentDescription = "Open In Browser",
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                },
-            )
+                    },
+                )
+            }
         }
     }
-}
 
 @Composable
 private fun bulkAudioText(state: BulkAudioState): String =
