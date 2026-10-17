@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.ui.presentation.removeExtraLineBreaks
-import com.shub39.dharmik.shared.ui.presentation.verses.VersesAction
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -48,7 +47,7 @@ fun VerseCard(
     fontSize: Float = 16f,
     state: VerseCardState = VerseCardState.SANSKRIT,
     isFave: Boolean? = null,
-    action: (VersesAction) -> Unit = {},
+    onToggleFave: () -> Unit = {},
     onClick: () -> Unit = {},
     onCopy: (String) -> Unit = {},
     playIcon: @Composable () -> Unit = {},
@@ -74,7 +73,7 @@ fun VerseCard(
 
                 Row {
                     isFave?.let {
-                        IconButton(onClick = { action(VersesAction.SetFave(verse)) }) {
+                        IconButton(onClick = onToggleFave) {
                             Icon(
                                 painter = painterResource(Res.drawable.favorite),
                                 contentDescription = "Favorite",

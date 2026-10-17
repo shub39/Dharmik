@@ -26,7 +26,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.shub39.dharmik.shared.ui.app.App
+import com.shub39.dharmik.shared.ui.navigation.DharmikNavDisplay
 
 class MainActivity : ComponentActivity() {
 
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             enableEdgeToEdge()
-            App()
+            DharmikNavDisplay()
         }
     }
 

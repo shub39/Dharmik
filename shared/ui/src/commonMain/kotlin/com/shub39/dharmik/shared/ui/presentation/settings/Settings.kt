@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.dharmik.shared.ui.presentation.home.components
+package com.shub39.dharmik.shared.ui.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,17 +46,14 @@ import com.shub39.dharmik.shared.core.domain.AppTheme
 import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.ui.presentation.components.SettingSlider
-import com.shub39.dharmik.shared.ui.presentation.home.HomeAction
-import com.shub39.dharmik.shared.ui.presentation.home.HomeState
 import dharmik.shared.ui.generated.resources.*
-import dharmik.shared.ui.generated.resources.Res
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SettingsSection(state: HomeState, onAction: (HomeAction) -> Unit) {
+fun Settings(state: SettingsState, onAction: (SettingsAction) -> Unit) {
     val listState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
 
@@ -71,7 +68,7 @@ fun SettingsSection(state: HomeState, onAction: (HomeAction) -> Unit) {
                 title = stringResource(Res.string.verses_font_size),
                 value = state.fontSize,
                 valueRange = 12f..24f,
-                onValueChange = { onAction(HomeAction.SetFontSize(it)) },
+                onValueChange = { onAction(SettingsAction.SetFontSize(it)) },
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
@@ -96,17 +93,19 @@ fun SettingsSection(state: HomeState, onAction: (HomeAction) -> Unit) {
                     when (state.bulkAudio) {
                         is BulkAudioState.Downloading,
                         BulkAudioState.Extracting ->
-                            TextButton(onClick = { onAction(HomeAction.OnCancelAudioDownload) }) {
+                            TextButton(
+                                onClick = { onAction(SettingsAction.OnCancelAudioDownload) }
+                            ) {
                                 Text(text = stringResource(Res.string.audio_cancel))
                             }
 
                         is BulkAudioState.Downloaded ->
-                            TextButton(onClick = { onAction(HomeAction.OnDeleteAudio) }) {
+                            TextButton(onClick = { onAction(SettingsAction.OnDeleteAudio) }) {
                                 Text(text = stringResource(Res.string.audio_delete))
                             }
 
                         else ->
-                            Button(onClick = { onAction(HomeAction.OnDownloadAudio) }) {
+                            Button(onClick = { onAction(SettingsAction.OnDownloadAudio) }) {
                                 Text(text = stringResource(Res.string.audio_download))
                             }
                     }
@@ -129,7 +128,7 @@ fun SettingsSection(state: HomeState, onAction: (HomeAction) -> Unit) {
                                 ToggleButton(
                                     checked = vcState == state.verseCardState,
                                     onCheckedChange = {
-                                        onAction(HomeAction.OnSetVerseCardState(vcState))
+                                        onAction(SettingsAction.OnSetVerseCardState(vcState))
                                     },
                                     modifier = Modifier.weight(1f),
                                 ) {
@@ -157,7 +156,7 @@ fun SettingsSection(state: HomeState, onAction: (HomeAction) -> Unit) {
                                 ToggleButton(
                                     checked = appTheme == state.theme.appTheme,
                                     onCheckedChange = {
-                                        onAction(HomeAction.OnSetAppTheme(appTheme))
+                                        onAction(SettingsAction.OnSetAppTheme(appTheme))
                                     },
                                     modifier = Modifier.weight(1f),
                                 ) {

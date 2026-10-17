@@ -55,6 +55,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.core.media.MediaPlayerState
+import com.shub39.dharmik.shared.ui.navigation.LocalBackButtonVisibility
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.VerseCard
 import com.shub39.dharmik.shared.ui.presentation.verses.components.CommentariesDisplay
@@ -74,12 +75,16 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun Verses(state: VersesState, action: (VersesAction) -> Unit, onBack: () -> Unit) = PageFill {
+    val verses = state.currentVerses
+
+    // The view model loads the chapter asynchronously, so there is a frame where it is still empty.
+    if (verses.isEmpty()) return@PageFill
+
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
 
-    val verses = state.currentVerses
     val playerState by state.player.state.collectAsState()
 
     LaunchedEffect(state.pagerState.currentPage) {
@@ -131,16 +136,20 @@ fun Verses(state: VersesState, action: (VersesAction) -> Unit, onBack: () -> Uni
                     }
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            action(VersesAction.Pause)
-                            onBack()
+                    // Hidden in the detail pane of a list-detail scene, which owns its own back
+                    // affordance.
+                    if (LocalBackButtonVisibility.current) {
+                        IconButton(
+                            onClick = {
+                                action(VersesAction.Pause)
+                                onBack()
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = "Go Back",
+                            )
                         }
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Go Back",
-                        )
                     }
                 },
             )
@@ -244,7 +253,7 @@ fun Verses(state: VersesState, action: (VersesAction) -> Unit, onBack: () -> Uni
                             modifier = Modifier.fillMaxWidth(),
                             isFave = state.favorites.contains(currentVerse),
                             state = vcState,
-                            action = action,
+                            onToggleFave = { action(VersesAction.SetFave(currentVerse)) },
                             onClick = {},
                             onCopy = {
                                 coroutineScope.launch { copyToClipboard(clipboardManager, it) }

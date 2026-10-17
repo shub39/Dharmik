@@ -21,13 +21,25 @@ import androidx.navigation3.runtime.NavKey
 
 sealed interface Route : NavKey
 
-data object Verses : Route
+/**
+ * The reading screen.
+ *
+ * The verse that should be shown travels on the route itself, so that no shared in-memory state is
+ * needed to hand a selection over from another screen.
+ *
+ * @param chapter the chapter to display.
+ * @param verse zero based index of the verse to page to.
+ * @param saveBookmarks whether paging between verses should also update the stored bookmark.
+ */
+data class Verses(val chapter: Long, val verse: Long = 0, val saveBookmarks: Boolean = true) : Route
 
 data object Home : Route
 
 data object Chapters : Route
 
 data object Settings : Route
+
+val baseRoutes = listOf(Home, Chapters, Settings)
 
 class TopLevelBackStack(private val startKey: Route = Home) {
     val backStack = mutableStateListOf(startKey)
@@ -52,11 +64,11 @@ class TopLevelBackStack(private val startKey: Route = Home) {
                 backStack.add(Home)
                 backStack.add(Chapters)
             }
-            Verses -> {
+            is Verses -> {
                 backStack.clear()
                 backStack.add(Home)
                 backStack.add(Chapters)
-                backStack.add(Verses)
+                backStack.add(route)
             }
         }
     }

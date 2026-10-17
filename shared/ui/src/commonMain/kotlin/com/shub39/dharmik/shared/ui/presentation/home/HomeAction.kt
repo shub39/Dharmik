@@ -16,30 +16,9 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.home
 
-import com.shub39.dharmik.shared.core.domain.AppTheme
 import com.shub39.dharmik.shared.core.domain.GitaVerse
-import com.shub39.dharmik.shared.core.domain.VerseCardState
 
 sealed interface HomeAction {
-    data class SetFontSize(val fontSize: Float) : HomeAction
-
-    data class ChapterChange(val index: Int) : HomeAction
-
-    data class OnSetVerseCardState(val state: VerseCardState) : HomeAction
-
-    data class OnSetAppTheme(val appTheme: AppTheme) : HomeAction
-
+    /** Adds [verse] to the favourites, or removes it when it is already a favourite. */
     data class SetFave(val verse: GitaVerse) : HomeAction
-
-    data object LoadBookMark : HomeAction
-
-    data class LoadVerse(val verse: GitaVerse) : HomeAction
-
-    data object OnRefreshAudioManifest : HomeAction
-
-    data object OnDownloadAudio : HomeAction
-
-    data object OnCancelAudioDownload : HomeAction
-
-    data object OnDeleteAudio : HomeAction
 }

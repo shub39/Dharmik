@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
+import com.shub39.dharmik.shared.ui.navigation.Verses
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.VerseCard
 import com.shub39.dharmik.shared.ui.util.copyToClipboard
@@ -49,7 +50,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Home(onNavigateToVerses: () -> Unit, state: HomeState, onAction: (HomeAction) -> Unit) =
+fun Home(state: HomeState, onAction: (HomeAction) -> Unit, onNavigateToVerses: (Verses) -> Unit) =
     PageFill {
         val listState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
@@ -65,8 +66,13 @@ fun Home(onNavigateToVerses: () -> Unit, state: HomeState, onAction: (HomeAction
                 ListItem(
                     modifier =
                         Modifier.clickable {
-                            onAction(LoadBookMark)
-                            onNavigateToVerses()
+                            onNavigateToVerses(
+                                Verses(
+                                    chapter = state.currentBookMark.first,
+                                    verse = state.currentBookMark.second,
+                                    saveBookmarks = true,
+                                )
+                            )
                         },
                     headlineContent = { Text(text = stringResource(Res.string.bookmark)) },
                     supportingContent = {
@@ -118,9 +124,16 @@ fun Home(onNavigateToVerses: () -> Unit, state: HomeState, onAction: (HomeAction
                     verse = verse,
                     fontSize = state.fontSize,
                     state = state.verseCardState,
+                    isFave = true,
+                    onToggleFave = { onAction(HomeAction.SetFave(verse)) },
                     onClick = {
-                        onAction(HomeAction.LoadVerse(verse))
-                        onNavigateToVerses()
+                        onNavigateToVerses(
+                            Verses(
+                                chapter = verse.chapter,
+                                verse = verse.verse.minus(1).coerceAtLeast(0),
+                                saveBookmarks = false,
+                            )
+                        )
                     },
                     onCopy = { coroutineScope.launch { copyToClipboard(clipboardManager, it) } },
                 )

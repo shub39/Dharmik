@@ -14,16 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.dharmik.shared.ui.presentation.viewmodels
+package com.shub39.dharmik.shared.ui.presentation.chapters
 
-import com.shub39.dharmik.shared.ui.presentation.home.HomeState
-import com.shub39.dharmik.shared.ui.presentation.verses.VersesState
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.koin.core.annotation.Single
-
-/** Shared, app scoped state holder so that both view models observe the same sources. */
-@Single
-class StateLayer {
-    val homeState = MutableStateFlow(HomeState())
-    val versesState = MutableStateFlow(VersesState())
-}
+data class ChaptersState(val chapters: Int = 18)

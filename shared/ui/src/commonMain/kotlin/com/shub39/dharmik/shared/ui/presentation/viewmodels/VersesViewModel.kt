@@ -16,6 +16,7 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
+import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.shared.core.domain.AudioRepository
@@ -25,47 +26,55 @@ import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.core.domain.audioVariant
 import com.shub39.dharmik.shared.core.media.MediaPlayer
 import com.shub39.dharmik.shared.core.media.MediaSource
+import com.shub39.dharmik.shared.ui.navigation.Verses
 import com.shub39.dharmik.shared.ui.presentation.verses.VersesAction
 import com.shub39.dharmik.shared.ui.presentation.verses.VersesState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
+/**
+ * Backs the reading screen. Everything it shows is derived from the navigation [route] and the
+ * shared repositories, which it observes on its own.
+ */
 @KoinViewModel
 class VersesViewModel(
-    @Provided private val stateLayer: StateLayer,
+    @InjectedParam private val route: Verses,
     @Provided private val repo: BgRepo,
     @Provided private val datastore: PreferencesRepo,
     @Provided private val player: MediaPlayer,
     @Provided private val audioRepository: AudioRepository,
 ) : ViewModel() {
+    private var observeJob: Job? = null
 
-    private val _state = stateLayer.versesState
+    private val _state = MutableStateFlow(VersesState())
 
     val state =
         _state
             .asStateFlow()
-            .onStart {
-                _state.update {
-                    it.copy(
-                        currentVerses = repo.getChapter(1).gitaVerses,
-                        verseCardState = stateLayer.homeState.value.verseCardState,
-                        player = player,
-                    )
-                }
-            }
+            .onStart { observeState() }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
+
+    init {
+        viewModelScope.launch { loadRouteChapter() }
+    }
 
     fun onAction(action: VersesAction) {
         viewModelScope.launch {
             when (action) {
                 is VersesAction.SetFave -> {
-                    if (stateLayer.homeState.value.favorites.contains(action.verse)) {
+                    if (_state.value.favorites.contains(action.verse)) {
                         repo.deleteFave(action.verse)
                     } else {
                         repo.setFave(action.verse)
@@ -77,9 +86,10 @@ class VersesViewModel(
                 }
 
                 is VersesAction.SetVerseCardState -> {
-                    _state.update { it.copy(verseCardState = action.state, isPlaying = false) }
-
+                    datastore.setVerseCardState(action.state)
                     player.pause()
+
+                    _state.update { it.copy(verseCardState = action.state, isPlaying = false) }
                 }
 
                 is VersesAction.SetAutoPlay -> {
@@ -107,13 +117,8 @@ class VersesViewModel(
                             _state.update { it.copy(isPlaying = true) }
                         }
 
-                        if (_state.value.saveBookMarks) {
-                            datastore.setBgBookMark(
-                                LongPair(
-                                    _state.value.currentVerses.first().chapter,
-                                    action.index.toLong(),
-                                )
-                            )
+                        if (route.saveBookmarks) {
+                            datastore.setBgBookMark(LongPair(route.chapter, action.index.toLong()))
                         }
                     }
                 }
@@ -127,6 +132,45 @@ class VersesViewModel(
             }
         }
     }
+
+    private suspend fun loadRouteChapter() {
+        val verses = repo.getChapter(route.chapter.toInt()).gitaVerses
+        val initialPage = route.verse.toInt().coerceIn(0, (verses.size - 1).coerceAtLeast(0))
+
+        _state.update {
+            it.copy(
+                currentVerses = verses,
+                audioFiles = repo.getAudios(route.chapter.toInt()),
+                saveBookMarks = route.saveBookmarks,
+                verseCardState = datastore.getVerseCardState().first(),
+                pagerState = PagerState(initialPage) { verses.size },
+                player = player,
+            )
+        }
+    }
+
+    private fun observeState() =
+        viewModelScope.launch {
+            observeJob?.cancel()
+            observeJob = launch {
+                repo
+                    .getFavesFlow()
+                    .onEach { faves -> _state.update { it.copy(favorites = faves) } }
+                    .launchIn(this)
+
+                datastore
+                    .getFontSize()
+                    .onEach { size -> _state.update { it.copy(fontSize = size) } }
+                    .launchIn(this)
+
+                datastore
+                    .getVerseCardState()
+                    .onEach { verseCardState ->
+                        _state.update { it.copy(verseCardState = verseCardState) }
+                    }
+                    .launchIn(this)
+            }
+        }
 }
 
 /**

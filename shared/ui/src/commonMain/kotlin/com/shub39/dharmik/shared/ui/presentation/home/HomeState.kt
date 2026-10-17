@@ -16,18 +16,13 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.home
 
-import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.core.domain.LongPair
 import com.shub39.dharmik.shared.core.domain.VerseCardState
-import com.shub39.dharmik.shared.ui.theme.Theme
 
 data class HomeState(
-    val theme: Theme = Theme(),
     val fontSize: Float = 16f,
     val verseCardState: VerseCardState = VerseCardState.ENGLISH,
-    val chapters: Int = 18,
     val favorites: List<GitaVerse> = emptyList(),
     val currentBookMark: LongPair = LongPair(1, 1),
-    val bulkAudio: BulkAudioState = BulkAudioState.Checking,
 )

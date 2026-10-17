@@ -44,6 +44,8 @@ private val NAV_ITEMS =
 
 @Composable
 fun NavBar(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Route) -> Unit) {
+    if (currentRoute !in baseRoutes) return
+
     NavigationBar(modifier = modifier) {
         NAV_ITEMS.forEach { item ->
             val selected = currentRoute == item.route
@@ -64,6 +66,8 @@ fun NavBar(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Rou
 
 @Composable
 fun NavRail(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Route) -> Unit) {
+    if (currentRoute !in baseRoutes) return
+
     NavigationRail(modifier = modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         NAV_ITEMS.forEach { item ->

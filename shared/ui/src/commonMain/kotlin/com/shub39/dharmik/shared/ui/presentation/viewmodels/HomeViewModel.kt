@@ -16,14 +16,14 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
-import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.dharmik.shared.core.domain.AudioBulkRepo
 import com.shub39.dharmik.shared.core.domain.BgRepo
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.ui.presentation.home.HomeAction
+import com.shub39.dharmik.shared.ui.presentation.home.HomeState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -38,44 +38,21 @@ import org.koin.core.annotation.Provided
 @KoinViewModel
 class HomeViewModel(
     @Provided private val repo: BgRepo,
-    @Provided private val stateLayer: StateLayer,
     @Provided private val datastore: PreferencesRepo,
-    @Provided private val audioRepo: AudioBulkRepo,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
-    private val _state = stateLayer.homeState
+    private val _state = MutableStateFlow(HomeState())
 
     val state =
         _state
             .asStateFlow()
-            .onStart { observeJob() }
+            .onStart { observeState() }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     fun onAction(action: HomeAction) =
         viewModelScope.launch {
             when (action) {
-                is HomeAction.OnSetAppTheme -> datastore.setAppTheme(action.appTheme)
-
-                HomeAction.LoadBookMark -> {
-                    val file = repo.getChapter(_state.value.currentBookMark.first.toInt())
-                    val audios = repo.getAudios(_state.value.currentBookMark.first.toInt())
-
-                    stateLayer.versesState.update {
-                        it.copy(
-                            currentVerses = file.gitaVerses,
-                            saveBookMarks = true,
-                            audioFiles = audios,
-                            pagerState =
-                                PagerState(
-                                    _state.value.currentBookMark.second.toInt().coerceAtLeast(0)
-                                ) {
-                                    file.gitaVerses.size
-                                },
-                        )
-                    }
-                }
-
                 is HomeAction.SetFave -> {
                     if (_state.value.favorites.contains(action.verse)) {
                         repo.deleteFave(action.verse)
@@ -83,71 +60,21 @@ class HomeViewModel(
                         repo.setFave(action.verse)
                     }
                 }
-
-                is HomeAction.ChapterChange -> {
-                    println("Chapter changed to ${action.index}")
-                    val file = repo.getChapter(action.index)
-
-                    stateLayer.versesState.update {
-                        it.copy(
-                            currentVerses = file.gitaVerses,
-                            audioFiles = repo.getAudios(action.index),
-                            saveBookMarks = true,
-                            pagerState = PagerState { file.gitaVerses.size },
-                        )
-                    }
-                }
-
-                is HomeAction.LoadVerse -> {
-                    val file = repo.getChapter(action.verse.chapter.toInt())
-
-                    stateLayer.versesState.update {
-                        it.copy(
-                            currentVerses = file.gitaVerses,
-                            audioFiles = repo.getAudios(action.verse.chapter.toInt()),
-                            saveBookMarks = false,
-                            pagerState =
-                                PagerState(action.verse.verse.toInt().minus(1).coerceAtLeast(0)) {
-                                    file.gitaVerses.size
-                                },
-                        )
-                    }
-                }
-
-                is HomeAction.OnSetVerseCardState -> datastore.setVerseCardState(action.state)
-
-                is HomeAction.SetFontSize -> datastore.setFontSize(action.fontSize)
-
-                HomeAction.OnRefreshAudioManifest -> audioRepo.refresh()
-
-                HomeAction.OnDownloadAudio -> audioRepo.start()
-
-                HomeAction.OnCancelAudioDownload -> audioRepo.cancel()
-
-                HomeAction.OnDeleteAudio -> audioRepo.delete()
             }
         }
 
-    private fun observeJob() =
+    private fun observeState() =
         viewModelScope.launch {
             observeJob?.cancel()
             observeJob = launch {
                 datastore
                     .getFontSize()
-                    .onEach { size ->
-                        _state.update { it.copy(fontSize = size) }
-
-                        stateLayer.versesState.update { it.copy(fontSize = size) }
-                    }
+                    .onEach { size -> _state.update { it.copy(fontSize = size) } }
                     .launchIn(this)
 
                 repo
                     .getFavesFlow()
-                    .onEach { faves ->
-                        _state.update { it.copy(favorites = faves) }
-
-                        stateLayer.versesState.update { it.copy(favorites = faves) }
-                    }
+                    .onEach { faves -> _state.update { it.copy(favorites = faves) } }
                     .launchIn(this)
 
                 datastore
@@ -156,22 +83,11 @@ class HomeViewModel(
                     .launchIn(this)
 
                 datastore
-                    .getAppTheme()
-                    .onEach { theme ->
-                        _state.update { it.copy(theme = it.theme.copy(appTheme = theme)) }
+                    .getVerseCardState()
+                    .onEach { verseCardState ->
+                        _state.update { it.copy(verseCardState = verseCardState) }
                     }
                     .launchIn(this)
-
-                datastore
-                    .getVerseCardState()
-                    .onEach { state -> _state.update { it.copy(verseCardState = state) } }
-                    .launchIn(this)
-
-                audioRepo.state
-                    .onEach { bulk -> _state.update { it.copy(bulkAudio = bulk) } }
-                    .launchIn(this)
-
-                launch { audioRepo.refresh() }
             }
         }
 }

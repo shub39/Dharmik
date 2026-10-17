@@ -25,16 +25,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.shub39.dharmik.shared.ui.presentation.chapters.Chapters
 import com.shub39.dharmik.shared.ui.presentation.home.Home
-import com.shub39.dharmik.shared.ui.presentation.verses.Verses
+import com.shub39.dharmik.shared.ui.presentation.settings.Settings as SettingsScreen
+import com.shub39.dharmik.shared.ui.presentation.verses.Verses as VersesScreen
+import com.shub39.dharmik.shared.ui.presentation.viewmodels.ChaptersViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.HomeViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.MainViewModel
+import com.shub39.dharmik.shared.ui.presentation.viewmodels.SettingsViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.VersesViewModel
 import com.shub39.dharmik.shared.ui.theme.DharmikTheme
 import com.shub39.dharmik.shared.ui.util.LocalWindowSizeClass
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun DharmikNavDisplay(modifier: Modifier = Modifier) {
@@ -75,34 +83,69 @@ fun DharmikNavDisplay(modifier: Modifier = Modifier) {
                     sharedTransitionScope = this,
                     sceneStrategies = listOf(twoPaneSceneStrategy, listDetailSceneStrategy),
                     sceneDecoratorStrategies = listOf(responsiveNavigationSceneDecoratorStrategy),
+                    // The ViewModel store decorator gives every entry - and every distinct route
+                    // instance - its own ViewModel, which is what lets `Verses` be built from the
+                    // navigation key alone.
+                    entryDecorators =
+                        listOf(
+                            rememberSaveableStateHolderNavEntryDecorator(),
+                            rememberViewModelStoreNavEntryDecorator(),
+                        ),
                     entryProvider =
                         entryProvider {
-                            entry<Home> {
-                                val viewModel = koinViewModel<HomeViewModel>()
-                                val state by viewModel.state.collectAsStateWithLifecycle()
-
-                                Home(
-                                    onAction = viewModel::onAction,
-                                    onNavigateToVerses = { stack.add(Verses) },
-                                    state = state,
-                                )
-                            }
-
-                            entry<Verses> {
-                                val viewModel = koinViewModel<VersesViewModel>()
-                                val state by viewModel.state.collectAsStateWithLifecycle()
-
-                                Verses(
-                                    state = state,
-                                    action = viewModel::onAction,
-                                    onBack = { stack.removeLast() },
-                                )
-                            }
-
-                            entry<Settings> {}
+                            homeScreens(stack)
+                            chaptersScreens(stack)
+                            versesScreens(stack)
+                            settingsScreens()
                         },
                 )
             }
         }
+    }
+}
+
+private fun EntryProviderScope<Route>.homeScreens(stack: TopLevelBackStack) {
+    // Two-pane capable so that opening a bookmark or favourite keeps the list visible on wide
+    // windows.
+    entry<Home>(metadata = TwoPaneScene.twoPane() + fadeTransitionMetadata()) {
+        val viewModel = koinViewModel<HomeViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        Home(state = state, onAction = viewModel::onAction, onNavigateToVerses = { stack.add(it) })
+    }
+}
+
+private fun EntryProviderScope<Route>.chaptersScreens(stack: TopLevelBackStack) {
+    // The list pane of the `Chapters` + `Verses` list-detail scene.
+    entry<Chapters>(metadata = ListDetailScene.listPane() + fadeTransitionMetadata()) {
+        val viewModel = koinViewModel<ChaptersViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        Chapters(
+            state = state,
+            onAction = viewModel::onAction,
+            onNavigateToVerses = { stack.add(Verses(chapter = it)) },
+        )
+    }
+}
+
+private fun EntryProviderScope<Route>.versesScreens(stack: TopLevelBackStack) {
+    entry<Verses>(
+        metadata =
+            TwoPaneScene.twoPane() + ListDetailScene.detailPane() + horizontalTransitionMetadata()
+    ) { route ->
+        val viewModel = koinViewModel<VersesViewModel> { parametersOf(route) }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        VersesScreen(state = state, action = viewModel::onAction, onBack = { stack.removeLast() })
+    }
+}
+
+private fun EntryProviderScope<Route>.settingsScreens() {
+    entry<Settings>(metadata = TwoPaneScene.twoPane() + fadeTransitionMetadata()) {
+        val viewModel = koinViewModel<SettingsViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        SettingsScreen(state = state, onAction = viewModel::onAction)
     }
 }

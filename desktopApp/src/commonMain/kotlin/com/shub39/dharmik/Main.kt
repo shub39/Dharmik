@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import com.shub39.dharmik.di.DharmikModules
-import com.shub39.dharmik.shared.ui.app.App
+import com.shub39.dharmik.shared.ui.navigation.DharmikNavDisplay
 import org.koin.plugin.module.dsl.startKoin
 
 fun main() {
@@ -31,6 +31,6 @@ fun main() {
         state = WindowState(size = DpSize(width = 400.dp, height = 800.dp)),
         title = "Dharmik",
     ) {
-        App()
+        DharmikNavDisplay()
     }
 }

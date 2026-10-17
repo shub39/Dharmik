@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.dharmik.shared.ui.presentation.home.components
+package com.shub39.dharmik.shared.ui.presentation.chapters
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -32,8 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.shub39.dharmik.shared.ui.presentation.home.HomeAction
-import com.shub39.dharmik.shared.ui.presentation.home.HomeState
 import dharmik.shared.ui.generated.resources.Res
 import dharmik.shared.ui.generated.resources.arrow_forward_ios
 import dharmik.shared.ui.generated.resources.book
@@ -42,10 +40,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ChaptersSection(
-    onNavigateToVerses: () -> Unit,
-    state: HomeState,
-    onAction: (HomeAction) -> Unit,
+fun Chapters(
+    state: ChaptersState,
+    onAction: (ChaptersAction) -> Unit,
+    onNavigateToVerses: (chapter: Long) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -60,8 +58,8 @@ fun ChaptersSection(
             ListItem(
                 modifier =
                     Modifier.clickable {
-                        onAction(HomeAction.ChapterChange(chapter))
-                        onNavigateToVerses()
+                        onAction(ChaptersAction.ChapterChange(chapter))
+                        onNavigateToVerses(chapter.toLong())
                     },
                 headlineContent = {
                     Text(text = stringResource(Res.string.chapter_template, chapter))
