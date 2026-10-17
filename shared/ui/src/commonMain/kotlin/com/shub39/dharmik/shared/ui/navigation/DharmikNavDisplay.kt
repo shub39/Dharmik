@@ -34,6 +34,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.dharmik.shared.ui.presentation.chapters.Chapters
 import com.shub39.dharmik.shared.ui.presentation.home.Home
+import com.shub39.dharmik.shared.ui.presentation.settings.About as AboutScreen
+import com.shub39.dharmik.shared.ui.presentation.settings.Changelog as ChangelogScreen
 import com.shub39.dharmik.shared.ui.presentation.settings.Settings
 import com.shub39.dharmik.shared.ui.presentation.verses.Verses
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.ChaptersViewModel
@@ -95,7 +97,7 @@ fun DharmikNavDisplay(modifier: Modifier = Modifier) {
                             homeScreens(stack)
                             chaptersScreens(stack)
                             versesScreens(stack)
-                            settingsScreens()
+                            settingsScreens(stack)
                         },
                 )
             }
@@ -146,11 +148,31 @@ private fun EntryProviderScope<Route>.versesScreens(stack: TopLevelBackStack) {
     }
 }
 
-private fun EntryProviderScope<Route>.settingsScreens() {
+private fun EntryProviderScope<Route>.settingsScreens(stack: TopLevelBackStack) {
     entry<Settings>(metadata = TwoPaneScene.twoPane() + fadeTransitionMetadata()) {
         val viewModel = koinViewModel<SettingsViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
-        Settings(state = state, onAction = viewModel::onAction)
+        Settings(
+            state = state,
+            onAction = viewModel::onAction,
+            onNavigateToAbout = { stack.add(About) },
+            onNavigateToChangelog = { stack.add(Changelog) },
+            onNavigateBack = { stack.removeLast() },
+        )
+    }
+
+    entry<About>(metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()) {
+        val viewModel = koinViewModel<SettingsViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        AboutScreen(versionName = state.currentVersion ?: "1.0.0", onBack = { stack.removeLast() })
+    }
+
+    entry<Changelog>(metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()) {
+        val viewModel = koinViewModel<SettingsViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        ChangelogScreen(changelog = state.changelog, onBack = { stack.removeLast() })
     }
 }

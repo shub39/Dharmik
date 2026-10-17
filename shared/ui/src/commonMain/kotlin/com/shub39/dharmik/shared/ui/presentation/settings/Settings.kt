@@ -17,10 +17,14 @@
 package com.shub39.dharmik.shared.ui.presentation.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,195 +33,346 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.AppTheme
 import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
+import com.shub39.dharmik.shared.ui.detachedItemShape
+import com.shub39.dharmik.shared.ui.endItemShape
+import com.shub39.dharmik.shared.ui.leadingItemShape
+import com.shub39.dharmik.shared.ui.listItemColors
+import com.shub39.dharmik.shared.ui.middleItemShape
+import com.shub39.dharmik.shared.ui.presentation.components.ListSelect
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.SettingSlider
+import com.shub39.dharmik.shared.ui.theme.getTitleFont
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun Settings(
     modifier: Modifier = Modifier,
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
+    onNavigateToAbout: () -> Unit,
+    onNavigateToChangelog: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val listState = rememberLazyListState()
         val uriHandler = LocalUriHandler.current
 
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
-            modifier = Modifier.widthIn(max = 700.dp).fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            item {
-                SettingSlider(
-                    title = stringResource(Res.string.verses_font_size),
-                    value = state.fontSize,
-                    valueRange = 12f..24f,
-                    onValueChange = { onAction(SettingsAction.SetFontSize(it)) },
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(Res.string.offline_audio)) },
-                    supportingContent = {
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(text = bulkAudioText(state.bulkAudio))
-
-                            val bulkAudio = state.bulkAudio
-                            if (bulkAudio is BulkAudioState.Downloading) {
-                                LinearProgressIndicator(
-                                    progress = { bulkAudio.progress },
-                                    modifier = Modifier.fillMaxWidth(),
-                                )
-                            }
-                        }
+        Scaffold(
+            modifier =
+                Modifier.widthIn(max = 700.dp)
+                    .fillMaxSize()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                LargeFlexibleTopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.settings),
+                            fontFamily = getTitleFont(),
+                        )
                     },
-                    trailingContent = {
-                        when (state.bulkAudio) {
-                            is BulkAudioState.Downloading,
-                            BulkAudioState.Extracting ->
-                                TextButton(
-                                    onClick = { onAction(SettingsAction.OnCancelAudioDownload) }
-                                ) {
-                                    Text(text = stringResource(Res.string.audio_cancel))
-                                }
-
-                            is BulkAudioState.Downloaded ->
-                                TextButton(onClick = { onAction(SettingsAction.OnDeleteAudio) }) {
-                                    Text(text = stringResource(Res.string.audio_delete))
-                                }
-
-                            else ->
-                                Button(onClick = { onAction(SettingsAction.OnDownloadAudio) }) {
-                                    Text(text = stringResource(Res.string.audio_download))
-                                }
-                        }
-                    },
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(Res.string.verse_state)) },
-                    supportingContent = {
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(text = stringResource(Res.string.verse_state_desc))
-
-                            Row(
-                                horizontalArrangement =
-                                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-                            ) {
-                                VerseCardState.entries.forEach { vcState ->
-                                    ToggleButton(
-                                        checked = vcState == state.verseCardState,
-                                        onCheckedChange = {
-                                            onAction(SettingsAction.OnSetVerseCardState(vcState))
-                                        },
-                                        modifier = Modifier.weight(1f),
-                                    ) {
-                                        Text(text = vcState.fullName)
-                                    }
-                                }
-                            }
-                        }
-                    },
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(Res.string.app_theme)) },
-                    supportingContent = {
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(text = stringResource(Res.string.app_theme_desc))
-
-                            Row(
-                                horizontalArrangement =
-                                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-                            ) {
-                                AppTheme.entries.forEach { appTheme ->
-                                    ToggleButton(
-                                        checked = appTheme == state.theme.appTheme,
-                                        onCheckedChange = {
-                                            onAction(SettingsAction.OnSetAppTheme(appTheme))
-                                        },
-                                        modifier = Modifier.weight(1f),
-                                    ) {
-                                        Text(text = stringResource(appTheme.labelRes()))
-                                    }
-                                }
-                            }
-                        }
-                    },
-                )
-            }
-
-            item { HorizontalDivider() }
-
-            item {
-                ListItem(
-                    headlineContent = { Text(text = "Dharmic Data") },
-                    supportingContent = { Text(text = "by bhavyakhatri") },
-                    trailingContent = {
-                        Row {
-                            FilledTonalIconButton(
-                                onClick = {
-                                    uriHandler.openUri("https://github.com/bhavykhatri/DharmicData")
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.github),
-                                    contentDescription = "Github",
-                                    modifier = Modifier.size(20.dp),
-                                )
-                            }
-                        }
-                    },
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text(text = "Gita Supersite") },
-                    supportingContent = { Text(text = "by IIT Kanpur") },
-                    trailingContent = {
-                        FilledTonalIconButton(
-                            onClick = {
-                                uriHandler.openUri("https://www.gitasupersite.iitk.ac.in/")
-                            }
-                        ) {
+                    navigationIcon = {
+                        FilledTonalIconButton(onClick = onNavigateBack) {
                             Icon(
-                                painter = painterResource(Res.drawable.globe),
-                                contentDescription = "Open In Browser",
-                                modifier = Modifier.size(20.dp),
+                                imageVector = vectorResource(Res.drawable.arrow_back),
+                                contentDescription = stringResource(Res.string.navigate_back),
                             )
                         }
                     },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            scrolledContainerColor = colorScheme.surface
+                        ),
+                    scrollBehavior = scrollBehavior,
                 )
+            },
+        ) { paddingValues ->
+            LazyColumn(
+                state = listState,
+                contentPadding =
+                    PaddingValues(
+                        top = paddingValues.calculateTopPadding() + 16.dp,
+                        bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                        start =
+                            paddingValues.calculateStartPadding(LocalLayoutDirection.current) +
+                                8.dp,
+                        end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) + 8.dp,
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // Appearance: language, theme and reading font size
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Column(modifier = Modifier.clip(leadingItemShape())) {
+                            ListItem(
+                                colors = listItemColors(),
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = vectorResource(Res.drawable.translate),
+                                        contentDescription = null,
+                                    )
+                                },
+                                headlineContent = {
+                                    Text(text = stringResource(Res.string.verse_state))
+                                },
+                                supportingContent = {
+                                    Text(text = stringResource(Res.string.verse_state_desc))
+                                },
+                            )
+
+                            Row(
+                                modifier =
+                                    Modifier.fillMaxWidth()
+                                        .background(listItemColors().containerColor)
+                                        .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
+                            ) {
+                                ListSelect(
+                                    title = null,
+                                    options = VerseCardState.entries,
+                                    selected = state.verseCardState,
+                                    onSelectedChange = {
+                                        onAction(SettingsAction.OnSetVerseCardState(it))
+                                    },
+                                    labelProvider = { Text(text = it.fullName) },
+                                )
+                            }
+                        }
+
+                        Column(modifier = Modifier.clip(middleItemShape())) {
+                            ListItem(
+                                colors = listItemColors(),
+                                leadingContent = {
+                                    Icon(
+                                        imageVector =
+                                            vectorResource(
+                                                when (state.theme.appTheme) {
+                                                    AppTheme.SYSTEM ->
+                                                        if (isSystemInDarkTheme())
+                                                            Res.drawable.dark_mode
+                                                        else Res.drawable.light_mode
+
+                                                    AppTheme.DARK -> Res.drawable.dark_mode
+                                                    AppTheme.LIGHT -> Res.drawable.light_mode
+                                                }
+                                            ),
+                                        contentDescription = null,
+                                    )
+                                },
+                                headlineContent = {
+                                    Text(text = stringResource(Res.string.app_theme))
+                                },
+                                supportingContent = {
+                                    Text(text = stringResource(Res.string.app_theme_desc))
+                                },
+                            )
+
+                            Row(
+                                modifier =
+                                    Modifier.fillMaxWidth()
+                                        .background(listItemColors().containerColor)
+                                        .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
+                            ) {
+                                ListSelect(
+                                    title = null,
+                                    options = AppTheme.entries,
+                                    selected = state.theme.appTheme,
+                                    onSelectedChange = {
+                                        onAction(SettingsAction.OnSetAppTheme(it))
+                                    },
+                                    labelProvider = { Text(text = stringResource(it.labelRes())) },
+                                )
+                            }
+                        }
+
+                        Column(
+                            modifier =
+                                Modifier.clip(endItemShape())
+                                    .background(listItemColors().containerColor)
+                                    .padding(16.dp)
+                        ) {
+                            SettingSlider(
+                                title = stringResource(Res.string.verses_font_size),
+                                value = state.fontSize,
+                                valueRange = 12f..24f,
+                                onValueChange = { onAction(SettingsAction.SetFontSize(it)) },
+                            )
+                        }
+                    }
+                }
+
+                // Offline audio
+                item {
+                    Column(modifier = Modifier.clip(detachedItemShape())) {
+                        ListItem(
+                            colors = listItemColors(),
+                            headlineContent = {
+                                Text(text = stringResource(Res.string.offline_audio))
+                            },
+                            supportingContent = {
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = bulkAudioText(state.bulkAudio))
+
+                                    val bulkAudio = state.bulkAudio
+                                    if (bulkAudio is BulkAudioState.Downloading) {
+                                        LinearProgressIndicator(
+                                            progress = { bulkAudio.progress },
+                                            modifier = Modifier.fillMaxWidth(),
+                                        )
+                                    }
+                                }
+                            },
+                            trailingContent = {
+                                when (state.bulkAudio) {
+                                    is BulkAudioState.Downloading,
+                                    BulkAudioState.Extracting ->
+                                        TextButton(
+                                            onClick = {
+                                                onAction(SettingsAction.OnCancelAudioDownload)
+                                            }
+                                        ) {
+                                            Text(text = stringResource(Res.string.audio_cancel))
+                                        }
+
+                                    is BulkAudioState.Downloaded ->
+                                        TextButton(
+                                            onClick = { onAction(SettingsAction.OnDeleteAudio) }
+                                        ) {
+                                            Text(text = stringResource(Res.string.audio_delete))
+                                        }
+
+                                    else ->
+                                        Button(
+                                            onClick = { onAction(SettingsAction.OnDownloadAudio) }
+                                        ) {
+                                            Text(text = stringResource(Res.string.audio_download))
+                                        }
+                                }
+                            },
+                        )
+                    }
+                }
+
+                // Data attribution links
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.github),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.open_link),
+                                    contentDescription = null,
+                                )
+                            },
+                            headlineContent = { Text(text = "Dharmic Data") },
+                            supportingContent = { Text(text = "by bhavyakhatri") },
+                            modifier =
+                                Modifier.clip(leadingItemShape()).clickable {
+                                    uriHandler.openUri("https://github.com/bhavykhatri/DharmicData")
+                                },
+                        )
+
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.globe),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.open_link),
+                                    contentDescription = null,
+                                )
+                            },
+                            headlineContent = { Text(text = "Gita Supersite") },
+                            supportingContent = { Text(text = "by IIT Kanpur") },
+                            modifier =
+                                Modifier.clip(endItemShape()).clickable {
+                                    uriHandler.openUri("https://www.gitasupersite.iitk.ac.in/")
+                                },
+                        )
+                    }
+                }
+
+                // About and Changelog
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.info),
+                                    contentDescription = null,
+                                )
+                            },
+                            headlineContent = { Text(text = stringResource(Res.string.about)) },
+                            supportingContent = {
+                                Text(text = "Dharmik ${state.currentVersion ?: "x.x.x"}")
+                            },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.arrow_forward),
+                                    contentDescription = "Navigate",
+                                )
+                            },
+                            modifier =
+                                Modifier.clip(leadingItemShape()).clickable { onNavigateToAbout() },
+                        )
+
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.check_list),
+                                    contentDescription = null,
+                                )
+                            },
+                            headlineContent = { Text(text = stringResource(Res.string.changelog)) },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = vectorResource(Res.drawable.arrow_forward),
+                                    contentDescription = "Navigate",
+                                )
+                            },
+                            modifier =
+                                Modifier.clip(endItemShape()).clickable { onNavigateToChangelog() },
+                        )
+                    }
+                }
             }
         }
     }

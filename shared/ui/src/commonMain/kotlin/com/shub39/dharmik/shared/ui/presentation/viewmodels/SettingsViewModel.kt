@@ -19,6 +19,7 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.shared.core.domain.AudioBulkRepo
+import com.shub39.dharmik.shared.core.domain.ChangelogRepo
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.ui.presentation.settings.SettingsAction
 import com.shub39.dharmik.shared.ui.presentation.settings.SettingsState
@@ -39,6 +40,7 @@ import org.koin.core.annotation.Provided
 class SettingsViewModel(
     @Provided private val datastore: PreferencesRepo,
     @Provided private val audioRepo: AudioBulkRepo,
+    @Provided private val changelogRepo: ChangelogRepo,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -92,6 +94,17 @@ class SettingsViewModel(
 
                 audioRepo.state
                     .onEach { bulk -> _state.update { it.copy(bulkAudio = bulk) } }
+                    .launchIn(this)
+
+                changelogRepo.changelog
+                    .onEach { changelog ->
+                        _state.update {
+                            it.copy(
+                                changelog = changelog,
+                                currentVersion = changelog.firstOrNull()?.version,
+                            )
+                        }
+                    }
                     .launchIn(this)
 
                 launch { audioRepo.refresh() }

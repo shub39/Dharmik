@@ -39,6 +39,10 @@ data object Chapters : Route
 
 data object Settings : Route
 
+data object About : Route
+
+data object Changelog : Route
+
 val baseRoutes = listOf(Home, Chapters)
 
 class TopLevelBackStack(private val startKey: Route = Home) {
@@ -66,6 +70,10 @@ class TopLevelBackStack(private val startKey: Route = Home) {
             }
             is Verses -> {
                 backStack.removeAll { it is Verses }
+                backStack.add(route)
+            }
+            About,
+            Changelog -> {
                 backStack.add(route)
             }
         }

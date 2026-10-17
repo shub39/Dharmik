@@ -17,6 +17,7 @@
 package com.shub39.dharmik.shared.ui.presentation.settings
 
 import com.shub39.dharmik.shared.core.domain.BulkAudioState
+import com.shub39.dharmik.shared.core.domain.Changelog
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.ui.theme.Theme
 
@@ -25,4 +26,6 @@ data class SettingsState(
     val verseCardState: VerseCardState = VerseCardState.ENGLISH,
     val theme: Theme = Theme(),
     val bulkAudio: BulkAudioState = BulkAudioState.Checking,
+    val changelog: Changelog = emptyList(),
+    val currentVersion: String? = null,
 )
