@@ -17,6 +17,8 @@
 package com.shub39.dharmik.shared.ui.navigation
 
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,8 +34,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.dharmik.shared.ui.presentation.chapters.Chapters
 import com.shub39.dharmik.shared.ui.presentation.home.Home
-import com.shub39.dharmik.shared.ui.presentation.settings.Settings as SettingsScreen
-import com.shub39.dharmik.shared.ui.presentation.verses.Verses as VersesScreen
+import com.shub39.dharmik.shared.ui.presentation.settings.Settings
+import com.shub39.dharmik.shared.ui.presentation.verses.Verses
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.ChaptersViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.HomeViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.MainViewModel
@@ -55,7 +57,7 @@ fun DharmikNavDisplay(modifier: Modifier = Modifier) {
 
     CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
         DharmikTheme(theme = state.theme) {
-            SharedTransitionLayout(modifier = modifier) {
+            SharedTransitionLayout(modifier = modifier.background(colorScheme.background)) {
                 val listDetailSceneStrategy =
                     remember(windowSizeClass) { ListDetailSceneStrategy<Route>(windowSizeClass) }
                 val twoPaneSceneStrategy =
@@ -83,9 +85,6 @@ fun DharmikNavDisplay(modifier: Modifier = Modifier) {
                     sharedTransitionScope = this,
                     sceneStrategies = listOf(twoPaneSceneStrategy, listDetailSceneStrategy),
                     sceneDecoratorStrategies = listOf(responsiveNavigationSceneDecoratorStrategy),
-                    // The ViewModel store decorator gives every entry - and every distinct route
-                    // instance - its own ViewModel, which is what lets `Verses` be built from the
-                    // navigation key alone.
                     entryDecorators =
                         listOf(
                             rememberSaveableStateHolderNavEntryDecorator(),
@@ -132,12 +131,12 @@ private fun EntryProviderScope<Route>.chaptersScreens(stack: TopLevelBackStack) 
 private fun EntryProviderScope<Route>.versesScreens(stack: TopLevelBackStack) {
     entry<Verses>(
         metadata =
-            TwoPaneScene.twoPane() + ListDetailScene.detailPane() + horizontalTransitionMetadata()
+            TwoPaneScene.twoPane() + ListDetailScene.detailPane() + verticalTransitionMetadata()
     ) { route ->
         val viewModel = koinViewModel<VersesViewModel> { parametersOf(route) }
         val state by viewModel.state.collectAsStateWithLifecycle()
 
-        VersesScreen(state = state, action = viewModel::onAction, onBack = { stack.removeLast() })
+        Verses(state = state, action = viewModel::onAction, onBack = { stack.removeLast() })
     }
 }
 
@@ -146,6 +145,6 @@ private fun EntryProviderScope<Route>.settingsScreens() {
         val viewModel = koinViewModel<SettingsViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
-        SettingsScreen(state = state, onAction = viewModel::onAction)
+        Settings(state = state, onAction = viewModel::onAction)
     }
 }

@@ -65,9 +65,7 @@ class TopLevelBackStack(private val startKey: Route = Home) {
                 backStack.add(Chapters)
             }
             is Verses -> {
-                backStack.clear()
-                backStack.add(Home)
-                backStack.add(Chapters)
+                backStack.removeAll { it is Verses }
                 backStack.add(route)
             }
         }
