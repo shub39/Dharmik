@@ -12,7 +12,8 @@
 
 # Motivation 
 
-I built this for my parents.
+I built this for my parents. I find the existing Gita apps out there quite tasteless and riddled 
+with ads and unnecessary features. So I built my own focused on the content of the book
 
 # References and Inspiration
 
