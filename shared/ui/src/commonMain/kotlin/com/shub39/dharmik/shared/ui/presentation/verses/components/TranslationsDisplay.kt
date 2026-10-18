@@ -16,26 +16,37 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.verses.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.Translations
+import com.shub39.dharmik.shared.ui.segmentedListItemShapes
+import com.shub39.dharmik.shared.ui.theme.getHindiFont
 import dharmik.shared.ui.generated.resources.Res
+import dharmik.shared.ui.generated.resources.dropdown
+import dharmik.shared.ui.generated.resources.dropup
 import dharmik.shared.ui.generated.resources.translations
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun TranslationsDisplay(translations: Translations, onCopy: (String) -> Unit, fontSize: Float) {
+fun TranslationsDisplay(translations: Translations, onCopy: (String) -> Unit) {
+    var currentSelected by rememberSaveable { mutableStateOf("") }
+
     val translationsMap =
         mapOf(
             "Sri Harikrishnadas Goenka" to translations.sriHarikrishnadasGoenka,
@@ -48,30 +59,46 @@ fun TranslationsDisplay(translations: Translations, onCopy: (String) -> Unit, fo
             "Shri Purohit Swami" to translations.shriPurohitSwami,
         )
 
-    Card(shape = MaterialTheme.shapes.large) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-        ) {
-            Text(
-                text = stringResource(Res.string.translations),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-            )
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = stringResource(Res.string.translations),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(8.dp),
+        )
 
-            Spacer(modifier = Modifier.padding(6.dp))
-
-            Column(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
-                translationsMap.forEach { (key, value) ->
-                    if (value.isNotEmpty()) {
-                        DialogPeek(
-                            title = key,
-                            content = value,
-                            onCopy = onCopy,
-                            fontSize = fontSize,
+        translationsMap.toList().forEachIndexed { index, (key, value) ->
+            if (value.isNotEmpty()) {
+                val isExpanded = currentSelected == key
+                SegmentedListItem(
+                    checked = isExpanded,
+                    onCheckedChange = { currentSelected = if (isExpanded) "" else key },
+                    onLongClick =
+                        if (isExpanded) {
+                            { onCopy(value) }
+                        } else null,
+                    onLongClickLabel = "Copy",
+                    colors = ListItemDefaults.colors(containerColor = colorScheme.surfaceContainer),
+                    shapes = segmentedListItemShapes(index, translationsMap.size),
+                    content = { Text(text = key) },
+                    supportingContent = {
+                        AnimatedVisibility(isExpanded) {
+                            Text(text = value, fontFamily = getHindiFont())
+                        }
+                    },
+                    trailingContent = {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (isExpanded) {
+                                        Res.drawable.dropup
+                                    } else {
+                                        Res.drawable.dropdown
+                                    }
+                                ),
+                            contentDescription = null,
                         )
-                    }
-                }
+                    },
+                )
             }
         }
     }

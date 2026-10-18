@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -33,8 +34,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
@@ -54,10 +55,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.core.media.MediaPlayerState
 import com.shub39.dharmik.shared.ui.navigation.LocalBackButtonVisibility
+import com.shub39.dharmik.shared.ui.presentation.components.ListSelect
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.VerseCard
 import com.shub39.dharmik.shared.ui.presentation.verses.components.CommentariesDisplay
@@ -66,9 +69,13 @@ import com.shub39.dharmik.shared.ui.util.copyToClipboard
 import dharmik.shared.ui.generated.resources.Res
 import dharmik.shared.ui.generated.resources.arrow_back
 import dharmik.shared.ui.generated.resources.arrow_forward
+import dharmik.shared.ui.generated.resources.autoplay
 import dharmik.shared.ui.generated.resources.bhagvad_gita
 import dharmik.shared.ui.generated.resources.chapter_template
+import dharmik.shared.ui.generated.resources.content_copy
 import dharmik.shared.ui.generated.resources.fast_forward
+import dharmik.shared.ui.generated.resources.favorite
+import dharmik.shared.ui.generated.resources.favorite_border
 import dharmik.shared.ui.generated.resources.pause
 import dharmik.shared.ui.generated.resources.play
 import kotlinx.coroutines.launch
@@ -132,28 +139,11 @@ fun Verses(
                                 }
                         )
                     },
-                    actions = {
-                        IconButton(
-                            onClick = { action(VersesAction.SetAutoPlay(!state.autoPlay)) },
-                            colors =
-                                if (state.autoPlay) {
-                                    IconButtonDefaults.filledTonalIconButtonColors()
-                                } else {
-                                    IconButtonDefaults.iconButtonColors()
-                                },
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.fast_forward),
-                                contentDescription = "Autoplay",
-                                modifier = Modifier.size(20.dp),
-                            )
-                        }
-                    },
                     navigationIcon = {
                         // Hidden in the detail pane of a list-detail scene, which owns its own back
                         // affordance.
                         if (LocalBackButtonVisibility.current) {
-                            IconButton(
+                            FilledTonalIconButton(
                                 onClick = {
                                     action(VersesAction.Pause)
                                     onBack()
@@ -173,7 +163,7 @@ fun Verses(
                     modifier = Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                 ) {
                     Row {
-                        IconButton(
+                        FilledTonalIconButton(
                             onClick = {
                                 action(
                                     VersesAction.ChangeVerse(
@@ -183,6 +173,7 @@ fun Verses(
                                 )
                             },
                             enabled = state.pagerState.currentPage > 0,
+                            shapes = IconButtonDefaults.shapes(),
                         ) {
                             Icon(
                                 painter = painterResource(Res.drawable.arrow_back),
@@ -205,7 +196,7 @@ fun Verses(
                             },
                         )
 
-                        IconButton(
+                        FilledTonalIconButton(
                             onClick = {
                                 action(
                                     VersesAction.ChangeVerse(
@@ -214,6 +205,7 @@ fun Verses(
                                     )
                                 )
                             },
+                            shapes = IconButtonDefaults.shapes(),
                             enabled = state.pagerState.currentPage < verses.size - 1,
                         ) {
                             Icon(
@@ -228,7 +220,13 @@ fun Verses(
             HorizontalPager(
                 state = state.pagerState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = padding,
+                contentPadding =
+                    PaddingValues(
+                        top = padding.calculateTopPadding(),
+                        bottom = padding.calculateBottomPadding(),
+                        start = padding.calculateLeftPadding(LocalLayoutDirection.current),
+                        end = padding.calculateRightPadding(LocalLayoutDirection.current),
+                    ),
             ) { index ->
                 val currentVerse = verses[index]
                 val scrollState = rememberLazyListState()
@@ -236,25 +234,96 @@ fun Verses(
                 LazyColumn(
                     state = scrollState,
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding =
+                        PaddingValues(start = 8.dp, end = 8.dp, top = 16.dp, bottom = 60.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement =
-                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp),
                         ) {
-                            VerseCardState.entries.forEach { vcState ->
-                                ToggleButton(
-                                    checked = vcState == state.verseCardState,
-                                    onCheckedChange = {
-                                        action(VersesAction.SetVerseCardState(vcState))
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Text(text = vcState.fullName)
-                                }
+                            ToggleButton(
+                                checked = state.favorites.contains(currentVerse),
+                                onCheckedChange = { action(VersesAction.SetFave(currentVerse)) },
+                                shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Icon(
+                                    painter =
+                                        painterResource(
+                                            if (state.favorites.contains(currentVerse)) {
+                                                Res.drawable.favorite
+                                            } else {
+                                                Res.drawable.favorite_border
+                                            }
+                                        ),
+                                    contentDescription = null,
+                                )
+                            }
+
+                            ToggleButton(
+                                checked = false,
+                                onCheckedChange = {
+                                    coroutineScope.launch {
+                                        copyToClipboard(
+                                            clipboardManager,
+                                            when (state.verseCardState) {
+                                                ENGLISH ->
+                                                    currentVerse.translations.shriPurohitSwami
+                                                HINDI ->
+                                                    currentVerse.translations.swamiTejomayananda
+                                                SANSKRIT -> currentVerse.text
+                                            },
+                                        )
+                                    }
+                                },
+                                shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.content_copy),
+                                    contentDescription = null,
+                                )
+                            }
+
+                            ToggleButton(
+                                checked = state.isPlaying,
+                                onCheckedChange = {
+                                    if (state.isPlaying) {
+                                        action(VersesAction.Pause)
+                                    } else {
+                                        action(VersesAction.Play(index))
+                                    }
+                                },
+                                shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Icon(
+                                    painter =
+                                        painterResource(
+                                            if (state.isPlaying) {
+                                                Res.drawable.pause
+                                            } else {
+                                                Res.drawable.play
+                                            }
+                                        ),
+                                    contentDescription = "Play/Pause",
+                                )
+                            }
+
+                            ToggleButton(
+                                checked = state.autoPlay,
+                                onCheckedChange = {
+                                    action(VersesAction.SetAutoPlay(!state.autoPlay))
+                                },
+                                shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.autoplay),
+                                    contentDescription = "Autoplay",
+                                )
                             }
                         }
                     }
@@ -265,40 +334,22 @@ fun Verses(
                                 verse = currentVerse,
                                 fontSize = state.fontSize,
                                 modifier = Modifier.fillMaxWidth(),
-                                isFave = state.favorites.contains(currentVerse),
                                 state = vcState,
-                                onToggleFave = { action(VersesAction.SetFave(currentVerse)) },
-                                onClick = {},
-                                onCopy = {
-                                    coroutineScope.launch { copyToClipboard(clipboardManager, it) }
-                                },
-                                playIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            if (state.isPlaying) {
-                                                action(VersesAction.Pause)
-                                            } else {
-                                                action(VersesAction.Play(index))
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter =
-                                                painterResource(
-                                                    if (state.isPlaying) {
-                                                        Res.drawable.pause
-                                                    } else {
-                                                        Res.drawable.play
-                                                    }
-                                                ),
-                                            contentDescription = "Play/Pause",
-                                            modifier = Modifier.size(20.dp),
-                                        )
-                                    }
-                                },
                             )
                         }
                     }
+
+                    item {
+                        ListSelect(
+                            title = null,
+                            options = VerseCardState.entries.toList(),
+                            selected = state.verseCardState,
+                            onSelectedChange = { action(VersesAction.SetVerseCardState(it)) },
+                            labelProvider = { Text(text = it.fullName) },
+                        )
+                    }
+
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
 
                     item {
                         TranslationsDisplay(
@@ -306,9 +357,10 @@ fun Verses(
                             onCopy = {
                                 coroutineScope.launch { copyToClipboard(clipboardManager, it) }
                             },
-                            fontSize = state.fontSize,
                         )
                     }
+
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
 
                     item {
                         CommentariesDisplay(
@@ -316,11 +368,8 @@ fun Verses(
                             onCopy = {
                                 coroutineScope.launch { copyToClipboard(clipboardManager, it) }
                             },
-                            fontSize = state.fontSize,
                         )
                     }
-
-                    item { Spacer(modifier = Modifier.padding(16.dp)) }
                 }
             }
         }

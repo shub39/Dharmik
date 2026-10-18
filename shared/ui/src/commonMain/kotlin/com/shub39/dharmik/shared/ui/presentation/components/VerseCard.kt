@@ -16,19 +16,14 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +33,6 @@ import com.shub39.dharmik.shared.ui.presentation.removeExtraLineBreaks
 import com.shub39.dharmik.shared.ui.theme.getHindiFont
 import com.shub39.dharmik.shared.ui.theme.getSanskritFont
 import dharmik.shared.ui.generated.resources.*
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -47,67 +41,21 @@ fun VerseCard(
     modifier: Modifier = Modifier,
     fontSize: Float = 16f,
     state: VerseCardState = VerseCardState.SANSKRIT,
-    isFave: Boolean? = null,
-    onToggleFave: () -> Unit = {},
-    onClick: () -> Unit = {},
-    onCopy: (String) -> Unit = {},
-    playIcon: @Composable () -> Unit = {},
 ) {
-    Card(shape = MaterialTheme.shapes.large, onClick = onClick, modifier = modifier) {
+    Card(shape = MaterialTheme.shapes.large, modifier = modifier) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(Res.string.chapter_template, verse.chapter),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+            Column {
+                Text(
+                    text = stringResource(Res.string.chapter_template, verse.chapter),
+                    style = MaterialTheme.typography.titleMedium,
+                )
 
-                    Text(
-                        text = stringResource(Res.string.verses_alt_template, verse.verse),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-
-                Row {
-                    isFave?.let {
-                        IconButton(onClick = onToggleFave) {
-                            Icon(
-                                painter =
-                                    painterResource(
-                                        if (it) Res.drawable.favorite
-                                        else Res.drawable.favorite_border
-                                    ),
-                                contentDescription = "Favorite",
-                                modifier = Modifier.size(20.dp),
-                            )
-                        }
-                    }
-
-                    IconButton(
-                        onClick = {
-                            onCopy(
-                                when (state) {
-                                    VerseCardState.ENGLISH -> verse.translations.shriPurohitSwami
-                                    VerseCardState.HINDI -> verse.translations.swamiTejomayananda
-                                    VerseCardState.SANSKRIT -> verse.text
-                                }
-                            )
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.content_copy),
-                            contentDescription = "Copy",
-                            modifier = Modifier.size(24.dp),
-                        )
-                    }
-
-                    playIcon()
-                }
+                Text(
+                    text = stringResource(Res.string.verses_alt_template, verse.verse),
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text =
@@ -116,16 +64,14 @@ fun VerseCard(
                         HINDI -> verse.translations.swamiTejomayananda
                         SANSKRIT -> verse.text
                     }.removeExtraLineBreaks(),
-                style =
-                    MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = fontSize.sp,
-                        fontFamily =
-                            when (state) {
-                                ENGLISH,
-                                HINDI -> getHindiFont()
-                                SANSKRIT -> getSanskritFont()
-                            },
-                    ),
+                fontSize = fontSize.sp,
+                lineHeight = fontSize.plus(3).sp,
+                fontFamily =
+                    when (state) {
+                        ENGLISH,
+                        HINDI -> getHindiFont()
+                        SANSKRIT -> getSanskritFont()
+                    },
             )
         }
     }

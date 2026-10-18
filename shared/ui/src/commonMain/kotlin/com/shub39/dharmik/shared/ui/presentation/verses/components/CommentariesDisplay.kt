@@ -16,26 +16,37 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.verses.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.Commentaries
+import com.shub39.dharmik.shared.ui.segmentedListItemShapes
+import com.shub39.dharmik.shared.ui.theme.getHindiFont
 import dharmik.shared.ui.generated.resources.Res
 import dharmik.shared.ui.generated.resources.commentaries
+import dharmik.shared.ui.generated.resources.dropdown
+import dharmik.shared.ui.generated.resources.dropup
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CommentariesDisplay(commentaries: Commentaries, onCopy: (String) -> Unit, fontSize: Float) {
+fun CommentariesDisplay(commentaries: Commentaries, onCopy: (String) -> Unit) {
+    var currentSelected by rememberSaveable { mutableStateOf("") }
+
     val commentaryMap =
         mapOf(
             "Swami Ramsukhdas" to commentaries.swamiRamsukhdas,
@@ -61,30 +72,46 @@ fun CommentariesDisplay(commentaries: Commentaries, onCopy: (String) -> Unit, fo
             "Swami Adidevananda" to commentaries.swamiAdidevananda,
         )
 
-    Card(shape = MaterialTheme.shapes.large) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-        ) {
-            Text(
-                text = stringResource(Res.string.commentaries),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-            )
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = stringResource(Res.string.commentaries),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(8.dp),
+        )
 
-            Spacer(modifier = Modifier.padding(6.dp))
-
-            Column(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
-                commentaryMap.forEach { (key, value) ->
-                    if (!value.isNullOrEmpty()) {
-                        DialogPeek(
-                            title = key,
-                            content = value,
-                            onCopy = onCopy,
-                            fontSize = fontSize,
+        commentaryMap.toList().forEachIndexed { index, (key, value) ->
+            if (!value.isNullOrEmpty()) {
+                val isExpanded = currentSelected == key
+                SegmentedListItem(
+                    checked = isExpanded,
+                    onCheckedChange = { currentSelected = if (isExpanded) "" else key },
+                    onLongClick =
+                        if (isExpanded) {
+                            { onCopy(value) }
+                        } else null,
+                    onLongClickLabel = "Copy",
+                    colors = ListItemDefaults.colors(containerColor = colorScheme.surfaceContainer),
+                    shapes = segmentedListItemShapes(index, commentaryMap.size),
+                    content = { Text(text = key) },
+                    supportingContent = {
+                        AnimatedVisibility(isExpanded) {
+                            Text(text = value, fontFamily = getHindiFont())
+                        }
+                    },
+                    trailingContent = {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (isExpanded) {
+                                        Res.drawable.dropup
+                                    } else {
+                                        Res.drawable.dropdown
+                                    }
+                                ),
+                            contentDescription = null,
                         )
-                    }
-                }
+                    },
+                )
             }
         }
     }

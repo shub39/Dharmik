@@ -19,6 +19,7 @@ package com.shub39.dharmik.shared.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.Font
 
@@ -26,7 +27,7 @@ import org.jetbrains.compose.resources.Font
 
 @Composable fun getHindiFont() = FontFamily(Font(Res.font.hindi_font))
 
-@Composable fun getTitleFont() = FontFamily(Font(Res.font.fraunces))
+@Composable fun getTitleFont() = FontFamily(Font(Res.font.fraunces, weight = FontWeight.Black))
 
 private val TYPOGRAPHY = Typography()
 
