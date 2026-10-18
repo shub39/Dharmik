@@ -73,7 +73,6 @@ import dharmik.shared.ui.generated.resources.autoplay
 import dharmik.shared.ui.generated.resources.bhagvad_gita
 import dharmik.shared.ui.generated.resources.chapter_template
 import dharmik.shared.ui.generated.resources.content_copy
-import dharmik.shared.ui.generated.resources.fast_forward
 import dharmik.shared.ui.generated.resources.favorite
 import dharmik.shared.ui.generated.resources.favorite_border
 import dharmik.shared.ui.generated.resources.pause

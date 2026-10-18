@@ -16,6 +16,14 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.settings
 
+// import androidx.compose.material3.Button // bulk audio download UI (commented out for now)
+// import androidx.compose.material3.LinearProgressIndicator // bulk audio download UI (commented
+// out for now)
+// import androidx.compose.material3.TextButton // bulk audio download UI (commented out for now)
+// import com.shub39.dharmik.shared.core.domain.BulkAudioState // bulk audio download UI (commented
+// out for now)
+// import com.shub39.dharmik.shared.ui.detachedItemShape // bulk audio download UI (commented out
+// for now)
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -32,16 +40,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -52,9 +57,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.AppTheme
-import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
-import com.shub39.dharmik.shared.ui.detachedItemShape
 import com.shub39.dharmik.shared.ui.endItemShape
 import com.shub39.dharmik.shared.ui.leadingItemShape
 import com.shub39.dharmik.shared.ui.listItemColors
@@ -225,6 +228,10 @@ fun Settings(
                     }
                 }
 
+                /*
+                 * Bulk audio download UI ("Offline audio") commented out for now. Restore by
+                 * removing this block comment once the download feature ships.
+                 *
                 // Offline audio
                 item {
                     Column(modifier = Modifier.clip(detachedItemShape())) {
@@ -276,6 +283,7 @@ fun Settings(
                         )
                     }
                 }
+                 */
 
                 // Data attribution links
                 item {
@@ -377,6 +385,9 @@ fun Settings(
         }
     }
 
+/*
+ * Bulk audio download UI helpers commented out for now (see the "Offline audio" section above).
+ *
 @Composable
 private fun bulkAudioText(state: BulkAudioState): String =
     when (state) {
@@ -401,6 +412,7 @@ private fun bulkAudioText(state: BulkAudioState): String =
 
 private fun sizeSuffix(sizeBytes: Long?): String =
     if (sizeBytes == null || sizeBytes <= 0L) "" else " (${sizeBytes / 1_000_000} MB)"
+ */
 
 private fun AppTheme.labelRes(): StringResource =
     when (this) {

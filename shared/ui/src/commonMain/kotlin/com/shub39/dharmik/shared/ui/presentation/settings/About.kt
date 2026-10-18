@@ -61,7 +61,6 @@ import com.shub39.dharmik.shared.ui.detachedItemShape
 import com.shub39.dharmik.shared.ui.endItemShape
 import com.shub39.dharmik.shared.ui.leadingItemShape
 import com.shub39.dharmik.shared.ui.listItemColors
-import com.shub39.dharmik.shared.ui.middleItemShape
 import com.shub39.dharmik.shared.ui.presentation.settings.components.LicenseBottomSheet
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
 import dharmik.shared.ui.generated.resources.Res
@@ -74,7 +73,6 @@ import dharmik.shared.ui.generated.resources.buymeacoffee
 import dharmik.shared.ui.generated.resources.dev_icon
 import dharmik.shared.ui.generated.resources.developer
 import dharmik.shared.ui.generated.resources.discord
-import dharmik.shared.ui.generated.resources.discord_desc
 import dharmik.shared.ui.generated.resources.email
 import dharmik.shared.ui.generated.resources.github
 import dharmik.shared.ui.generated.resources.github_sponsors
@@ -196,30 +194,8 @@ private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
                     Text(text = stringResource(Res.string.github_sponsors_desc))
                 },
                 modifier =
-                    Modifier.clip(middleItemShape()).clickable {
-                        uriHandler.openUri("https://github.com/sponsors/shub39")
-                    },
-            )
-            ListItem(
-                colors = listItemColors(),
-                leadingContent = {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.discord),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.open_link),
-                        contentDescription = null,
-                    )
-                },
-                headlineContent = { Text(text = stringResource(Res.string.discord)) },
-                supportingContent = { Text(text = stringResource(Res.string.discord_desc)) },
-                modifier =
                     Modifier.clip(endItemShape()).clickable {
-                        uriHandler.openUri("https://discord.gg/nxA2hgtEKf")
+                        uriHandler.openUri("https://github.com/sponsors/shub39")
                     },
             )
         }
