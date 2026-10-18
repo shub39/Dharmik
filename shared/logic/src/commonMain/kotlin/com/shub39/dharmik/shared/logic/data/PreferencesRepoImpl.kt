@@ -56,7 +56,7 @@ class PreferencesRepoImpl(private val dataStore: DataStore<Preferences>) : Prefe
 
     override fun getBgBookMark(): Flow<LongPair> =
         dataStore.data.map {
-            Json.decodeFromString(it[bgBookMarkKey] ?: Json.encodeToString(LongPair(1, 1)))
+            Json.decodeFromString(it[bgBookMarkKey] ?: Json.encodeToString(LongPair(1, 0)))
         }
 
     override suspend fun setBgBookMark(mark: LongPair) {
@@ -66,9 +66,9 @@ class PreferencesRepoImpl(private val dataStore: DataStore<Preferences>) : Prefe
     override fun getVerseCardState(): Flow<VerseCardState> =
         dataStore.data.map {
             when (it[verseCardStateKey]) {
-                VerseCardState.ENGLISH.name -> VerseCardState.ENGLISH
+                VerseCardState.SANSKRIT.name -> VerseCardState.SANSKRIT
                 VerseCardState.HINDI.name -> VerseCardState.HINDI
-                else -> VerseCardState.SANSKRIT
+                else -> VerseCardState.ENGLISH
             }
         }
 

@@ -39,9 +39,6 @@
     <string name="bmc_desc">Support me with a coffee</string>
     <string name="github_sponsors">GitHub Sponsors</string>
     <string name="github_sponsors_desc">Support me through GitHub</string>
-    <string name="discord">Discord</string>
-    <string name="discord_desc">Join the community</string>
     <string name="developer">Developer</string>
-    <string name="open_link">Open link</string>
     <string name="navigate_back">Navigate Back</string>
 </resources>

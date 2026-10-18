@@ -23,7 +23,7 @@ import com.shub39.dharmik.shared.core.domain.AppTheme
 data class Theme(
     val appTheme: AppTheme = AppTheme.SYSTEM,
     val withAmoled: Boolean = false,
-    val seedColor: Color = Color(0xFFEBDBB2),
-    val paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
+    val seedColor: Color = Color(0xFFFF7800),
+    val paletteStyle: PaletteStyle = PaletteStyle.Content,
     val materialYou: Boolean = false,
 )
