@@ -1,4 +1,3 @@
-composeApp/release
 .fleet
 *.iml
 .kotlin
@@ -12,6 +11,13 @@ local.properties
 captures
 .externalNativeBuild
 .cxx
+.run
+
+# Generated at build time from repo-root gita/text
+shared/logic/src/commonMain/composeResources/files/bhagvad_gita/
+
+# Local, gitignored planning docs
+.plan/
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/

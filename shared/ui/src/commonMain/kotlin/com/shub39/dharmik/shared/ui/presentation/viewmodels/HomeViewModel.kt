@@ -1,0 +1,82 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.dharmik.shared.ui.presentation.viewmodels
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.shub39.dharmik.shared.core.domain.BgRepo
+import com.shub39.dharmik.shared.core.domain.PreferencesRepo
+import com.shub39.dharmik.shared.ui.presentation.home.HomeAction
+import com.shub39.dharmik.shared.ui.presentation.home.HomeState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
+
+@KoinViewModel
+class HomeViewModel(
+    @Provided private val repo: BgRepo,
+    @Provided private val datastore: PreferencesRepo,
+) : ViewModel() {
+    private var observeJob: Job? = null
+
+    private val _state = MutableStateFlow(HomeState())
+
+    val state =
+        _state
+            .asStateFlow()
+            .onStart { observeState() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
+
+    fun onAction(action: HomeAction) = viewModelScope.launch {}
+
+    private fun observeState() =
+        viewModelScope.launch {
+            observeJob?.cancel()
+            observeJob = launch {
+                datastore
+                    .getFontSize()
+                    .onEach { size -> _state.update { it.copy(fontSize = size) } }
+                    .launchIn(this)
+
+                repo
+                    .getFavesFlow()
+                    .onEach { faves -> _state.update { it.copy(favorites = faves) } }
+                    .launchIn(this)
+
+                datastore
+                    .getBgBookMark()
+                    .onEach { value -> _state.update { it.copy(currentBookMark = value) } }
+                    .launchIn(this)
+
+                datastore
+                    .getVerseCardState()
+                    .onEach { verseCardState ->
+                        _state.update { it.copy(verseCardState = verseCardState) }
+                    }
+                    .launchIn(this)
+            }
+        }
+}

@@ -1,40 +1,28 @@
-![](fastlane/metadata/android/en-US/images/icon-192-maskable.png)
+![](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
-# Dharmik
-### Browse Bhagavad Gita
+[<img alt="Get it on Google Play" src="badges/playstore.png" width="180px">](https://play.google.com/store/apps/details?id=com.shub39.dharmik.online)
+[<img alt="Get it on github" src="badges/github.png" width="180px">](https://github.com/shub39/Dharmik/releases)
 
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio2.svg">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()
+# Screenshots 
 
-> ### Stats and Socials
-> [<img src="https://m3-markdown-badges.vercel.app/stars/1/3/shub39/Dharmik">]()
-> [<img src="https://m3-markdown-badges.vercel.app/issues/1/2/shub39/Dharmik">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
-
-> ### Get On
-> [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.dharmik.online)
-
-## Screenshots 📱
 | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
 |:------------------------------------------------------------------:|:------------------------------------------------------------------:|
 | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
 
-## Features ✨
->- No sketchy permissions or ads
->- View verses, commentaries and translations for over 2000 verses
->- Audio transcriptions in three languages (english, hindi and sanskrit)
->- Copy verses, commentaries and translations to clipboard
 
-## Motivation 💭
-I built this for my parents. Also as an effort to fight misinformation online regarding this book. There are way too many 
-bad actors and self-proclaimed "Gurus" online that misinterpret verses to fit their own agenda. This should help skeptics
-to fact check verses and translations with original interpretations from various spiritual leaders. Also Gita Supersite's
-UI is extremely outdated and not user friendly
+# Motivation 
 
-## References and Inspiration 💡
->- [Dharmic Data](https://github.com/bhavykhatri/DharmicData) for the texts
->- [Gita Supersite](https://www.gitasupersite.iitk.ac.in/), primary source and audio for the verses
+I built this for my parents. I find the existing Gita apps out there quite tasteless and riddled 
+with ads and unnecessary features. So I built my own focused on the content of the book
 
-## Stargazers over time ✨
-[![Stargazers over time](https://starchart.cc/shub39/Dharmik.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Dharmik)
+# References and Inspiration
+
+- [Dharmic Data](https://github.com/bhavykhatri/DharmicData) for the texts
+- [Gita Supersite](https://www.gitasupersite.iitk.ac.in/), primary source and audio for the verses
+
+# Security
+
+SHA-256 fingerprint for the signing certificate used for GitHub releases
+```text
+0F:E1:B9:F4:4A:4D:B9:7E:C5:09:48:F5:18:9F:6B:43:00:71:6C:C6:D4:84:3F:56:98:D6:14:A2:15:2E:21:88
+```
