@@ -83,8 +83,8 @@ fun Settings(
         // Request the notification permission on demand (only when a download is started) rather
         // than prompting at app launch. The bulk download runs in a foreground service that needs a
         // visible notification.
-        val requestNotificationPermission = rememberNotificationPermissionRequest { granted ->
-            if (granted) onAction(SettingsAction.OnDownloadAudio)
+        val requestNotificationPermission = rememberNotificationPermissionRequest { _ ->
+            onAction(SettingsAction.OnDownloadAudio)
         }
 
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -255,6 +255,9 @@ fun Settings(
                                 }
                                 is Downloaded -> {
                                     onAction(SettingsAction.OnDeleteAudio)
+                                }
+                                is Downloading -> {
+                                    onAction(SettingsAction.OnCancelAudioDownload)
                                 }
                                 else -> {
                                     requestNotificationPermission()
