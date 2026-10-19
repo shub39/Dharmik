@@ -16,14 +16,6 @@
  */
 package com.shub39.dharmik
 
-// import android.Manifest // bulk audio download notification (commented out for now)
-// import android.content.pm.PackageManager // bulk audio download notification (commented out for
-// now)
-// import android.os.Build // bulk audio download notification (commented out for now)
-// import androidx.activity.result.contract.ActivityResultContracts // bulk audio download
-// notification (commented out for now)
-// import androidx.core.content.ContextCompat // bulk audio download notification (commented out for
-// now)
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,35 +25,13 @@ import com.shub39.dharmik.shared.ui.navigation.DharmikNavDisplay
 
 class MainActivity : ComponentActivity() {
 
-    // Bulk audio download notification permission (commented out for now)
-    // private val notificationPermission =
-    //     registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-
-        // requestNotificationPermissionIfNeeded() // bulk audio download notification (commented
-        // out for now)
 
         setContent {
             enableEdgeToEdge()
             DharmikNavDisplay()
         }
     }
-
-    /*
-     * The bulk audio download runs in a foreground service that needs a visible notification.
-     * Notification permission prompt commented out for now along with the download UI.
-     *
-    private fun requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
-
-        val granted =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED
-
-        if (!granted) notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-    }
-     */
 }

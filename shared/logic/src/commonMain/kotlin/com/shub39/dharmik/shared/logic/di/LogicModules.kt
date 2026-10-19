@@ -26,6 +26,7 @@ import com.shub39.dharmik.shared.logic.data.DataStoreFactory
 import com.shub39.dharmik.shared.logic.data.DatabaseFactory
 import com.shub39.dharmik.shared.logic.data.DharmikDb
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -49,7 +50,16 @@ class LogicModules {
     fun getPreferencesDataStore(factory: DataStoreFactory): DataStore<Preferences> =
         factory.getPreferencesDataStore()
 
-    @Single fun getHttpClient(): HttpClient = HttpClient()
+    @Single
+    fun getHttpClient(): HttpClient = HttpClient {
+        install(HttpTimeout) {
+            connectTimeoutMillis = 30_000
+            // Abort a transfer that stops receiving data so the bulk downloader can resume it
+            // instead of blocking forever. No requestTimeout: a 360 MB archive legitimately
+            // takes minutes to download.
+            socketTimeoutMillis = 30_000
+        }
+    }
 
     @Single fun getMediaPlayer(factory: MediaPlayerFactory): MediaPlayer = factory.create()
 }

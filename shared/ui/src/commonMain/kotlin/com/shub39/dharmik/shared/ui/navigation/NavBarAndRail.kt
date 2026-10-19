@@ -16,14 +16,7 @@
  */
 package com.shub39.dharmik.shared.ui.navigation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -50,59 +43,45 @@ private val NAV_ITEMS =
 
 @Composable
 fun NavBar(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Route) -> Unit) {
-    AnimatedVisibility(
-        modifier = modifier.fillMaxWidth(),
-        visible = currentRoute in baseRoutes,
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it }),
-    ) {
-        NavigationBar {
-            NAV_ITEMS.forEach { item ->
-                val selected = currentRoute == item.route
+    if (currentRoute !in baseRoutes) return
 
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = {
-                        if (selected) return@NavigationBarItem
-                        onNavigate(item.route)
-                    },
-                    icon = {
-                        Icon(imageVector = vectorResource(item.icon), contentDescription = null)
-                    },
-                    label = { Text(text = stringResource(item.title)) },
-                    alwaysShowLabel = false,
-                )
-            }
+    NavigationBar(modifier = modifier) {
+        NAV_ITEMS.forEach { item ->
+            val selected = currentRoute == item.route
+
+            NavigationBarItem(
+                selected = selected,
+                onClick = {
+                    if (selected) return@NavigationBarItem
+                    onNavigate(item.route)
+                },
+                icon = { Icon(imageVector = vectorResource(item.icon), contentDescription = null) },
+                label = { Text(text = stringResource(item.title)) },
+                alwaysShowLabel = false,
+            )
         }
     }
 }
 
 @Composable
 fun NavRail(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Route) -> Unit) {
-    AnimatedVisibility(
-        modifier = modifier.fillMaxHeight(),
-        visible = currentRoute in baseRoutes,
-        enter = slideInHorizontally(initialOffsetX = { -it }),
-        exit = slideOutHorizontally(targetOffsetX = { -it }),
-    ) {
-        NavigationRail {
-            Spacer(modifier = Modifier.height(16.dp))
-            NAV_ITEMS.forEach { item ->
-                val selected = currentRoute == item.route
+    if (currentRoute !in baseRoutes) return
 
-                NavigationRailItem(
-                    selected = selected,
-                    onClick = {
-                        if (selected) return@NavigationRailItem
-                        onNavigate(item.route)
-                    },
-                    icon = {
-                        Icon(imageVector = vectorResource(item.icon), contentDescription = null)
-                    },
-                    label = { Text(text = stringResource(item.title)) },
-                    alwaysShowLabel = false,
-                )
-            }
+    NavigationRail(modifier = modifier) {
+        Spacer(modifier = Modifier.height(16.dp))
+        NAV_ITEMS.forEach { item ->
+            val selected = currentRoute == item.route
+
+            NavigationRailItem(
+                selected = selected,
+                onClick = {
+                    if (selected) return@NavigationRailItem
+                    onNavigate(item.route)
+                },
+                icon = { Icon(imageVector = vectorResource(item.icon), contentDescription = null) },
+                label = { Text(text = stringResource(item.title)) },
+                alwaysShowLabel = false,
+            )
         }
     }
 }

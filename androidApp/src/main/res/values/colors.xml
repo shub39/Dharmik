@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash screen colors locked to the brand icon (fastlane/.../icon.png). -->
+    <!-- Background: the icon's orange background pixel (#FF843B). -->
+    <color name="splash_background">#FF843B</color>
+    <!-- Content: the icon's leaf/foreground pixel (#683401). -->
+    <color name="splash_content">#683401</color>
+</resources>

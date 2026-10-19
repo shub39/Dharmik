@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.0
+- Added option to download all audio tracks for offline playback.
+- Miscellaneous UI improvements
+
 ## 4.0.0
 - Revamped UI components
 - Fixed Gita Audio not working

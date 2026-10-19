@@ -149,7 +149,7 @@ private fun EntryProviderScope<Route>.versesScreens(stack: TopLevelBackStack) {
 }
 
 private fun EntryProviderScope<Route>.settingsScreens(stack: TopLevelBackStack) {
-    entry<Settings>(metadata = TwoPaneScene.twoPane() + fadeTransitionMetadata()) {
+    entry<Settings>(metadata = TwoPaneScene.twoPane() + verticalTransitionMetadata()) {
         val viewModel = koinViewModel<SettingsViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
