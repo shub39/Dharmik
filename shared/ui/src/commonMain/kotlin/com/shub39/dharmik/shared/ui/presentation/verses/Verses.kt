@@ -221,8 +221,6 @@ fun Verses(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding =
                     PaddingValues(
-                        top = padding.calculateTopPadding(),
-                        bottom = padding.calculateBottomPadding(),
                         start = padding.calculateLeftPadding(LocalLayoutDirection.current),
                         end = padding.calculateRightPadding(LocalLayoutDirection.current),
                     ),
@@ -234,7 +232,12 @@ fun Verses(
                     state = scrollState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding =
-                        PaddingValues(start = 8.dp, end = 8.dp, top = 16.dp, bottom = 60.dp),
+                        PaddingValues(
+                            start = 8.dp,
+                            end = 8.dp,
+                            top = padding.calculateTopPadding() + 16.dp,
+                            bottom = padding.calculateBottomPadding() + 60.dp,
+                        ),
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
                     item {
