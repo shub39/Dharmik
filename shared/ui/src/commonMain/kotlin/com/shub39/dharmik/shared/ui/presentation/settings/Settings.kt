@@ -32,16 +32,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -50,11 +50,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.AppTheme
 import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
-import com.shub39.dharmik.shared.ui.detachedItemShape
 import com.shub39.dharmik.shared.ui.endItemShape
 import com.shub39.dharmik.shared.ui.leadingItemShape
 import com.shub39.dharmik.shared.ui.listItemColors
@@ -62,6 +62,7 @@ import com.shub39.dharmik.shared.ui.middleItemShape
 import com.shub39.dharmik.shared.ui.presentation.components.ListSelect
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.SettingSlider
+import com.shub39.dharmik.shared.ui.segmentedListItemShapes
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
 import com.shub39.dharmik.shared.ui.util.rememberNotificationPermissionRequest
 import dharmik.shared.ui.generated.resources.*
@@ -235,52 +236,76 @@ fun Settings(
 
                 // Offline audio
                 item {
-                    Column(modifier = Modifier.clip(detachedItemShape())) {
-                        ListItem(
-                            colors = listItemColors(),
-                            headlineContent = {
-                                Text(text = stringResource(Res.string.offline_audio))
-                            },
-                            supportingContent = {
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Text(text = bulkAudioText(state.bulkAudio))
-
-                                    val bulkAudio = state.bulkAudio
-                                    if (bulkAudio is BulkAudioState.Downloading) {
-                                        LinearProgressIndicator(
-                                            progress = { bulkAudio.progress },
-                                            modifier = Modifier.fillMaxWidth(),
-                                        )
-                                    }
+                    SegmentedListItem(
+                        colors = listItemColors(),
+                        selected =
+                            state.bulkAudio is BulkAudioState.Downloading ||
+                                state.bulkAudio is BulkAudioState.Checking ||
+                                state.bulkAudio is BulkAudioState.Extracting,
+                        leadingContent = {
+                            Icon(
+                                imageVector = vectorResource(Res.drawable.download_for_offline),
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            when (state.bulkAudio) {
+                                Extracting -> {
+                                    onAction(SettingsAction.OnCancelAudioDownload)
                                 }
-                            },
-                            trailingContent = {
-                                when (state.bulkAudio) {
-                                    is BulkAudioState.Downloading,
-                                    BulkAudioState.Extracting ->
-                                        TextButton(
-                                            onClick = {
-                                                onAction(SettingsAction.OnCancelAudioDownload)
-                                            }
-                                        ) {
-                                            Text(text = stringResource(Res.string.audio_cancel))
-                                        }
-
-                                    is BulkAudioState.Downloaded ->
-                                        TextButton(
-                                            onClick = { onAction(SettingsAction.OnDeleteAudio) }
-                                        ) {
-                                            Text(text = stringResource(Res.string.audio_delete))
-                                        }
-
-                                    else ->
-                                        Button(onClick = { requestNotificationPermission() }) {
-                                            Text(text = stringResource(Res.string.audio_download))
-                                        }
+                                is Downloaded -> {
+                                    onAction(SettingsAction.OnDeleteAudio)
                                 }
-                            },
-                        )
-                    }
+                                else -> {
+                                    requestNotificationPermission()
+                                }
+                            }
+                        },
+                        shapes = segmentedListItemShapes(0, 1),
+                        content = { Text(text = stringResource(Res.string.offline_audio)) },
+                        supportingContent = {
+                            Text(
+                                text = bulkAudioText(state.bulkAudio),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        },
+                        trailingContent = {
+                            when (state.bulkAudio) {
+                                is Downloading -> {
+                                    CircularWavyProgressIndicator(
+                                        progress = { state.bulkAudio.progress }
+                                    )
+                                }
+
+                                is Extracting,
+                                Checking -> {
+                                    LoadingIndicator()
+                                }
+
+                                is Downloaded -> {
+                                    Icon(
+                                        imageVector = vectorResource(Res.drawable.delete),
+                                        contentDescription = null,
+                                    )
+                                }
+
+                                is NotDownloaded -> {
+                                    Icon(
+                                        imageVector = vectorResource(Res.drawable.download),
+                                        contentDescription = null,
+                                    )
+                                }
+
+                                is BulkAudioState.Failed -> {
+                                    Icon(
+                                        imageVector = vectorResource(Res.drawable.retry),
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
+                        },
+                    )
                 }
 
                 // Data attribution links
@@ -386,23 +411,20 @@ fun Settings(
 @Composable
 private fun bulkAudioText(state: BulkAudioState): String =
     when (state) {
-        BulkAudioState.Checking -> stringResource(Res.string.audio_status_checking)
+        Checking -> stringResource(Res.string.audio_status_checking)
 
-        is BulkAudioState.NotDownloaded ->
+        is NotDownloaded ->
             stringResource(Res.string.audio_status_not_downloaded) + sizeSuffix(state.sizeBytes)
 
-        is BulkAudioState.UpdateAvailable ->
-            stringResource(Res.string.audio_status_update_available) + sizeSuffix(state.sizeBytes)
-
-        is BulkAudioState.Downloading ->
+        is Downloading ->
             stringResource(Res.string.audio_status_downloading) +
                 " ${(state.progress * 100).toInt()}%"
 
-        BulkAudioState.Extracting -> stringResource(Res.string.audio_status_extracting)
+        Extracting -> stringResource(Res.string.audio_status_extracting)
 
-        is BulkAudioState.Downloaded -> stringResource(Res.string.audio_status_downloaded)
+        is Downloaded -> stringResource(Res.string.audio_status_downloaded)
 
-        is BulkAudioState.Failed ->
+        is Failed ->
             stringResource(Res.string.audio_status_failed) + (state.message?.let { ": $it" } ?: "")
     }
 
@@ -411,7 +433,7 @@ private fun sizeSuffix(sizeBytes: Long?): String =
 
 private fun AppTheme.labelRes(): StringResource =
     when (this) {
-        AppTheme.LIGHT -> Res.string.light_theme
-        AppTheme.DARK -> Res.string.dark_theme
-        AppTheme.SYSTEM -> Res.string.system_theme
+        LIGHT -> Res.string.light_theme
+        DARK -> Res.string.dark_theme
+        SYSTEM -> Res.string.system_theme
     }

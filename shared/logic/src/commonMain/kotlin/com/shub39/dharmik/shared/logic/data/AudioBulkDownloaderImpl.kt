@@ -73,23 +73,21 @@ class AudioBulkDownloaderImpl(
     private var downloadJob: Job? = null
 
     override suspend fun refresh() {
-        _state.value = BulkAudioState.Checking
+        // The audio archive is immutable: once it is on disk there is nothing to update, so the
+        // remote manifest is only fetched while the set still needs to be downloaded.
         val localVersion = preferences.getBulkAudioVersion().first()
+        if (localVersion != null) {
+            _state.value = BulkAudioState.Downloaded(localVersion)
+            return
+        }
+
+        _state.value = BulkAudioState.Checking
         try {
             val remote = fetchManifest()
             manifest = remote
-            _state.value =
-                when {
-                    localVersion == null ->
-                        BulkAudioState.NotDownloaded(remote.version, remote.sizeBytes)
-                    localVersion != remote.version ->
-                        BulkAudioState.UpdateAvailable(remote.version, remote.sizeBytes)
-                    else -> BulkAudioState.Downloaded(localVersion)
-                }
+            _state.value = BulkAudioState.NotDownloaded(remote.version, remote.sizeBytes)
         } catch (e: Exception) {
-            _state.value =
-                if (localVersion != null) BulkAudioState.Downloaded(localVersion)
-                else BulkAudioState.NotDownloaded(null, null)
+            _state.value = BulkAudioState.NotDownloaded(null, null)
         }
     }
 

@@ -29,7 +29,6 @@
     <string name="audio_status_downloading">Downloading</string>
     <string name="audio_status_extracting">Extracting…</string>
     <string name="audio_status_downloaded">Downloaded</string>
-    <string name="audio_status_update_available">Update available</string>
     <string name="audio_status_failed">Download failed</string>
     <string name="about">About</string>
     <string name="changelog">Changelog</string>

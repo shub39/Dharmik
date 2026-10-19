@@ -43,8 +43,9 @@ val VerseCardState.audioVariant: AudioVariant
 /**
  * Manifest published alongside `gita-audio.zip` on every GitHub Release.
  *
- * [version] is a content fingerprint computed in CI; it only changes when the audio content does,
- * so the app can avoid re-downloading the (large) archive when nothing changed.
+ * The archive is treated as immutable: [version] is a content fingerprint computed in CI and is
+ * stored on device purely as a marker that the set has been downloaded. It is never re-compared
+ * against the remote manifest to look for updates.
  */
 @Serializable
 data class AudioManifest(
@@ -62,9 +63,6 @@ sealed interface BulkAudioState {
 
     /** Nothing downloaded yet. */
     data class NotDownloaded(val remoteVersion: String?, val sizeBytes: Long?) : BulkAudioState
-
-    /** A newer audio set is available than the one on disk. */
-    data class UpdateAvailable(val remoteVersion: String, val sizeBytes: Long) : BulkAudioState
 
     /** Archive is being downloaded. */
     data class Downloading(val bytesRead: Long, val totalBytes: Long) : BulkAudioState {
