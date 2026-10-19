@@ -77,9 +77,21 @@ class AudioStore(private val storage: AudioStorage) {
         fs.createDirectories(root)
     }
 
-    /** Removes the whole audio store (used by "delete" and before a bulk replace). */
+    /** Removes the whole audio store (used by "delete"). */
     fun deleteAll() {
         if (fs.exists(root)) fs.deleteRecursively(root)
+    }
+
+    /**
+     * Removes the per-verse `.mp3` copies, leaving the bulk (`.ogg`) set in place. Used after a
+     * bulk extraction so the whole set supersedes any previously downloaded single verses.
+     */
+    fun deletePerVerseFiles() {
+        if (!fs.exists(root)) return
+        fs.listRecursively(root)
+            .filter { it.name.endsWith(".mp3") }
+            .toList()
+            .forEach { fs.delete(it) }
     }
 
     private fun fileName(verse: Long, variant: AudioVariant): String =

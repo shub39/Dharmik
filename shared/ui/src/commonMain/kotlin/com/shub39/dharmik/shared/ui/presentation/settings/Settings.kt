@@ -16,14 +16,6 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.settings
 
-// import androidx.compose.material3.Button // bulk audio download UI (commented out for now)
-// import androidx.compose.material3.LinearProgressIndicator // bulk audio download UI (commented
-// out for now)
-// import androidx.compose.material3.TextButton // bulk audio download UI (commented out for now)
-// import com.shub39.dharmik.shared.core.domain.BulkAudioState // bulk audio download UI (commented
-// out for now)
-// import com.shub39.dharmik.shared.ui.detachedItemShape // bulk audio download UI (commented out
-// for now)
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -40,13 +32,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,7 +52,9 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.AppTheme
+import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
+import com.shub39.dharmik.shared.ui.detachedItemShape
 import com.shub39.dharmik.shared.ui.endItemShape
 import com.shub39.dharmik.shared.ui.leadingItemShape
 import com.shub39.dharmik.shared.ui.listItemColors
@@ -66,6 +63,7 @@ import com.shub39.dharmik.shared.ui.presentation.components.ListSelect
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.SettingSlider
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
+import com.shub39.dharmik.shared.ui.util.rememberNotificationPermissionRequest
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -81,6 +79,13 @@ fun Settings(
     onNavigateBack: () -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
+        // Request the notification permission on demand (only when a download is started) rather
+        // than prompting at app launch. The bulk download runs in a foreground service that needs a
+        // visible notification.
+        val requestNotificationPermission = rememberNotificationPermissionRequest { granted ->
+            if (granted) onAction(SettingsAction.OnDownloadAudio)
+        }
+
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val listState = rememberLazyListState()
         val uriHandler = LocalUriHandler.current
@@ -228,10 +233,6 @@ fun Settings(
                     }
                 }
 
-                /*
-                 * Bulk audio download UI ("Offline audio") commented out for now. Restore by
-                 * removing this block comment once the download feature ships.
-                 *
                 // Offline audio
                 item {
                     Column(modifier = Modifier.clip(detachedItemShape())) {
@@ -273,9 +274,7 @@ fun Settings(
                                         }
 
                                     else ->
-                                        Button(
-                                            onClick = { onAction(SettingsAction.OnDownloadAudio) }
-                                        ) {
+                                        Button(onClick = { requestNotificationPermission() }) {
                                             Text(text = stringResource(Res.string.audio_download))
                                         }
                                 }
@@ -283,7 +282,6 @@ fun Settings(
                         )
                     }
                 }
-                 */
 
                 // Data attribution links
                 item {
@@ -385,9 +383,6 @@ fun Settings(
         }
     }
 
-/*
- * Bulk audio download UI helpers commented out for now (see the "Offline audio" section above).
- *
 @Composable
 private fun bulkAudioText(state: BulkAudioState): String =
     when (state) {
@@ -407,12 +402,12 @@ private fun bulkAudioText(state: BulkAudioState): String =
 
         is BulkAudioState.Downloaded -> stringResource(Res.string.audio_status_downloaded)
 
-        is BulkAudioState.Failed -> stringResource(Res.string.audio_status_failed)
+        is BulkAudioState.Failed ->
+            stringResource(Res.string.audio_status_failed) + (state.message?.let { ": $it" } ?: "")
     }
 
 private fun sizeSuffix(sizeBytes: Long?): String =
     if (sizeBytes == null || sizeBytes <= 0L) "" else " (${sizeBytes / 1_000_000} MB)"
- */
 
 private fun AppTheme.labelRes(): StringResource =
     when (this) {
