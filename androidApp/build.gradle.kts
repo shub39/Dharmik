@@ -24,8 +24,8 @@ plugins {
 }
 
 val appName = "Dharmik"
-val appVersionCode = 4100
-val appVersionName = "4.1.0"
+val appVersionCode = 4110
+val appVersionName = "4.1.1"
 
 val gitHash =
     providers
