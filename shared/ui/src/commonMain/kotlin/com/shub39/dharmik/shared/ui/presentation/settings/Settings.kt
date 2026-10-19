@@ -64,7 +64,6 @@ import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.SettingSlider
 import com.shub39.dharmik.shared.ui.segmentedListItemShapes
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
-import com.shub39.dharmik.shared.ui.util.rememberNotificationPermissionRequest
 import dharmik.shared.ui.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -80,13 +79,6 @@ fun Settings(
     onNavigateBack: () -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
-        // Request the notification permission on demand (only when a download is started) rather
-        // than prompting at app launch. The bulk download runs in a foreground service that needs a
-        // visible notification.
-        val requestNotificationPermission = rememberNotificationPermissionRequest { _ ->
-            onAction(SettingsAction.OnDownloadAudio)
-        }
-
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val listState = rememberLazyListState()
         val uriHandler = LocalUriHandler.current
@@ -260,7 +252,7 @@ fun Settings(
                                     onAction(SettingsAction.OnCancelAudioDownload)
                                 }
                                 else -> {
-                                    requestNotificationPermission()
+                                    onAction(SettingsAction.OnDownloadAudio)
                                 }
                             }
                         },

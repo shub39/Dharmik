@@ -89,6 +89,7 @@ interface AudioBulkRepo {
     /** Fetch the remote manifest and reconcile it with what is on disk. */
     suspend fun refresh()
 
+    /** Download (or resume) the whole set in the application scope. */
     suspend fun start()
 
     suspend fun cancel()

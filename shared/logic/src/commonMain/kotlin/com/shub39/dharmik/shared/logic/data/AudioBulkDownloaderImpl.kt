@@ -34,13 +34,17 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.readAvailable
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.HashingSink
@@ -52,19 +56,21 @@ import org.koin.core.annotation.Single
 /**
  * App-scoped orchestrator for the optional whole-set audio download.
  *
- * [start] hands off to [AudioDownloadStarter] (an Android foreground service) and the actual work
- * runs in [run], which the starter drives. Progress is published through [state].
+ * The download runs in an application-scoped coroutine owned by this singleton, so it keeps running
+ * while the process is alive without a foreground service. Progress is published through [state].
  */
 @Single(binds = [AudioBulkRepo::class])
 class AudioBulkDownloaderImpl(
     private val store: AudioStore,
     private val client: HttpClient,
     private val preferences: PreferencesRepo,
-    private val starter: AudioDownloadStarter,
 ) : AudioBulkRepo {
 
     private val fs: FileSystem = FileSystem.SYSTEM
     private val json = Json { ignoreUnknownKeys = true }
+
+    // Application-scoped: lives as long as the singleton and is independent of any UI or service.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val _state = MutableStateFlow<BulkAudioState>(BulkAudioState.Checking)
     override val state: Flow<BulkAudioState> = _state.asStateFlow()
@@ -94,7 +100,7 @@ class AudioBulkDownloaderImpl(
     override suspend fun start() {
         refresh()
         if (manifest == null) return
-        starter.start()
+        scope.launch { run() }
     }
 
     override suspend fun cancel() {
@@ -108,8 +114,8 @@ class AudioBulkDownloaderImpl(
         refresh()
     }
 
-    /** Drives the whole download + extraction. Invoked by the platform starter. */
-    suspend fun run() {
+    /** Drives the whole download + extraction on the application scope. */
+    private suspend fun run() {
         if (downloadJob?.isActive == true) return
         val remote = manifest ?: return
 
@@ -221,8 +227,8 @@ class AudioBulkDownloaderImpl(
     /**
      * Publishes download progress at 1% granularity.
      *
-     * Updating state on every buffer read floods the foreground-service notification (the system
-     * rate-limits updates) and the UI, so only emit when the whole percentage changes.
+     * Updating state on every buffer read floods the UI with recompositions, so only emit when the
+     * whole percentage changes.
      */
     private fun publishProgress(downloaded: Long, total: Long, lastPercent: Int): Int {
         val percent = if (total > 0L) ((downloaded * 100) / total).toInt().coerceIn(0, 100) else 100
