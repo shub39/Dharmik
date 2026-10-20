@@ -18,6 +18,8 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.dharmik.shared.core.AnalyticsEvent
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.core.domain.AudioBulkRepo
 import com.shub39.dharmik.shared.core.domain.ChangelogRepo
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
@@ -41,6 +43,7 @@ class SettingsViewModel(
     @Provided private val datastore: PreferencesRepo,
     @Provided private val audioRepo: AudioBulkRepo,
     @Provided private val changelogRepo: ChangelogRepo,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -49,25 +52,61 @@ class SettingsViewModel(
     val state =
         _state
             .asStateFlow()
-            .onStart { observeState() }
+            .onStart {
+                analytics.trackEvent(AnalyticsEvent.SETTINGS_VIEWED, emptyMap())
+                observeState()
+            }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     fun onAction(action: SettingsAction) =
         viewModelScope.launch {
             when (action) {
-                is SettingsAction.OnSetAppTheme -> datastore.setAppTheme(action.appTheme)
+                is SettingsAction.OnSetAppTheme -> {
+                    datastore.setAppTheme(action.appTheme)
+                    analytics.trackEvent(
+                        AnalyticsEvent.THEME_CHANGED,
+                        mapOf("theme" to action.appTheme.name),
+                    )
+                }
 
                 is SettingsAction.OnSetVerseCardState -> datastore.setVerseCardState(action.state)
 
-                is SettingsAction.SetFontSize -> datastore.setFontSize(action.fontSize)
+                is SettingsAction.SetFontSize -> {
+                    datastore.setFontSize(action.fontSize)
+                    analytics.trackEvent(
+                        AnalyticsEvent.FONT_SIZE_CHANGED,
+                        // Rounded so that dragging the slider does not explode the property
+                        // cardinality.
+                        mapOf("size" to (action.fontSize * 10).toInt() / 10f),
+                    )
+                }
 
-                SettingsAction.OnDownloadAudio -> audioRepo.start()
+                SettingsAction.OnDownloadAudio -> {
+                    analytics.trackEvent(AnalyticsEvent.BULK_AUDIO_DOWNLOAD_STARTED, emptyMap())
+                    audioRepo.start()
+                }
 
-                SettingsAction.OnCancelAudioDownload -> audioRepo.cancel()
+                SettingsAction.OnCancelAudioDownload -> {
+                    analytics.trackEvent(AnalyticsEvent.BULK_AUDIO_DOWNLOAD_CANCELLED, emptyMap())
+                    audioRepo.cancel()
+                }
 
-                SettingsAction.OnDeleteAudio -> audioRepo.delete()
+                SettingsAction.OnDeleteAudio -> {
+                    analytics.trackEvent(AnalyticsEvent.BULK_AUDIO_DELETED, emptyMap())
+                    audioRepo.delete()
+                }
             }
         }
+
+    /** Tracked when the About screen is opened. */
+    fun trackAboutViewed() {
+        analytics.trackEvent(AnalyticsEvent.ABOUT_VIEWED, emptyMap())
+    }
+
+    /** Tracked when the Changelog screen is opened. */
+    fun trackChangelogViewed() {
+        analytics.trackEvent(AnalyticsEvent.CHANGELOG_VIEWED, emptyMap())
+    }
 
     private fun observeState() =
         viewModelScope.launch {

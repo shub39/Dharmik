@@ -18,6 +18,8 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.dharmik.shared.core.AnalyticsEvent
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.core.domain.BgRepo
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.ui.presentation.home.HomeAction
@@ -39,6 +41,7 @@ import org.koin.core.annotation.Provided
 class HomeViewModel(
     @Provided private val repo: BgRepo,
     @Provided private val datastore: PreferencesRepo,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -47,7 +50,10 @@ class HomeViewModel(
     val state =
         _state
             .asStateFlow()
-            .onStart { observeState() }
+            .onStart {
+                analytics.trackEvent(AnalyticsEvent.HOME_VIEWED, emptyMap())
+                observeState()
+            }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     fun onAction(action: HomeAction) = viewModelScope.launch {}

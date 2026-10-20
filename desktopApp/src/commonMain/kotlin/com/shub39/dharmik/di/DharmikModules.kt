@@ -16,13 +16,26 @@
  */
 package com.shub39.dharmik.di
 
+import com.shub39.dharmik.shared.core.AnalyticsEvent
+import com.shub39.dharmik.shared.core.DharmikLogger
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.logic.di.LogicModules
 import com.shub39.dharmik.shared.ui.di.UIModules
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
 @Configuration
 @Module(includes = [UIModules::class, LogicModules::class])
 @ComponentScan("com.shub39.dharmik")
-class DharmikModules
+class DharmikModules {
+    /** The desktop harness only logs events; it never talks to an analytics backend. */
+    @Single
+    fun provideAnalyticsWrapper(): AnalyticsWrapper =
+        object : AnalyticsWrapper {
+            override fun trackEvent(event: AnalyticsEvent, properties: Map<String, Any>) {
+                DharmikLogger.d("Analytics", "${event.name}: $properties")
+            }
+        }
+}

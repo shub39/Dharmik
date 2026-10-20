@@ -17,6 +17,7 @@
 package com.shub39.dharmik
 
 import android.app.Application
+import com.shub39.dharmik.analytics.AnalyticsInitializer
 import com.shub39.dharmik.di.DharmikModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -30,5 +31,7 @@ class DharmikApp : Application() {
             if (BuildConfig.DEBUG) androidLogger()
             androidContext(this@DharmikApp)
         }
+
+        AnalyticsInitializer().setup(this)
     }
 }

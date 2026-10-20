@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
@@ -82,6 +84,30 @@ android {
         }
     }
 
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("play") {
+            dimension = "version"
+
+            val localProperties = Properties()
+            val localFile = rootProject.file("local.properties")
+
+            if (localFile.exists()) localProperties.load(localFile.inputStream())
+
+            val postHogApiKey = localProperties.getProperty("POSTHOG_API_KEY") ?: ""
+            val postHogHost = localProperties.getProperty("POSTHOG_HOST") ?: ""
+
+            if (postHogHost.isBlank() || postHogApiKey.isBlank()) {
+                println("WARNING: POSTHOG_API_KEY and POSTHOG_HOST must be set in local.properties")
+            }
+
+            buildConfigField("String", "POSTHOG_API_KEY", "\"$postHogApiKey\"")
+            buildConfigField("String", "POSTHOG_HOST", "\"$postHogHost\"")
+        }
+        create("foss") { dimension = "version" }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -127,6 +153,9 @@ dependencies {
     implementation(projects.shared.core)
     implementation(projects.shared.ui)
     implementation(projects.shared.logic)
+
+    // Analytics is only wired into the Play flavor. The FOSS flavor ships without the SDK.
+    "playImplementation"(libs.posthog.android)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)

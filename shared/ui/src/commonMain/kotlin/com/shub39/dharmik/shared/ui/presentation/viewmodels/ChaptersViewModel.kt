@@ -17,16 +17,23 @@
 package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
+import com.shub39.dharmik.shared.core.AnalyticsEvent
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.ui.presentation.chapters.ChaptersAction
 import com.shub39.dharmik.shared.ui.presentation.chapters.ChaptersState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class ChaptersViewModel : ViewModel() {
+class ChaptersViewModel(@Provided private val analytics: AnalyticsWrapper) : ViewModel() {
     private val _state = MutableStateFlow(ChaptersState())
     val state = _state.asStateFlow()
+
+    init {
+        analytics.trackEvent(AnalyticsEvent.CHAPTERS_VIEWED, emptyMap())
+    }
 
     /**
      * [ChaptersAction.ChapterChange] deliberately performs no work here. The picked chapter is the
@@ -35,7 +42,11 @@ class ChaptersViewModel : ViewModel() {
      */
     fun onAction(action: ChaptersAction) {
         when (action) {
-            is ChaptersAction.ChapterChange -> Unit
+            is ChaptersAction.ChapterChange ->
+                analytics.trackEvent(
+                    AnalyticsEvent.CHAPTER_OPENED,
+                    mapOf("chapter" to action.index),
+                )
         }
     }
 }

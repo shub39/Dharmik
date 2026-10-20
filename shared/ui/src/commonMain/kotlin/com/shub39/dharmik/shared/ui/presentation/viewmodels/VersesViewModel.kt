@@ -19,6 +19,8 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.dharmik.shared.core.AnalyticsEvent
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.core.domain.AudioRepository
 import com.shub39.dharmik.shared.core.domain.BgRepo
 import com.shub39.dharmik.shared.core.domain.LongPair
@@ -55,6 +57,7 @@ class VersesViewModel(
     @Provided private val datastore: PreferencesRepo,
     @Provided private val player: MediaPlayer,
     @Provided private val audioRepository: AudioRepository,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var observeJob: Job? = null
 
@@ -67,6 +70,7 @@ class VersesViewModel(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     init {
+        analytics.trackEvent(AnalyticsEvent.VERSES_VIEWED, mapOf("chapter" to route.chapter))
         viewModelScope.launch { loadRouteChapter() }
     }
 
@@ -76,8 +80,16 @@ class VersesViewModel(
                 is VersesAction.SetFave -> {
                     if (_state.value.favorites.contains(action.verse)) {
                         repo.deleteFave(action.verse)
+                        analytics.trackEvent(
+                            AnalyticsEvent.VERSE_UNFAVORITED,
+                            mapOf("chapter" to action.verse.chapter, "verse" to action.verse.verse),
+                        )
                     } else {
                         repo.setFave(action.verse)
+                        analytics.trackEvent(
+                            AnalyticsEvent.VERSE_FAVORITED,
+                            mapOf("chapter" to action.verse.chapter, "verse" to action.verse.verse),
+                        )
                     }
                 }
 
@@ -89,20 +101,37 @@ class VersesViewModel(
                     datastore.setVerseCardState(action.state)
                     player.pause()
 
+                    analytics.trackEvent(
+                        AnalyticsEvent.VERSE_CARD_STATE_CHANGED,
+                        mapOf("state" to action.state.name),
+                    )
+
                     _state.update { it.copy(verseCardState = action.state, isPlaying = false) }
                 }
 
                 is VersesAction.SetAutoPlay -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.AUDIO_AUTOPLAY_CHANGED,
+                        mapOf("enabled" to action.autoPlay),
+                    )
                     _state.update { it.copy(autoPlay = action.autoPlay) }
                 }
 
                 VersesAction.Pause -> {
                     player.pause()
+                    analytics.trackEvent(
+                        AnalyticsEvent.AUDIO_PAUSED,
+                        verseProperties(_state.value.pagerState.currentPage),
+                    )
                     _state.update { it.copy(isPlaying = false) }
                 }
 
                 is VersesAction.ChangeVerse -> {
                     action.coroutineScope.launch {
+                        analytics.trackEvent(
+                            AnalyticsEvent.VERSE_CHANGED,
+                            mapOf("chapter" to route.chapter, "verse" to action.index + 1),
+                        )
                         _state.value.pagerState.animateScrollToPage(action.index)
                         player.pause()
 
@@ -127,10 +156,17 @@ class VersesViewModel(
                     _state.update { it.copy(isPreparing = true) }
                     player.setSource(audioSourceFor(_state.value, action.index, audioRepository))
                     player.play()
+                    analytics.trackEvent(AnalyticsEvent.AUDIO_PLAYED, verseProperties(action.index))
                     _state.update { it.copy(isPlaying = true, isPreparing = false) }
                 }
             }
         }
+    }
+
+    /** Chapter and verse of the verse at [index], for analytics properties. */
+    private fun verseProperties(index: Int): Map<String, Any> {
+        val verse = _state.value.currentVerses.getOrNull(index)
+        return mapOf("chapter" to route.chapter, "verse" to (verse?.verse ?: 0L))
     }
 
     private suspend fun loadRouteChapter() {
