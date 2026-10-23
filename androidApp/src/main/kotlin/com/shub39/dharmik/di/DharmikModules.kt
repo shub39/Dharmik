@@ -16,13 +16,18 @@
  */
 package com.shub39.dharmik.di
 
+import com.shub39.dharmik.analytics.AnalyticsImpl
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.logic.di.LogicModules
 import com.shub39.dharmik.shared.ui.di.UIModules
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
 @Configuration
 @Module(includes = [UIModules::class, LogicModules::class])
 @ComponentScan("com.shub39.dharmik")
-class DharmikModules
+class DharmikModules {
+    @Single fun provideAnalyticsWrapper(): AnalyticsWrapper = AnalyticsImpl()
+}

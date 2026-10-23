@@ -1,7 +1,29 @@
-Dharmik is a simple app to browse the Bhagavad Gita easily
+Dharmik is a clean, ad-free reader for the Bhagavad Gita. All 18 chapters and 701 verses are bundled in the app, so you can read and listen anywhere — no connection required.
 
-Features:
+Read and understand the Gita
 
-- View verses, commentaries and translations for over 2000 verses
-- Audio transcriptions in three languages (english, hindi and sanskrit)
-- Copy verses, commentaries and translations to clipboard
+- All 18 chapters and 701 verses, available offline
+- Read verses in Sanskrit, Hindi or English — switch language at any time
+- 8 authentic translations, including Sri Harikrishnadas Goenka, Swami Ramsukhdas, Swami Tejomayananda and Swami Sivananda
+- 20 commentaries from Shankaracharya, Ramanuja, Madhavacharya, Neelkanth, Sridhara Swami and more
+- Full Devanagari (Hindi) and Sanskrit text for every verse
+- Adjustable verse font size for comfortable reading
+- Light, dark and system themes
+
+Listen to every verse
+
+- Audio for all three tracks: Sanskrit (mool sloka), English and Hindi recitations
+- Autoplay plays the next verse automatically
+- Download the complete audio collection for offline listening, with progress and the option to delete it again
+
+Find what matters
+
+- Bookmark your last position and jump back to it anytime
+- Mark verses as favourites and browse them from the home screen
+- Copy any verse, translation or commentary to the clipboard
+
+Built to be simple and respectful
+
+Dharmik was built for readers who want the text itself, without ads, trackers or unnecessary features. The full text is sourced from Dharmic Data by bhavyakhatri, and the recitations from Gita Supersite by IIT Kanpur. Both are credited in the app.
+
+Available in English. Open source, licensed under GPL-3.0.

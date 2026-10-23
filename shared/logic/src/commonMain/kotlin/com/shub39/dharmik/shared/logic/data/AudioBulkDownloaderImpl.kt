@@ -16,7 +16,9 @@
  */
 package com.shub39.dharmik.shared.logic.data
 
+import com.shub39.dharmik.shared.core.AnalyticsEvent
 import com.shub39.dharmik.shared.core.DharmikLogger
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.core.domain.AudioBulkRepo
 import com.shub39.dharmik.shared.core.domain.AudioManifest
 import com.shub39.dharmik.shared.core.domain.AudioVariant
@@ -64,6 +66,7 @@ class AudioBulkDownloaderImpl(
     private val store: AudioStore,
     private val client: HttpClient,
     private val preferences: PreferencesRepo,
+    private val analytics: AnalyticsWrapper,
 ) : AudioBulkRepo {
 
     private val fs: FileSystem = FileSystem.SYSTEM
@@ -125,15 +128,22 @@ class AudioBulkDownloaderImpl(
             extractArchive()
             preferences.setBulkAudioVersion(remote.version)
             _state.value = BulkAudioState.Downloaded(remote.version)
+            analytics.trackEvent(
+                AnalyticsEvent.BULK_AUDIO_DOWNLOAD_COMPLETED,
+                mapOf("version" to remote.version),
+            )
             DharmikLogger.d(TAG, "Bulk audio download complete: ${remote.version}")
         } catch (e: CancellationException) {
             cleanupArchive()
             _state.value = BulkAudioState.Failed(null)
+            // Cancellation is tracked by whoever asked for it (the UI action), not here: the same
+            // path is also taken when a delete cancels an in-flight download.
             throw e
         } catch (e: Exception) {
             DharmikLogger.e(TAG, "Bulk audio download failed", e)
             cleanupArchive()
             _state.value = BulkAudioState.Failed(e.message)
+            analytics.trackEvent(AnalyticsEvent.BULK_AUDIO_DOWNLOAD_FAILED, emptyMap())
         } finally {
             downloadJob = null
         }

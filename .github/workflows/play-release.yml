@@ -57,6 +57,11 @@ jobs:
             echo "Default changelog for ${{ env.VERSION_NAME }}" > distribution/whatsnew/whatsnew-en-US
           fi
 
+      - name: Add PostHog config
+        run: |
+          echo "POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}" >> local.properties
+          echo "POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}" >> local.properties
+
       - name: Cook KeyStore
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > $GITHUB_WORKSPACE/signing-key.jks
 
@@ -65,7 +70,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew :androidApp:bundleRelease \
+          ./gradlew :androidApp:bundlePlayRelease \
           -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/signing-key.jks \
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
           -Pandroid.injected.signing.key.alias=key0 \

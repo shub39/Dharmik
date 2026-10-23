@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.1.1
+## 4.1.2
 - Added option to download all audio tracks for offline playback.
 - Miscellaneous UI improvements
 

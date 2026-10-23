@@ -18,6 +18,8 @@ package com.shub39.dharmik.shared.ui.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.dharmik.shared.core.AnalyticsEvent
+import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.ui.app.MainState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,12 +35,18 @@ import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class MainViewModel(@Provided private val datastore: PreferencesRepo) : ViewModel() {
+class MainViewModel(
+    @Provided private val datastore: PreferencesRepo,
+    @Provided private val analytics: AnalyticsWrapper,
+) : ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state =
         _state
             .asStateFlow()
-            .onStart { observeState() }
+            .onStart {
+                analytics.trackEvent(AnalyticsEvent.APP_OPENED, emptyMap())
+                observeState()
+            }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     private fun observeState() =

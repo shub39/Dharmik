@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.retain.retain
@@ -166,12 +167,16 @@ private fun EntryProviderScope<Route>.settingsScreens(stack: TopLevelBackStack) 
         val viewModel = koinViewModel<SettingsViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
+        LaunchedEffect(Unit) { viewModel.trackAboutViewed() }
+
         AboutScreen(versionName = state.currentVersion ?: "1.0.0", onBack = { stack.removeLast() })
     }
 
     entry<Changelog>(metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()) {
         val viewModel = koinViewModel<SettingsViewModel>()
         val state by viewModel.state.collectAsStateWithLifecycle()
+
+        LaunchedEffect(Unit) { viewModel.trackChangelogViewed() }
 
         ChangelogScreen(changelog = state.changelog, onBack = { stack.removeLast() })
     }
