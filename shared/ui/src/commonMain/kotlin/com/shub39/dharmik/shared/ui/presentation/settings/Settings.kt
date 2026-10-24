@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.AppTheme
 import com.shub39.dharmik.shared.core.domain.BulkAudioState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
+import com.shub39.dharmik.shared.ui.detachedItemShape
 import com.shub39.dharmik.shared.ui.endItemShape
 import com.shub39.dharmik.shared.ui.leadingItemShape
 import com.shub39.dharmik.shared.ui.listItemColors
@@ -76,6 +77,7 @@ fun Settings(
     onAction: (SettingsAction) -> Unit,
     onNavigateToAbout: () -> Unit,
     onNavigateToChangelog: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
@@ -126,6 +128,23 @@ fun Settings(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                // Dharmik Plus
+                item {
+                    ListItem(
+                        colors = listItemColors(),
+                        leadingContent = {
+                            Icon(
+                                imageVector = vectorResource(Res.drawable.favorite),
+                                contentDescription = null,
+                                tint = colorScheme.primary,
+                            )
+                        },
+                        headlineContent = { Text(text = stringResource(Res.string.dharmik_plus)) },
+                        modifier =
+                            Modifier.clip(detachedItemShape()).clickable { onNavigateToPaywall() },
+                    )
+                }
+
                 // Appearance: language, theme and reading font size
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {

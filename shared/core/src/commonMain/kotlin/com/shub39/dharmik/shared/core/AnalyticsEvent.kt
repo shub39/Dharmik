@@ -53,5 +53,8 @@ value class AnalyticsEvent(val name: String) {
         val FONT_SIZE_CHANGED = AnalyticsEvent("font_size_changed")
         val ABOUT_VIEWED = AnalyticsEvent("about_viewed")
         val CHANGELOG_VIEWED = AnalyticsEvent("changelog_viewed")
+
+        val PAYWALL_OPENED = AnalyticsEvent("paywall_opened")
+        val PAYWALL_PURCHASED = AnalyticsEvent("paywall_purchased")
     }
 }

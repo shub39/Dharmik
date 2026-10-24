@@ -43,6 +43,9 @@ data object About : Route
 
 data object Changelog : Route
 
+/** The paywall: the RevenueCat paywall in the `play` flavor, the FOSS notice in `foss`. */
+data object Paywall : Route
+
 val baseRoutes = listOf(Home, Chapters)
 
 class TopLevelBackStack(private val startKey: Route = Home) {
@@ -73,7 +76,8 @@ class TopLevelBackStack(private val startKey: Route = Home) {
                 backStack.add(route)
             }
             About,
-            Changelog -> {
+            Changelog,
+            Paywall -> {
                 backStack.add(route)
             }
         }

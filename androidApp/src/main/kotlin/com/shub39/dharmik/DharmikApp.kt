@@ -18,6 +18,7 @@ package com.shub39.dharmik
 
 import android.app.Application
 import com.shub39.dharmik.analytics.AnalyticsInitializer
+import com.shub39.dharmik.billing.BillingInitializer
 import com.shub39.dharmik.di.DharmikModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -26,6 +27,9 @@ import org.koin.plugin.module.dsl.startKoin
 class DharmikApp : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        // Billing must be configured before Koin builds any BillingHandler from this graph.
+        BillingInitializer().initialize(this)
 
         startKoin<DharmikModules> {
             if (BuildConfig.DEBUG) androidLogger()

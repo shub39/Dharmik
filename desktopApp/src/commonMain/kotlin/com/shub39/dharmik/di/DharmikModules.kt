@@ -19,8 +19,12 @@ package com.shub39.dharmik.di
 import com.shub39.dharmik.shared.core.AnalyticsEvent
 import com.shub39.dharmik.shared.core.DharmikLogger
 import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
+import com.shub39.dharmik.shared.core.domain.BillingHandler
+import com.shub39.dharmik.shared.core.domain.SubscriptionResult
 import com.shub39.dharmik.shared.logic.di.LogicModules
 import com.shub39.dharmik.shared.ui.di.UIModules
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
@@ -37,5 +41,18 @@ class DharmikModules {
             override fun trackEvent(event: AnalyticsEvent, properties: Map<String, Any>) {
                 DharmikLogger.d("Analytics", "${event.name}: $properties")
             }
+        }
+
+    /** The desktop harness has no billing backend, so everything is considered unlocked. */
+    @Single
+    fun provideBillingHandler(): BillingHandler =
+        object : BillingHandler {
+            override val isPlus: StateFlow<Boolean> = MutableStateFlow(true)
+
+            override suspend fun isPlusUser(): Boolean = true
+
+            override suspend fun userResult(): SubscriptionResult = SubscriptionResult.Subscribed
+
+            override suspend fun isFoss(): Boolean = true
         }
 }

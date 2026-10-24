@@ -20,7 +20,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.shared.core.AnalyticsEvent
 import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
+import com.shub39.dharmik.shared.core.domain.BillingHandler
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
+import com.shub39.dharmik.shared.core.domain.SubscriptionResult
 import com.shub39.dharmik.shared.ui.app.MainState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,6 +40,7 @@ import org.koin.core.annotation.Provided
 class MainViewModel(
     @Provided private val datastore: PreferencesRepo,
     @Provided private val analytics: AnalyticsWrapper,
+    @Provided private val billing: BillingHandler,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state =
@@ -57,5 +60,31 @@ class MainViewModel(
                     _state.update { it.copy(theme = it.theme.copy(appTheme = theme)) }
                 }
                 .launchIn(this)
+
+            _state.update { it.copy(isFoss = billing.isFoss()) }
+            checkSubscription(appStart = true)
         }
+
+    /** Refreshes the subscription state, called after the paywall is dismissed. */
+    fun updateSubscription() {
+        viewModelScope.launch { checkSubscription() }
+    }
+
+    fun trackPaywallOpened() {
+        analytics.trackEvent(AnalyticsEvent.PAYWALL_OPENED, emptyMap())
+    }
+
+    private suspend fun checkSubscription(appStart: Boolean = false) {
+        when (billing.userResult()) {
+            SubscriptionResult.Subscribed -> {
+                if (!_state.value.isUserSubscribed && !appStart) {
+                    analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED, emptyMap())
+                }
+
+                _state.update { it.copy(isUserSubscribed = true) }
+            }
+            is SubscriptionResult.Error,
+            SubscriptionResult.NotSubscribed -> {}
+        }
+    }
 }

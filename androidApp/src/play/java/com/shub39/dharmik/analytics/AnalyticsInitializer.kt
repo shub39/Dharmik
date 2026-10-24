@@ -24,7 +24,10 @@ import com.shub39.dharmik.BuildConfig
 /** Sets up the PostHog client. Only compiled into the `play` flavor. */
 class AnalyticsInitializer {
     private val config =
-        PostHogAndroidConfig(projectToken = BuildConfig.POSTHOG_API_KEY, host = BuildConfig.POSTHOG_HOST)
+        PostHogAndroidConfig(
+            projectToken = BuildConfig.POSTHOG_API_KEY,
+            host = BuildConfig.POSTHOG_HOST,
+        )
 
     fun setup(context: Context) {
         try {

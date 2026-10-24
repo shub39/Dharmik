@@ -50,7 +50,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun DharmikNavDisplay(modifier: Modifier = Modifier) {
+fun DharmikNavDisplay(
+    modifier: Modifier = Modifier,
+    paywall: @Composable (Boolean, () -> Unit) -> Unit,
+) {
     val mainVM = koinViewModel<MainViewModel>()
     val state by mainVM.state.collectAsStateWithLifecycle()
 
@@ -99,6 +102,15 @@ fun DharmikNavDisplay(modifier: Modifier = Modifier) {
                             chaptersScreens(stack)
                             versesScreens(stack)
                             settingsScreens(stack)
+
+                            entry<Paywall>(metadata = verticalTransitionMetadata()) {
+                                LaunchedEffect(Unit) { mainVM.trackPaywallOpened() }
+
+                                paywall(state.isUserSubscribed) {
+                                    mainVM.updateSubscription()
+                                    stack.removeLast()
+                                }
+                            }
                         },
                 )
             }
@@ -159,6 +171,7 @@ private fun EntryProviderScope<Route>.settingsScreens(stack: TopLevelBackStack) 
             onAction = viewModel::onAction,
             onNavigateToAbout = { stack.add(About) },
             onNavigateToChangelog = { stack.add(Changelog) },
+            onNavigateToPaywall = { stack.add(Paywall) },
             onNavigateBack = { stack.removeLast() },
         )
     }

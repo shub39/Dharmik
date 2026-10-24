@@ -21,6 +21,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.shub39.dharmik.billing.PaywallPage
 import com.shub39.dharmik.shared.ui.navigation.DharmikNavDisplay
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +32,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             enableEdgeToEdge()
-            DharmikNavDisplay()
+            DharmikNavDisplay { isPlusUser, onDismissRequest ->
+                PaywallPage(isPlusUser = isPlusUser, onDismissRequest = onDismissRequest)
+            }
         }
     }
 }

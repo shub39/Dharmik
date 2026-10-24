@@ -17,6 +17,7 @@
 package com.shub39.dharmik.di
 
 import com.shub39.dharmik.analytics.AnalyticsImpl
+import com.shub39.dharmik.billing.BillingHandler
 import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
 import com.shub39.dharmik.shared.logic.di.LogicModules
 import com.shub39.dharmik.shared.ui.di.UIModules
@@ -30,4 +31,7 @@ import org.koin.core.annotation.Single
 @ComponentScan("com.shub39.dharmik")
 class DharmikModules {
     @Single fun provideAnalyticsWrapper(): AnalyticsWrapper = AnalyticsImpl()
+
+    /** Resolves to the RevenueCat implementation in `play` and the no-op one in `foss`. */
+    @Single fun provideBillingHandler(): BillingHandler = BillingHandler()
 }

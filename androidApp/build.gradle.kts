@@ -157,6 +157,10 @@ dependencies {
     // Analytics is only wired into the Play flavor. The FOSS flavor ships without the SDK.
     "playImplementation"(libs.posthog.android)
 
+    // Billing is only wired into the Play flavor. The FOSS flavor ships without the SDK.
+    "playImplementation"(libs.purchases)
+    "playImplementation"(libs.purchases.ui)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
 

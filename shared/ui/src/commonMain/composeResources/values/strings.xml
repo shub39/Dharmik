@@ -21,9 +21,6 @@
     <string name="verses_alt_template">Verse %1$d</string>
     <string name="verses_font_size">Verses Font size</string>
     <string name="offline_audio">Offline audio</string>
-    <string name="audio_download">Download</string>
-    <string name="audio_cancel">Cancel</string>
-    <string name="audio_delete">Delete</string>
     <string name="audio_status_checking">Checking…</string>
     <string name="audio_status_not_downloaded">Not downloaded</string>
     <string name="audio_status_downloading">Downloading</string>
@@ -40,4 +37,7 @@
     <string name="github_sponsors_desc">Support me through GitHub</string>
     <string name="developer">Developer</string>
     <string name="navigate_back">Navigate Back</string>
+    <string name="dharmik_plus">Dharmik Plus</string>
+    <string name="foss">You are using the FOSS variant</string>
+    <string name="foss_desc">All features are unlocked. This variant of the app does not support In-App Purchases.</string>
 </resources>
