@@ -1,5 +1,11 @@
 [
   {
+    "version": "4.2.0",
+    "changes": [
+      "Miscellaneous UI improvements"
+    ]
+  },
+  {
     "version": "4.1.2",
     "changes": [
       "Added option to download all audio tracks for offline playback.",

@@ -49,7 +49,7 @@ class BillingHandler : BillingHandler {
 
     init {
         purchases?.updatedCustomerInfoListener = UpdatedCustomerInfoListener { customerInfo ->
-            _isPlus.update { customerInfo.entitlements.all[ENTITLEMENT_PLUS]?.isActive == true }
+            _isPlus.update { customerInfo.entitlements.all[ENTITLEMENT]?.isActive == true }
         }
     }
 
@@ -69,7 +69,7 @@ class BillingHandler : BillingHandler {
                     )
                 }
 
-            val isSubscribed = customerInfo.entitlements.all[ENTITLEMENT_PLUS]?.isActive == true
+            val isSubscribed = customerInfo.entitlements.all[ENTITLEMENT]?.isActive == true
             _isPlus.update { isSubscribed }
 
             if (isSubscribed) SubscriptionResult.Subscribed else SubscriptionResult.NotSubscribed
@@ -83,6 +83,6 @@ class BillingHandler : BillingHandler {
 
     private companion object {
         private const val TAG = "BillingHandler"
-        private const val ENTITLEMENT_PLUS = "Plus"
+        private const val ENTITLEMENT = "dharmik_premium"
     }
 }
