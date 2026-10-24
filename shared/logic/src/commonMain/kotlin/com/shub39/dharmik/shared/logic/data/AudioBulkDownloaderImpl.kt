@@ -218,7 +218,7 @@ class AudioBulkDownloaderImpl(
                 var downloaded = resumeFrom
                 var lastPercent = -1
 
-                try {
+                sink.use { sink ->
                     while (true) {
                         val read = channel.readAvailable(buffer, 0, buffer.size)
                         if (read == -1) break
@@ -228,8 +228,6 @@ class AudioBulkDownloaderImpl(
                         lastPercent = publishProgress(downloaded, remote.sizeBytes, lastPercent)
                     }
                     sink.flush()
-                } finally {
-                    sink.close()
                 }
             }
     }
