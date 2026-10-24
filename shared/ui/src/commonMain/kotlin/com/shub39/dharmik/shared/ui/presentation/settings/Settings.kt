@@ -134,9 +134,10 @@ fun Settings(
                         colors = listItemColors(),
                         leadingContent = {
                             Icon(
-                                imageVector = vectorResource(Res.drawable.favorite),
+                                imageVector = vectorResource(Res.drawable.app_icon),
                                 contentDescription = null,
                                 tint = colorScheme.primary,
+                                modifier = Modifier.size(24.dp)
                             )
                         },
                         headlineContent = { Text(text = stringResource(Res.string.dharmik_plus)) },
