@@ -137,7 +137,7 @@ fun Settings(
                                 imageVector = vectorResource(Res.drawable.app_icon),
                                 contentDescription = null,
                                 tint = colorScheme.primary,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         headlineContent = { Text(text = stringResource(Res.string.dharmik_plus)) },

@@ -38,6 +38,5 @@
     <string name="developer">Developer</string>
     <string name="navigate_back">Navigate Back</string>
     <string name="dharmik_plus">Dharmik Plus</string>
-    <string name="foss">You are using the FOSS variant</string>
-    <string name="foss_desc">All features are unlocked. This variant of the app does not support In-App Purchases.</string>
+    <string name="collections">Collections</string>
 </resources>

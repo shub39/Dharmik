@@ -49,8 +49,6 @@ import com.shub39.dharmik.shared.ui.theme.getTitleFont
 import dharmik.shared.ui.generated.resources.Res
 import dharmik.shared.ui.generated.resources.bmc
 import dharmik.shared.ui.generated.resources.buymeacoffee
-import dharmik.shared.ui.generated.resources.foss
-import dharmik.shared.ui.generated.resources.foss_desc
 import dharmik.shared.ui.generated.resources.github
 import dharmik.shared.ui.generated.resources.github_sponsors
 import dharmik.shared.ui.generated.resources.warning
@@ -95,7 +93,7 @@ fun FossPaywall(modifier: Modifier = Modifier) {
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = stringResource(Res.string.foss),
+                        text = "You are using the FOSS variant",
                         style =
                             MaterialTheme.typography.titleLarge.copy(
                                 textAlign = TextAlign.Center,
@@ -104,7 +102,8 @@ fun FossPaywall(modifier: Modifier = Modifier) {
                     )
 
                     Text(
-                        text = stringResource(Res.string.foss_desc),
+                        text =
+                            "All features are Unlocked. If this app added value to you. Consider supporting me on",
                         style =
                             MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
                     )

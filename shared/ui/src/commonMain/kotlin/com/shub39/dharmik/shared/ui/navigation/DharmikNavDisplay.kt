@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.metadata
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.dharmik.shared.ui.presentation.chapters.Chapters
@@ -116,6 +117,10 @@ fun DharmikNavDisplay(
             }
         }
     }
+}
+
+private fun EntryProviderScope<Route>.collectionScreens(stack: TopLevelBackStack) {
+    entry<Collections>(metadata = fadeTransitionMetadata()) {}
 }
 
 private fun EntryProviderScope<Route>.homeScreens(stack: TopLevelBackStack) {

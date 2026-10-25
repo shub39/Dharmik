@@ -37,13 +37,14 @@ data object Home : Route
 
 data object Chapters : Route
 
+data object Collections : Route
+
 data object Settings : Route
 
 data object About : Route
 
 data object Changelog : Route
 
-/** The paywall: the RevenueCat paywall in the `play` flavor, the FOSS notice in `foss`. */
 data object Paywall : Route
 
 val baseRoutes = listOf(Home, Chapters)
@@ -70,6 +71,11 @@ class TopLevelBackStack(private val startKey: Route = Home) {
                 backStack.clear()
                 backStack.add(Home)
                 backStack.add(Chapters)
+            }
+            Collections -> {
+                backStack.clear()
+                backStack.add(Home)
+                backStack.add(Collections)
             }
             is Verses -> {
                 backStack.removeAll { it is Verses }
