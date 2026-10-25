@@ -34,13 +34,20 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.metadata
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.ui.presentation.chapters.Chapters
+import com.shub39.dharmik.shared.ui.presentation.collections.CollectionDetail as CollectionDetailScreen
+import com.shub39.dharmik.shared.ui.presentation.collections.Collections as CollectionsScreen
+import com.shub39.dharmik.shared.ui.presentation.collections.add.AddToCollection as AddToCollectionScreen
 import com.shub39.dharmik.shared.ui.presentation.home.Home
 import com.shub39.dharmik.shared.ui.presentation.settings.About as AboutScreen
 import com.shub39.dharmik.shared.ui.presentation.settings.Changelog as ChangelogScreen
 import com.shub39.dharmik.shared.ui.presentation.settings.Settings
 import com.shub39.dharmik.shared.ui.presentation.verses.Verses
+import com.shub39.dharmik.shared.ui.presentation.viewmodels.AddToCollectionViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.ChaptersViewModel
+import com.shub39.dharmik.shared.ui.presentation.viewmodels.CollectionDetailViewModel
+import com.shub39.dharmik.shared.ui.presentation.viewmodels.CollectionsViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.HomeViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.MainViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.SettingsViewModel
@@ -61,6 +68,17 @@ fun DharmikNavDisplay(
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
 
     val stack = retain { TopLevelBackStack() }
+
+    // Writing collections is a Plus feature: every mutating affordance of the collections screens
+    // goes through this, which either performs the action or opens the paywall.
+    val requestWrite: (() -> Unit) -> Unit = { action ->
+        if (state.isUserSubscribed) action() else stack.add(Paywall)
+    }
+
+    val collectVerse: (GitaVerse) -> Unit = { verse ->
+        if (state.isUserSubscribed) stack.add(AddToCollection(verse.chapter, verse.verse))
+        else stack.add(Paywall)
+    }
 
     CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
         DharmikTheme(theme = state.theme) {
@@ -101,7 +119,8 @@ fun DharmikNavDisplay(
                         entryProvider {
                             homeScreens(stack)
                             chaptersScreens(stack)
-                            versesScreens(stack)
+                            collectionScreens(stack, requestWrite)
+                            versesScreens(stack, collectVerse)
                             settingsScreens(stack)
 
                             entry<Paywall>(metadata = verticalTransitionMetadata()) {
@@ -119,8 +138,54 @@ fun DharmikNavDisplay(
     }
 }
 
-private fun EntryProviderScope<Route>.collectionScreens(stack: TopLevelBackStack) {
-    entry<Collections>(metadata = fadeTransitionMetadata()) {}
+private fun EntryProviderScope<Route>.collectionScreens(
+    stack: TopLevelBackStack,
+    requestWrite: (() -> Unit) -> Unit,
+) {
+    // The list pane of the `Collections` + `CollectionDetail` list-detail scene.
+    entry<Collections>(metadata = ListDetailScene.listPane() + fadeTransitionMetadata()) {
+        val viewModel = koinViewModel<CollectionsViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val currentSelected = stack.backStack.lastOrNull() as? CollectionDetail
+
+        CollectionsScreen(
+            state = state,
+            currentSelected = currentSelected?.id,
+            onAction = viewModel::onAction,
+            onNavigateToDetail = { stack.add(CollectionDetail(it)) },
+            onRequestWrite = requestWrite,
+        )
+    }
+
+    entry<CollectionDetail>(
+        metadata = ListDetailScene.detailPane() + horizontalTransitionMetadata()
+    ) { route ->
+        val viewModel = koinViewModel<CollectionDetailViewModel> { parametersOf(route) }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        CollectionDetailScreen(
+            state = state,
+            onAction = viewModel::onAction,
+            onNavigateToVerses = { chapter, verse ->
+                stack.add(Verses(chapter = chapter, verse = verse, saveBookmarks = false))
+            },
+            onBack = { stack.removeLast() },
+            onRequestWrite = requestWrite,
+        )
+    }
+
+    // Two-pane capable so that the reader stays visible on wide windows.
+    entry<AddToCollection>(metadata = TwoPaneScene.twoPane() + verticalTransitionMetadata()) { route
+        ->
+        val viewModel = koinViewModel<AddToCollectionViewModel> { parametersOf(route) }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        AddToCollectionScreen(
+            state = state,
+            onAction = viewModel::onAction,
+            onBack = { stack.removeLast() },
+        )
+    }
 }
 
 private fun EntryProviderScope<Route>.homeScreens(stack: TopLevelBackStack) {
@@ -154,7 +219,10 @@ private fun EntryProviderScope<Route>.chaptersScreens(stack: TopLevelBackStack) 
     }
 }
 
-private fun EntryProviderScope<Route>.versesScreens(stack: TopLevelBackStack) {
+private fun EntryProviderScope<Route>.versesScreens(
+    stack: TopLevelBackStack,
+    onAddToCollection: (GitaVerse) -> Unit,
+) {
     entry<Verses>(
         metadata =
             TwoPaneScene.twoPane() + ListDetailScene.detailPane() + verticalTransitionMetadata()
@@ -162,7 +230,12 @@ private fun EntryProviderScope<Route>.versesScreens(stack: TopLevelBackStack) {
         val viewModel = koinViewModel<VersesViewModel> { parametersOf(route) }
         val state by viewModel.state.collectAsStateWithLifecycle()
 
-        Verses(state = state, action = viewModel::onAction, onBack = { stack.removeLast() })
+        Verses(
+            state = state,
+            action = viewModel::onAction,
+            onBack = { stack.removeLast() },
+            onAddToCollection = onAddToCollection,
+        )
     }
 }
 

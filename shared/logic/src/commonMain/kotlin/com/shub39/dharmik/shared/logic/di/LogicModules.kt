@@ -22,9 +22,11 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.shub39.dharmik.shared.core.media.MediaPlayer
 import com.shub39.dharmik.shared.core.media.MediaPlayerFactory
 import com.shub39.dharmik.shared.logic.data.BgDao
+import com.shub39.dharmik.shared.logic.data.CollectionsDao
 import com.shub39.dharmik.shared.logic.data.DataStoreFactory
 import com.shub39.dharmik.shared.logic.data.DatabaseFactory
 import com.shub39.dharmik.shared.logic.data.DharmikDb
+import com.shub39.dharmik.shared.logic.data.DharmikMigrations
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import org.koin.core.annotation.ComponentScan
@@ -39,12 +41,15 @@ class LogicModules {
     fun getDharmikDb(factory: DatabaseFactory): DharmikDb =
         factory
             .create()
+            .addMigrations(*DharmikMigrations.ALL.toTypedArray())
             .fallbackToDestructiveMigration(true)
             .fallbackToDestructiveMigrationOnDowngrade(true)
             .setDriver(BundledSQLiteDriver())
             .build()
 
     @Single fun getBgDao(db: DharmikDb): BgDao = db.bgDao
+
+    @Single fun getCollectionsDao(db: DharmikDb): CollectionsDao = db.collectionsDao
 
     @Single
     fun getPreferencesDataStore(factory: DataStoreFactory): DataStore<Preferences> =

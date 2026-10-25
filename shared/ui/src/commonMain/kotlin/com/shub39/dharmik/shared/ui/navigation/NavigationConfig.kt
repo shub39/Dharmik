@@ -33,6 +33,21 @@ sealed interface Route : NavKey
  */
 data class Verses(val chapter: Long, val verse: Long = 0, val saveBookmarks: Boolean = true) : Route
 
+/**
+ * The collection screen.
+ *
+ * @param id the collection to display.
+ */
+data class CollectionDetail(val id: Long) : Route
+
+/**
+ * The "add this verse to a collection" screen.
+ *
+ * @param chapter the chapter of the verse being collected.
+ * @param verse the one based verse number being collected.
+ */
+data class AddToCollection(val chapter: Long, val verse: Long) : Route
+
 data object Home : Route
 
 data object Chapters : Route
@@ -47,7 +62,7 @@ data object Changelog : Route
 
 data object Paywall : Route
 
-val baseRoutes = listOf(Home, Chapters)
+val baseRoutes = listOf(Home, Chapters, Collections)
 
 class TopLevelBackStack(private val startKey: Route = Home) {
     val backStack = mutableStateListOf(startKey)
@@ -79,6 +94,14 @@ class TopLevelBackStack(private val startKey: Route = Home) {
             }
             is Verses -> {
                 backStack.removeAll { it is Verses }
+                backStack.add(route)
+            }
+            is CollectionDetail -> {
+                backStack.removeAll { it is CollectionDetail }
+                backStack.add(route)
+            }
+            is AddToCollection -> {
+                backStack.removeAll { it is AddToCollection }
                 backStack.add(route)
             }
             About,

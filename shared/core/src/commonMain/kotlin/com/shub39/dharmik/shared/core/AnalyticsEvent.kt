@@ -32,6 +32,15 @@ value class AnalyticsEvent(val name: String) {
         val CHAPTERS_VIEWED = AnalyticsEvent("chapters_viewed")
         val CHAPTER_OPENED = AnalyticsEvent("chapter_opened")
 
+        val COLLECTIONS_VIEWED = AnalyticsEvent("collections_viewed")
+        val COLLECTION_VIEWED = AnalyticsEvent("collection_viewed")
+        val COLLECTION_CREATED = AnalyticsEvent("collection_created")
+        val COLLECTION_UPDATED = AnalyticsEvent("collection_updated")
+        val COLLECTION_DELETED = AnalyticsEvent("collection_deleted")
+        val VERSE_ADDED_TO_COLLECTION = AnalyticsEvent("verse_added_to_collection")
+        val VERSE_REMOVED_FROM_COLLECTION = AnalyticsEvent("verse_removed_from_collection")
+        val VERSE_NOTE_UPDATED = AnalyticsEvent("verse_note_updated")
+
         val VERSES_VIEWED = AnalyticsEvent("verses_viewed")
         val VERSE_CHANGED = AnalyticsEvent("verse_changed")
         val VERSE_FAVORITED = AnalyticsEvent("verse_favorited")

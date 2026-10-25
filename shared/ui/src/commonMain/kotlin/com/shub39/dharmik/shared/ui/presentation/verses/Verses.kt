@@ -19,6 +19,7 @@ package com.shub39.dharmik.shared.ui.presentation.verses
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -49,6 +52,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -57,6 +61,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
+import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.core.domain.VerseCardState
 import com.shub39.dharmik.shared.core.media.MediaPlayerState
 import com.shub39.dharmik.shared.ui.navigation.LocalBackButtonVisibility
@@ -67,11 +72,14 @@ import com.shub39.dharmik.shared.ui.presentation.verses.components.CommentariesD
 import com.shub39.dharmik.shared.ui.presentation.verses.components.TranslationsDisplay
 import com.shub39.dharmik.shared.ui.util.copyToClipboard
 import dharmik.shared.ui.generated.resources.Res
+import dharmik.shared.ui.generated.resources.add_collection
+import dharmik.shared.ui.generated.resources.add_to_collection
 import dharmik.shared.ui.generated.resources.arrow_back
 import dharmik.shared.ui.generated.resources.arrow_forward
 import dharmik.shared.ui.generated.resources.autoplay
 import dharmik.shared.ui.generated.resources.bhagvad_gita
 import dharmik.shared.ui.generated.resources.chapter_template
+import dharmik.shared.ui.generated.resources.check_list
 import dharmik.shared.ui.generated.resources.content_copy
 import dharmik.shared.ui.generated.resources.favorite
 import dharmik.shared.ui.generated.resources.favorite_border
@@ -87,6 +95,7 @@ fun Verses(
     state: VersesState,
     action: (VersesAction) -> Unit,
     onBack: () -> Unit,
+    onAddToCollection: (GitaVerse) -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
         val verses = state.currentVerses
@@ -99,6 +108,7 @@ fun Verses(
         val coroutineScope = rememberCoroutineScope()
 
         var sliderPosition by remember { mutableFloatStateOf(0f) }
+        var menuExpanded by remember { mutableStateOf(false) }
 
         val playerState by state.player.state.collectAsState()
 
@@ -151,6 +161,40 @@ fun Verses(
                                 Icon(
                                     painter = painterResource(Res.drawable.arrow_back),
                                     contentDescription = "Go Back",
+                                )
+                            }
+                        }
+                    },
+                    actions = {
+                        Box {
+                            FilledTonalIconButton(onClick = { menuExpanded = true }) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.check_list),
+                                    contentDescription = "More options",
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = menuExpanded,
+                                onDismissRequest = { menuExpanded = false },
+                            ) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = stringResource(Res.string.add_to_collection))
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.add_collection),
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    onClick = {
+                                        menuExpanded = false
+                                        verses.getOrNull(state.pagerState.currentPage)?.let { verse
+                                            ->
+                                            onAddToCollection(verse)
+                                        }
+                                    },
                                 )
                             }
                         }

@@ -103,7 +103,7 @@ fun FossPaywall(modifier: Modifier = Modifier) {
 
                     Text(
                         text =
-                            "All features are Unlocked. If this app added value to you. Consider supporting me on",
+                            "All features are Unlocked. If this app added value to your life, Consider supporting me on",
                         style =
                             MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
                     )
