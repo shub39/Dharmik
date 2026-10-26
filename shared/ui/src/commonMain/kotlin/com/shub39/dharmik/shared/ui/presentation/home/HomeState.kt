@@ -24,5 +24,8 @@ data class HomeState(
     val fontSize: Float = 16f,
     val verseCardState: VerseCardState = VerseCardState.ENGLISH,
     val favorites: List<GitaVerse> = emptyList(),
-    val currentBookMark: LongPair = LongPair(1, 1),
+    /**
+     * Chapter and zero based verse index of the reading bookmark, matching what the reader stores.
+     */
+    val currentBookMark: LongPair = LongPair(1, 0),
 )

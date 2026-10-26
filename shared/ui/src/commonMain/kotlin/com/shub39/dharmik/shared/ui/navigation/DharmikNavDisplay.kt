@@ -178,8 +178,8 @@ private fun EntryProviderScope<Route>.collectionScreens(
         CollectionDetailScreen(
             state = state,
             onAction = viewModel::onAction,
-            onNavigateToVerses = { chapter, verse ->
-                stack.add(Verses(chapter = chapter, verse = verse, saveBookmarks = false))
+            onNavigateToVerses = { chapter, verseNumber ->
+                stack.add(versesAt(chapter = chapter, verseNumber = verseNumber))
             },
             onBack = { stack.removeLast() },
             onRequestWrite = requestWrite,

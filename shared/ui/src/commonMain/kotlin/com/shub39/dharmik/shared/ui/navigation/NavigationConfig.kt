@@ -28,10 +28,22 @@ sealed interface Route : NavKey
  * needed to hand a selection over from another screen.
  *
  * @param chapter the chapter to display.
- * @param verse zero based index of the verse to page to.
+ * @param verse zero based index of the verse to page to, i.e. the pager page. Screens that know a
+ *   verse by its one based number (collections, favourites) must build the route with [versesAt].
  * @param saveBookmarks whether paging between verses should also update the stored bookmark.
  */
 data class Verses(val chapter: Long, val verse: Long = 0, val saveBookmarks: Boolean = true) : Route
+
+/**
+ * Opens [chapter] at [verseNumber], a one based verse number, which is how collections, favourites
+ * and the verse files themselves number verses.
+ */
+fun versesAt(chapter: Long, verseNumber: Long, saveBookmarks: Boolean = false): Verses =
+    Verses(
+        chapter = chapter,
+        verse = (verseNumber - 1).coerceAtLeast(0),
+        saveBookmarks = saveBookmarks,
+    )
 
 /**
  * The collection screen.

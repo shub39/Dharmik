@@ -99,13 +99,16 @@ import org.jetbrains.compose.resources.stringResource
  *
  * The collected verses are stored as chapter/verse numbers only, so their text follows whatever
  * language the reader is set to.
+ *
+ * @param onNavigateToVerses opens the reader at the given one based verse number, the way the
+ *   collection stores verses.
  */
 @Composable
 fun CollectionDetail(
     modifier: Modifier = Modifier,
     state: CollectionDetailState,
     onAction: (CollectionDetailAction) -> Unit,
-    onNavigateToVerses: (chapter: Long, verse: Long) -> Unit,
+    onNavigateToVerses: (chapter: Long, verseNumber: Long) -> Unit,
     onBack: () -> Unit,
     onRequestWrite: (() -> Unit) -> Unit,
 ) =
