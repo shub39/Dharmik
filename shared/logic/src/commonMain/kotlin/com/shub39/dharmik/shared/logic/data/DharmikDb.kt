@@ -20,10 +20,16 @@ import androidx.room3.ConstructedBy
 import androidx.room3.Database
 import androidx.room3.RoomDatabase
 
-@Database(entities = [BgVerseEntity::class], exportSchema = true, version = 1)
+@Database(
+    entities = [BgVerseEntity::class, CollectionsEntity::class, VerseCollectionEntity::class],
+    exportSchema = true,
+    version = 2,
+)
 @ConstructedBy(DbConstructor::class)
 abstract class DharmikDb : RoomDatabase() {
     abstract val bgDao: BgDao
+
+    abstract val collectionsDao: CollectionsDao
 
     companion object {
         const val DB_NAME = "dharmik.db"

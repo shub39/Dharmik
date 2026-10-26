@@ -32,6 +32,15 @@ value class AnalyticsEvent(val name: String) {
         val CHAPTERS_VIEWED = AnalyticsEvent("chapters_viewed")
         val CHAPTER_OPENED = AnalyticsEvent("chapter_opened")
 
+        val COLLECTIONS_VIEWED = AnalyticsEvent("collections_viewed")
+        val COLLECTION_VIEWED = AnalyticsEvent("collection_viewed")
+        val COLLECTION_CREATED = AnalyticsEvent("collection_created")
+        val COLLECTION_UPDATED = AnalyticsEvent("collection_updated")
+        val COLLECTION_DELETED = AnalyticsEvent("collection_deleted")
+        val VERSE_ADDED_TO_COLLECTION = AnalyticsEvent("verse_added_to_collection")
+        val VERSE_REMOVED_FROM_COLLECTION = AnalyticsEvent("verse_removed_from_collection")
+        val VERSE_NOTE_UPDATED = AnalyticsEvent("verse_note_updated")
+
         val VERSES_VIEWED = AnalyticsEvent("verses_viewed")
         val VERSE_CHANGED = AnalyticsEvent("verse_changed")
         val VERSE_FAVORITED = AnalyticsEvent("verse_favorited")
@@ -41,6 +50,12 @@ value class AnalyticsEvent(val name: String) {
         val AUDIO_PLAYED = AnalyticsEvent("audio_played")
         val AUDIO_PAUSED = AnalyticsEvent("audio_paused")
         val AUDIO_AUTOPLAY_CHANGED = AnalyticsEvent("audio_autoplay_changed")
+        val AUDIO_TRACK_CHANGED = AnalyticsEvent("audio_track_changed")
+        val AUDIO_VARIANT_CHANGED = AnalyticsEvent("audio_variant_changed")
+
+        val PLAYER_VIEWED = AnalyticsEvent("player_viewed")
+        val PLAYLIST_STARTED = AnalyticsEvent("playlist_started")
+        val PLAYLIST_VIEWED = AnalyticsEvent("playlist_viewed")
 
         val BULK_AUDIO_DOWNLOAD_STARTED = AnalyticsEvent("bulk_audio_download_started")
         val BULK_AUDIO_DOWNLOAD_COMPLETED = AnalyticsEvent("bulk_audio_download_completed")
@@ -53,5 +68,8 @@ value class AnalyticsEvent(val name: String) {
         val FONT_SIZE_CHANGED = AnalyticsEvent("font_size_changed")
         val ABOUT_VIEWED = AnalyticsEvent("about_viewed")
         val CHANGELOG_VIEWED = AnalyticsEvent("changelog_viewed")
+
+        val PAYWALL_OPENED = AnalyticsEvent("paywall_opened")
+        val PAYWALL_PURCHASED = AnalyticsEvent("paywall_purchased")
     }
 }

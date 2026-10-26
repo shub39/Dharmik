@@ -20,11 +20,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.shared.core.AnalyticsEvent
 import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
+import com.shub39.dharmik.shared.core.domain.BillingHandler
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
+import com.shub39.dharmik.shared.core.domain.SubscriptionResult
 import com.shub39.dharmik.shared.ui.app.MainState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -38,6 +41,7 @@ import org.koin.core.annotation.Provided
 class MainViewModel(
     @Provided private val datastore: PreferencesRepo,
     @Provided private val analytics: AnalyticsWrapper,
+    @Provided private val billing: BillingHandler,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state =
@@ -57,5 +61,48 @@ class MainViewModel(
                     _state.update { it.copy(theme = it.theme.copy(appTheme = theme)) }
                 }
                 .launchIn(this)
+
+            _state.update { it.copy(isFoss = billing.isFoss()) }
+
+            // The entitlement can change while the app stays open (expiry, refund, or a purchase
+            // made on another device), so the state follows the flow instead of only being read
+            // when the app starts.
+            billing.isPlus
+                .drop(1) // The current value is resolved by checkSubscription below.
+                .onEach { isPlus -> applySubscription(isPlus) }
+                .launchIn(this)
+
+            checkSubscription(appStart = true)
         }
+
+    /** Refreshes the subscription state, called after the paywall is dismissed. */
+    fun updateSubscription() {
+        viewModelScope.launch { checkSubscription() }
+    }
+
+    fun trackPaywallOpened() {
+        analytics.trackEvent(AnalyticsEvent.PAYWALL_OPENED, emptyMap())
+    }
+
+    private suspend fun checkSubscription(appStart: Boolean = false) {
+        when (billing.userResult()) {
+            SubscriptionResult.Subscribed -> {
+                applySubscription(isPlus = true, trackEvent = !appStart)
+            }
+            is SubscriptionResult.Error,
+            SubscriptionResult.NotSubscribed -> {}
+        }
+    }
+
+    /**
+     * Records [isPlus] as the active entitlement. Becoming subscribed while the app is open is
+     * reported as a purchase, unless the change comes from the initial fetch at app start.
+     */
+    private fun applySubscription(isPlus: Boolean, trackEvent: Boolean = true) {
+        if (trackEvent && isPlus && !_state.value.isUserSubscribed) {
+            analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED, emptyMap())
+        }
+
+        _state.update { it.copy(isUserSubscribed = isPlus) }
+    }
 }

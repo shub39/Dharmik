@@ -19,16 +19,45 @@ package com.shub39.dharmik.shared.core.media
 import kotlinx.coroutines.flow.StateFlow
 
 /**
+ * One playable entry of a queue.
+ *
+ * [title]/[subtitle] travel with the track because the platform media session has to render them
+ * outside the app (notification, lock screen, Bluetooth displays).
+ */
+data class MediaTrack(
+    val id: String,
+    val source: MediaSource,
+    val title: String,
+    val subtitle: String? = null,
+)
+
+/**
  * Platform-agnostic media player interface. Actual implementations provided per platform
  * (Android/Desktop).
+ *
+ * The player owns a queue rather than a single source: a "single track" is simply a queue of one,
+ * so playlist navigation and background media controls work the same everywhere.
  */
 interface MediaPlayer {
     val state: StateFlow<MediaPlayerState>
+    val currentIndex: StateFlow<Int>
     val currentPosition: StateFlow<Long>
     val duration: StateFlow<Long>
     val error: StateFlow<MediaPlayerError?>
 
-    suspend fun setSource(source: MediaSource)
+    /** Replaces the queue and starts preparing it, optionally starting playback. */
+    suspend fun setQueue(
+        tracks: List<MediaTrack>,
+        startIndex: Int = 0,
+        playWhenReady: Boolean = true,
+    )
+
+    /**
+     * Swaps the source of an already queued track, used to hand the player the downloaded local
+     * file of a track that was queued with its remote URL. Implementations must not interrupt
+     * playback of the current track.
+     */
+    suspend fun replaceTrack(index: Int, source: MediaSource)
 
     suspend fun play()
 
@@ -37,6 +66,12 @@ interface MediaPlayer {
     suspend fun stop()
 
     suspend fun seekTo(position: Long)
+
+    suspend fun seekToIndex(index: Int)
+
+    suspend fun skipToNext()
+
+    suspend fun skipToPrevious()
 
     fun release()
 }

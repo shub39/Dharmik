@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -41,11 +43,16 @@ import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.segmentedListItemShapes
 import dharmik.shared.ui.generated.resources.Res
 import dharmik.shared.ui.generated.resources.arrow_forward_ios
-import dharmik.shared.ui.generated.resources.book
 import dharmik.shared.ui.generated.resources.chapter_template
+import dharmik.shared.ui.generated.resources.play
+import dharmik.shared.ui.generated.resources.play_chapter
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * The chapter list. A chapter is a playlist of all of its verses, so the leading icon of every row
+ * is a play button that starts listening to it.
+ */
 @Composable
 fun Chapters(
     modifier: Modifier = Modifier,
@@ -53,6 +60,8 @@ fun Chapters(
     currentSelected: Int?,
     onAction: (ChaptersAction) -> Unit,
     onNavigateToVerses: (chapter: Long) -> Unit,
+    onPlayChapter: (chapter: Long) -> Unit,
+    onRequestPlay: (() -> Unit) -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
         Scaffold(modifier = Modifier.widthIn(max = 700.dp)) { paddingValues ->
@@ -83,10 +92,15 @@ fun Chapters(
                             Text(text = stringResource(Res.string.chapter_template, chapter))
                         },
                         leadingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.book),
-                                contentDescription = "Chapter",
-                            )
+                            FilledTonalIconButton(
+                                onClick = { onRequestPlay { onPlayChapter(chapter.toLong()) } },
+                                shapes = IconButtonDefaults.shapes(),
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.play),
+                                    contentDescription = stringResource(Res.string.play_chapter),
+                                )
+                            }
                         },
                         trailingContent = {
                             Icon(

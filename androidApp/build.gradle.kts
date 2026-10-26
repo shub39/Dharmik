@@ -26,8 +26,8 @@ plugins {
 }
 
 val appName = "Dharmik"
-val appVersionCode = 4120
-val appVersionName = "4.1.2"
+val appVersionCode = 4300
+val appVersionName = "4.3.0"
 
 val gitHash =
     providers
@@ -156,6 +156,10 @@ dependencies {
 
     // Analytics is only wired into the Play flavor. The FOSS flavor ships without the SDK.
     "playImplementation"(libs.posthog.android)
+
+    // Billing is only wired into the Play flavor. The FOSS flavor ships without the SDK.
+    "playImplementation"(libs.purchases)
+    "playImplementation"(libs.purchases.ui)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)

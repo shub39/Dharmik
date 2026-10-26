@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Used for the media session metadata that the platform renders outside the app. -->
+    <string name="chapter_template">Chapter %1$d</string>
+    <string name="verses_alt_template">Verse %1$d</string>
+</resources>

@@ -61,6 +61,7 @@ import com.shub39.dharmik.shared.core.domain.VerseCardState.ENGLISH
 import com.shub39.dharmik.shared.core.domain.VerseCardState.HINDI
 import com.shub39.dharmik.shared.core.domain.VerseCardState.SANSKRIT
 import com.shub39.dharmik.shared.ui.navigation.Verses
+import com.shub39.dharmik.shared.ui.navigation.versesAt
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.removeExtraLineBreaks
 import com.shub39.dharmik.shared.ui.segmentedListItemShapes
@@ -213,11 +214,7 @@ fun Home(
                         SegmentedListItem(
                             onClick = {
                                 onNavigateToVerses(
-                                    Verses(
-                                        chapter = verse.chapter,
-                                        verse = verse.verse.minus(1).coerceAtLeast(0),
-                                        saveBookmarks = false,
-                                    )
+                                    versesAt(chapter = verse.chapter, verseNumber = verse.verse)
                                 )
                             },
                             colors =

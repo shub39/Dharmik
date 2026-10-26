@@ -23,5 +23,5 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [MediaPlayerFactory::class])
 class AndroidMediaPlayerFactory(private val context: Context) : MediaPlayerFactory {
-    override fun create(): MediaPlayer = Media3MediaPlayer(context)
+    override fun create(): MediaPlayer = MediaSessionClient(context)
 }

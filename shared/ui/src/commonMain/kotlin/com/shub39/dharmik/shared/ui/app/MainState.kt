@@ -18,4 +18,8 @@ package com.shub39.dharmik.shared.ui.app
 
 import com.shub39.dharmik.shared.ui.theme.Theme
 
-data class MainState(val theme: Theme = Theme())
+data class MainState(
+    val theme: Theme = Theme(),
+    val isUserSubscribed: Boolean = false,
+    val isFoss: Boolean = false,
+)

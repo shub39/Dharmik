@@ -70,6 +70,7 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.session)
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutines.swing)
