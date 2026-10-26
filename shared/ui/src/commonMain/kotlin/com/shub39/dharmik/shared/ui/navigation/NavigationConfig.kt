@@ -48,6 +48,18 @@ data class CollectionDetail(val id: Long) : Route
  */
 data class AddToCollection(val chapter: Long, val verse: Long) : Route
 
+/**
+ * The audio player.
+ *
+ * The queue a new session should start with travels on the route, like the verse of [Verses], so no
+ * shared mutable state is needed to hand a selection over from another screen. Both parameters left
+ * `null` opens whatever is currently playing.
+ *
+ * @param chapter start playing the whole chapter.
+ * @param collectionId start playing the verses of a collection.
+ */
+data class Player(val chapter: Long? = null, val collectionId: Long? = null) : Route
+
 data object Home : Route
 
 data object Chapters : Route
@@ -62,7 +74,22 @@ data object Changelog : Route
 
 data object Paywall : Route
 
-val baseRoutes = listOf(Home, Chapters, Collections)
+val baseRoutes = listOf(Home, Chapters, Collections, Player())
+
+/**
+ * Whether this route is one of the navigation destinations, i.e. whether the nav bar/rail belongs
+ * on screen. [Player] is a destination for every one of its states, so it cannot be compared by
+ * value.
+ */
+val Route.isBaseRoute: Boolean
+    get() =
+        when (this) {
+            Home,
+            Chapters,
+            Collections,
+            is Player -> true
+            else -> false
+        }
 
 class TopLevelBackStack(private val startKey: Route = Home) {
     val backStack = mutableStateListOf(startKey)
@@ -91,6 +118,11 @@ class TopLevelBackStack(private val startKey: Route = Home) {
                 backStack.clear()
                 backStack.add(Home)
                 backStack.add(Collections)
+            }
+            is Player -> {
+                backStack.clear()
+                backStack.add(Home)
+                backStack.add(route)
             }
             is Verses -> {
                 backStack.removeAll { it is Verses }

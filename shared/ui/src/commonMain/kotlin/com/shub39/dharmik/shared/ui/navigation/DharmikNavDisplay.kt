@@ -40,6 +40,7 @@ import com.shub39.dharmik.shared.ui.presentation.collections.CollectionDetail as
 import com.shub39.dharmik.shared.ui.presentation.collections.Collections as CollectionsScreen
 import com.shub39.dharmik.shared.ui.presentation.collections.add.AddToCollection as AddToCollectionScreen
 import com.shub39.dharmik.shared.ui.presentation.home.Home
+import com.shub39.dharmik.shared.ui.presentation.player.Player as PlayerScreen
 import com.shub39.dharmik.shared.ui.presentation.settings.About as AboutScreen
 import com.shub39.dharmik.shared.ui.presentation.settings.Changelog as ChangelogScreen
 import com.shub39.dharmik.shared.ui.presentation.settings.Settings
@@ -50,6 +51,7 @@ import com.shub39.dharmik.shared.ui.presentation.viewmodels.CollectionDetailView
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.CollectionsViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.HomeViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.MainViewModel
+import com.shub39.dharmik.shared.ui.presentation.viewmodels.PlayerViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.SettingsViewModel
 import com.shub39.dharmik.shared.ui.presentation.viewmodels.VersesViewModel
 import com.shub39.dharmik.shared.ui.theme.DharmikTheme
@@ -72,6 +74,12 @@ fun DharmikNavDisplay(
     // Writing collections is a Plus feature: every mutating affordance of the collections screens
     // goes through this, which either performs the action or opens the paywall.
     val requestWrite: (() -> Unit) -> Unit = { action ->
+        if (state.isUserSubscribed) action() else stack.add(Paywall)
+    }
+
+    // Listening to playlists is a Plus feature: the player destination and every play affordance
+    // of the chapter and collection lists go through this.
+    val requestPlay: (() -> Unit) -> Unit = { action ->
         if (state.isUserSubscribed) action() else stack.add(Paywall)
     }
 
@@ -118,9 +126,10 @@ fun DharmikNavDisplay(
                     entryProvider =
                         entryProvider {
                             homeScreens(stack)
-                            chaptersScreens(stack)
-                            collectionScreens(stack, requestWrite)
+                            chaptersScreens(stack, requestPlay)
+                            collectionScreens(stack, requestWrite, requestPlay)
                             versesScreens(stack, collectVerse)
+                            playerScreens(stack)
                             settingsScreens(stack)
 
                             entry<Paywall>(metadata = verticalTransitionMetadata()) {
@@ -141,6 +150,7 @@ fun DharmikNavDisplay(
 private fun EntryProviderScope<Route>.collectionScreens(
     stack: TopLevelBackStack,
     requestWrite: (() -> Unit) -> Unit,
+    requestPlay: (() -> Unit) -> Unit,
 ) {
     // The list pane of the `Collections` + `CollectionDetail` list-detail scene.
     entry<Collections>(metadata = ListDetailScene.listPane() + fadeTransitionMetadata()) {
@@ -153,7 +163,9 @@ private fun EntryProviderScope<Route>.collectionScreens(
             currentSelected = currentSelected?.id,
             onAction = viewModel::onAction,
             onNavigateToDetail = { stack.add(CollectionDetail(it)) },
+            onPlayCollection = { id -> requestPlay { stack.add(Player(collectionId = id)) } },
             onRequestWrite = requestWrite,
+            onRequestPlay = requestPlay,
         )
     }
 
@@ -203,7 +215,10 @@ private fun EntryProviderScope<Route>.homeScreens(stack: TopLevelBackStack) {
     }
 }
 
-private fun EntryProviderScope<Route>.chaptersScreens(stack: TopLevelBackStack) {
+private fun EntryProviderScope<Route>.chaptersScreens(
+    stack: TopLevelBackStack,
+    requestPlay: (() -> Unit) -> Unit,
+) {
     // The list pane of the `Chapters` + `Verses` list-detail scene.
     entry<Chapters>(metadata = ListDetailScene.listPane() + fadeTransitionMetadata()) {
         val viewModel = koinViewModel<ChaptersViewModel>()
@@ -215,6 +230,23 @@ private fun EntryProviderScope<Route>.chaptersScreens(stack: TopLevelBackStack) 
             onAction = viewModel::onAction,
             currentSelected = currentSelected?.chapter?.toInt()?.minus(1),
             onNavigateToVerses = { stack.add(Verses(chapter = it)) },
+            onPlayChapter = { chapter -> requestPlay { stack.add(Player(chapter = chapter)) } },
+            onRequestPlay = requestPlay,
+        )
+    }
+}
+
+private fun EntryProviderScope<Route>.playerScreens(stack: TopLevelBackStack) {
+    // Deliberately not a list-detail or two-pane entry: the player owns the whole window. The Plus
+    // gate lives on the screen itself, which offers the paywall instead of the transport controls.
+    entry<Player>(metadata = fadeTransitionMetadata()) { route ->
+        val viewModel = koinViewModel<PlayerViewModel> { parametersOf(route) }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        PlayerScreen(
+            state = state,
+            onAction = viewModel::onAction,
+            onNavigateToPaywall = { stack.add(Paywall) },
         )
     }
 }

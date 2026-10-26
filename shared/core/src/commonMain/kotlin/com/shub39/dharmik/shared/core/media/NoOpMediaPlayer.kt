@@ -23,15 +23,18 @@ import kotlinx.coroutines.flow.StateFlow
  * Inert, platform-agnostic implementation of [MediaPlayer].
  *
  * Every operation is a no-op that never throws: the player always reports [MediaPlayerState.Idle],
- * a position/duration of `0` and a `null` error. This is a single common stub so that
+ * an index/position/duration of `0` and a `null` error. This is a single common stub so that
  * `:shared:core` needs neither an `expect`/`actual` factory nor any platform (`androidx.media3`,
  * `chaintech.videoplayer`, ...) dependency.
  *
- * `setSource` intentionally does **not** auto-play.
+ * [setQueue] intentionally does **not** auto-play.
  */
 class NoOpMediaPlayer : MediaPlayer {
     private val _state = MutableStateFlow<MediaPlayerState>(MediaPlayerState.Idle)
     override val state: StateFlow<MediaPlayerState> = _state
+
+    private val _currentIndex = MutableStateFlow(0)
+    override val currentIndex: StateFlow<Int> = _currentIndex
 
     private val _currentPosition = MutableStateFlow(0L)
     override val currentPosition: StateFlow<Long> = _currentPosition
@@ -42,20 +45,51 @@ class NoOpMediaPlayer : MediaPlayer {
     private val _error = MutableStateFlow<MediaPlayerError?>(null)
     override val error: StateFlow<MediaPlayerError?> = _error
 
-    override suspend fun setSource(source: MediaSource) {
+    override suspend fun setQueue(
+        tracks: List<MediaTrack>,
+        startIndex: Int,
+        playWhenReady: Boolean,
+    ) {
         // Inert: stays Idle, never prepares, never plays.
+        _currentIndex.value = startIndex
         _state.value = MediaPlayerState.Idle
     }
 
-    override suspend fun play() = Unit
+    override suspend fun replaceTrack(index: Int, source: MediaSource) {
+        // Inert.
+    }
 
-    override suspend fun pause() = Unit
+    override suspend fun play() {
+        // Inert.
+    }
 
-    override suspend fun stop() = Unit
+    override suspend fun pause() {
+        // Inert.
+    }
 
-    override suspend fun seekTo(position: Long) = Unit
+    override suspend fun stop() {
+        // Inert.
+    }
 
-    override fun release() = Unit
+    override suspend fun seekTo(position: Long) {
+        // Inert.
+    }
+
+    override suspend fun seekToIndex(index: Int) {
+        // Inert.
+    }
+
+    override suspend fun skipToNext() {
+        // Inert.
+    }
+
+    override suspend fun skipToPrevious() {
+        // Inert.
+    }
+
+    override fun release() {
+        // Inert.
+    }
 }
 
 /**

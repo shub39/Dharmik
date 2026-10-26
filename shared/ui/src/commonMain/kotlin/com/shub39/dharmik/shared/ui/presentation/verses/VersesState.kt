@@ -19,19 +19,18 @@ package com.shub39.dharmik.shared.ui.presentation.verses
 import androidx.compose.foundation.pager.PagerState
 import com.shub39.dharmik.shared.core.domain.Audios
 import com.shub39.dharmik.shared.core.domain.GitaVerse
+import com.shub39.dharmik.shared.core.domain.PlaybackState
 import com.shub39.dharmik.shared.core.domain.VerseCardState
-import com.shub39.dharmik.shared.core.media.MediaPlayer
-import com.shub39.dharmik.shared.core.media.NoOpMediaPlayer
 
 data class VersesState(
     val currentVerses: List<GitaVerse> = emptyList(),
     val audioFiles: List<Audios> = emptyList(),
     val saveBookMarks: Boolean = true,
+    /** Whether playback continues with the next verse when one finishes. */
     val autoPlay: Boolean = false,
-    val isPlaying: Boolean = false,
-    val isPreparing: Boolean = false,
     val favorites: List<GitaVerse> = emptyList(),
-    val player: MediaPlayer = NoOpMediaPlayer(),
+    /** The app-wide session this screen plays through. */
+    val playback: PlaybackState = PlaybackState(),
     val verseCardState: VerseCardState = VerseCardState.SANSKRIT,
     val pagerState: PagerState = PagerState { 0 },
     val fontSize: Float = 16f,

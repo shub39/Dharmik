@@ -50,6 +50,12 @@ value class AnalyticsEvent(val name: String) {
         val AUDIO_PLAYED = AnalyticsEvent("audio_played")
         val AUDIO_PAUSED = AnalyticsEvent("audio_paused")
         val AUDIO_AUTOPLAY_CHANGED = AnalyticsEvent("audio_autoplay_changed")
+        val AUDIO_TRACK_CHANGED = AnalyticsEvent("audio_track_changed")
+        val AUDIO_VARIANT_CHANGED = AnalyticsEvent("audio_variant_changed")
+
+        val PLAYER_VIEWED = AnalyticsEvent("player_viewed")
+        val PLAYLIST_STARTED = AnalyticsEvent("playlist_started")
+        val PLAYLIST_VIEWED = AnalyticsEvent("playlist_viewed")
 
         val BULK_AUDIO_DOWNLOAD_STARTED = AnalyticsEvent("bulk_audio_download_started")
         val BULK_AUDIO_DOWNLOAD_COMPLETED = AnalyticsEvent("bulk_audio_download_completed")

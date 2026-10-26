@@ -21,13 +21,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.dharmik.shared.core.AnalyticsEvent
 import com.shub39.dharmik.shared.core.domain.AnalyticsWrapper
-import com.shub39.dharmik.shared.core.domain.AudioRepository
 import com.shub39.dharmik.shared.core.domain.BgRepo
 import com.shub39.dharmik.shared.core.domain.LongPair
+import com.shub39.dharmik.shared.core.domain.PlaybackController
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.core.domain.audioVariant
-import com.shub39.dharmik.shared.core.media.MediaPlayer
-import com.shub39.dharmik.shared.core.media.MediaSource
+import com.shub39.dharmik.shared.core.domain.chapterPlaylist
 import com.shub39.dharmik.shared.ui.navigation.Verses
 import com.shub39.dharmik.shared.ui.presentation.verses.VersesAction
 import com.shub39.dharmik.shared.ui.presentation.verses.VersesState
@@ -49,14 +48,17 @@ import org.koin.core.annotation.Provided
 /**
  * Backs the reading screen. Everything it shows is derived from the navigation [route] and the
  * shared repositories, which it observes on its own.
+ *
+ * Playback is delegated to the app-wide [PlaybackController]: the reader only decides *what* to
+ * queue, so audio started here keeps playing (and keeps a media notification) when the screen goes
+ * away.
  */
 @KoinViewModel
 class VersesViewModel(
     @InjectedParam private val route: Verses,
     @Provided private val repo: BgRepo,
     @Provided private val datastore: PreferencesRepo,
-    @Provided private val player: MediaPlayer,
-    @Provided private val audioRepository: AudioRepository,
+    @Provided private val controller: PlaybackController,
     @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var observeJob: Job? = null
@@ -99,14 +101,14 @@ class VersesViewModel(
 
                 is VersesAction.SetVerseCardState -> {
                     datastore.setVerseCardState(action.state)
-                    player.pause()
+                    controller.pause()
 
                     analytics.trackEvent(
                         AnalyticsEvent.VERSE_CARD_STATE_CHANGED,
                         mapOf("state" to action.state.name),
                     )
 
-                    _state.update { it.copy(verseCardState = action.state, isPlaying = false) }
+                    _state.update { it.copy(verseCardState = action.state) }
                 }
 
                 is VersesAction.SetAutoPlay -> {
@@ -115,15 +117,17 @@ class VersesViewModel(
                         mapOf("enabled" to action.autoPlay),
                     )
                     _state.update { it.copy(autoPlay = action.autoPlay) }
+
+                    // Applies to what is already playing too, without losing the position.
+                    controller.setAutoAdvance(action.autoPlay)
                 }
 
                 VersesAction.Pause -> {
-                    player.pause()
+                    controller.pause()
                     analytics.trackEvent(
                         AnalyticsEvent.AUDIO_PAUSED,
                         verseProperties(_state.value.pagerState.currentPage),
                     )
-                    _state.update { it.copy(isPlaying = false) }
                 }
 
                 is VersesAction.ChangeVerse -> {
@@ -133,17 +137,17 @@ class VersesViewModel(
                             mapOf("chapter" to route.chapter, "verse" to action.index + 1),
                         )
                         _state.value.pagerState.animateScrollToPage(action.index)
-                        player.pause()
 
-                        _state.update { it.copy(isPlaying = false) }
+                        // The pager also moves when playback advances, so only a real user change
+                        // should stop the audio.
+                        val playingPage =
+                            _state.value.playback.currentTrack?.verse?.toInt()?.minus(1)
+                        if (playingPage == action.index) return@launch
+
+                        controller.pause()
 
                         if (_state.value.autoPlay) {
-                            player.setSource(
-                                audioSourceFor(_state.value, action.index, audioRepository)
-                            )
-                            player.play()
-
-                            _state.update { it.copy(isPlaying = true) }
+                            play(index = action.index)
                         }
 
                         if (route.saveBookmarks) {
@@ -153,14 +157,24 @@ class VersesViewModel(
                 }
 
                 is VersesAction.Play -> {
-                    _state.update { it.copy(isPreparing = true) }
-                    player.setSource(audioSourceFor(_state.value, action.index, audioRepository))
-                    player.play()
+                    play(index = action.index)
                     analytics.trackEvent(AnalyticsEvent.AUDIO_PLAYED, verseProperties(action.index))
-                    _state.update { it.copy(isPlaying = true, isPreparing = false) }
                 }
             }
         }
+    }
+
+    /** Queues the chapter at [index], so listening can continue past the current verse. */
+    private suspend fun play(index: Int) {
+        val state = _state.value
+        if (state.currentVerses.isEmpty()) return
+
+        controller.play(
+            playlist = chapterPlaylist(route.chapter),
+            variant = state.verseCardState.audioVariant,
+            startIndex = index,
+            autoAdvance = state.autoPlay,
+        )
     }
 
     /** Chapter and verse of the verse at [index], for analytics properties. */
@@ -180,7 +194,6 @@ class VersesViewModel(
                 saveBookMarks = route.saveBookmarks,
                 verseCardState = datastore.getVerseCardState().first(),
                 pagerState = PagerState(initialPage) { verses.size },
-                player = player,
             )
         }
     }
@@ -205,21 +218,10 @@ class VersesViewModel(
                         _state.update { it.copy(verseCardState = verseCardState) }
                     }
                     .launchIn(this)
+
+                controller.state
+                    .onEach { playback -> _state.update { it.copy(playback = playback) } }
+                    .launchIn(this)
             }
         }
-}
-
-/**
- * Resolves the playable source for [index], downloading the track from the legacy Gita Supersite
- * host first when it is not already stored locally.
- */
-private suspend fun audioSourceFor(
-    state: VersesState,
-    index: Int,
-    repository: AudioRepository,
-): MediaSource {
-    val verse = state.currentVerses.getOrNull(index) ?: state.currentVerses.first()
-    val uri = repository.resolve(verse.chapter, verse.verse, state.verseCardState.audioVariant)
-
-    return MediaSource.Url(uri)
 }

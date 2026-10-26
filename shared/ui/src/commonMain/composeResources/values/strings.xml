@@ -56,6 +56,20 @@
         <item quantity="other">%1$d verses</item>
     </plurals>
     <string name="more_options">More options</string>
+    <string name="player">Player</string>
+    <string name="play_chapter">Play chapter</string>
+    <string name="play_collection">Play collection</string>
+    <string name="queue">Queue</string>
+    <string name="nothing_playing">Nothing playing</string>
+    <string name="nothing_playing_desc">Play a chapter or a collection to start listening to the verses</string>
+    <string name="player_feature">Listen to whole chapters and your collections</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="play_pause">Play or pause</string>
+    <string name="variant_mool">Sanskrit</string>
+    <string name="variant_hindi">Hindi</string>
+    <string name="variant_english">English</string>
+    <string name="retry">Retry</string>
     <string name="plus_feature">Dharmik Plus</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>

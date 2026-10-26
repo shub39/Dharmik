@@ -46,9 +46,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +60,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.core.domain.VerseCardState
-import com.shub39.dharmik.shared.core.media.MediaPlayerState
 import com.shub39.dharmik.shared.ui.navigation.LocalBackButtonVisibility
 import com.shub39.dharmik.shared.ui.presentation.components.ListSelect
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
@@ -109,26 +106,20 @@ fun Verses(
         var sliderPosition by remember { mutableFloatStateOf(0f) }
         var menuExpanded by remember { mutableStateOf(false) }
 
-        val playerState by state.player.state.collectAsState()
+        val playback = state.playback
 
         LaunchedEffect(state.pagerState.currentPage) {
             sliderPosition = state.pagerState.currentPage.toFloat()
             action(VersesAction.ChangeVerse(state.pagerState.currentPage, coroutineScope))
         }
 
-        LaunchedEffect(playerState) {
-            if (playerState == MediaPlayerState.Completed) {
-                if (state.autoPlay && state.pagerState.currentPage < verses.size - 1) {
-                    action(
-                        VersesAction.ChangeVerse(state.pagerState.currentPage + 1, coroutineScope)
-                    )
-                } else {
-                    action(VersesAction.Pause)
-                }
+        // Playback drives the pager: when a queued verse starts playing, page to it.
+        LaunchedEffect(playback.currentTrack, playback.isPlaying) {
+            val playing = playback.currentTrack?.takeIf { it.chapter == verses.first().chapter }
+            if (playback.isPlaying && playing != null) {
+                state.pagerState.animateScrollToPage(playing.verse.toInt() - 1)
             }
         }
-
-        DisposableEffect(Unit) { onDispose { state.player.release() } }
 
         Scaffold(
             modifier = Modifier.widthIn(max = 700.dp),
@@ -333,9 +324,9 @@ fun Verses(
                             }
 
                             ToggleButton(
-                                checked = state.isPlaying,
+                                checked = playback.isPlaying,
                                 onCheckedChange = {
-                                    if (state.isPlaying) {
+                                    if (playback.isPlaying) {
                                         action(VersesAction.Pause)
                                     } else {
                                         action(VersesAction.Play(index))
@@ -347,7 +338,7 @@ fun Verses(
                                 Icon(
                                     painter =
                                         painterResource(
-                                            if (state.isPlaying) {
+                                            if (playback.isPlaying) {
                                                 Res.drawable.pause
                                             } else {
                                                 Res.drawable.play

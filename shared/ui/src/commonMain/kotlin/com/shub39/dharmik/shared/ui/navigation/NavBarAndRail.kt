@@ -40,15 +40,26 @@ private val NAV_ITEMS =
         NavItem(Home, Res.string.home, Res.drawable.home),
         NavItem(Chapters, Res.string.chapters, Res.drawable.book),
         NavItem(Collections, Res.string.collections, Res.drawable.collection),
+        NavItem(Player(), Res.string.player, Res.drawable.headphones),
     )
+
+/**
+ * Whether [this] destination is the selected one. [Player] carries the queue it should start, so it
+ * is compared by type instead of by value.
+ */
+private fun Route.isSelected(currentRoute: Route?): Boolean =
+    when (this) {
+        is Player -> currentRoute is Player
+        else -> this == currentRoute
+    }
 
 @Composable
 fun NavBar(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Route) -> Unit) {
-    if (currentRoute !in baseRoutes) return
+    if (currentRoute?.isBaseRoute != true) return
 
     NavigationBar(modifier = modifier) {
         NAV_ITEMS.forEach { item ->
-            val selected = currentRoute == item.route
+            val selected = item.route.isSelected(currentRoute)
 
             NavigationBarItem(
                 selected = selected,
@@ -66,12 +77,12 @@ fun NavBar(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Rou
 
 @Composable
 fun NavRail(modifier: Modifier = Modifier, currentRoute: Route?, onNavigate: (Route) -> Unit) {
-    if (currentRoute !in baseRoutes) return
+    if (currentRoute?.isBaseRoute != true) return
 
     NavigationRail(modifier = modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         NAV_ITEMS.forEach { item ->
-            val selected = currentRoute == item.route
+            val selected = item.route.isSelected(currentRoute)
 
             NavigationRailItem(
                 selected = selected,

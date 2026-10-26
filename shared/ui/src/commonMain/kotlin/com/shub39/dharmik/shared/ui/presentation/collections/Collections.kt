@@ -37,6 +37,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialShapes
@@ -66,6 +67,8 @@ import dharmik.shared.ui.generated.resources.collections
 import dharmik.shared.ui.generated.resources.collections_empty
 import dharmik.shared.ui.generated.resources.collections_feature
 import dharmik.shared.ui.generated.resources.new_collection
+import dharmik.shared.ui.generated.resources.play
+import dharmik.shared.ui.generated.resources.play_collection
 import dharmik.shared.ui.generated.resources.plus_feature
 import dharmik.shared.ui.generated.resources.verses_count
 import org.jetbrains.compose.resources.painterResource
@@ -75,8 +78,9 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * The list pane of the `Collections` + `CollectionDetail` list-detail scene.
  *
- * Writing is a Plus feature, so every mutating affordance goes through [onRequestWrite], which the
- * navigation layer turns into "do it" or "open the paywall".
+ * A collection doubles as a playlist, so its leading icon is a play button that starts listening to
+ * its verses. Writing and listening are Plus features, so they go through [onRequestWrite] and
+ * [onRequestPlay], which the navigation layer turns into "do it" or "open the paywall".
  */
 @Composable
 fun Collections(
@@ -85,7 +89,9 @@ fun Collections(
     currentSelected: Long?,
     onAction: (CollectionsAction) -> Unit,
     onNavigateToDetail: (Long) -> Unit,
+    onPlayCollection: (Long) -> Unit,
     onRequestWrite: (() -> Unit) -> Unit,
+    onRequestPlay: (() -> Unit) -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -121,6 +127,15 @@ fun Collections(
                 )
             },
         ) { paddingValues ->
+            if (state.collections.isEmpty()) {
+                CollectionsEmpty(
+                    isPlus = state.isPlus,
+                    onClick = { onRequestWrite { onAction(CollectionsAction.OpenEditor) } },
+                    modifier =
+                        Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 24.dp),
+                )
+                return@Scaffold
+            }
             LazyColumn(
                 contentPadding =
                     PaddingValues(
@@ -133,60 +148,54 @@ fun Collections(
                     ),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                if (state.collections.isEmpty()) {
-                    item {
-                        CollectionsEmpty(
-                            isPlus = state.isPlus,
-                            onClick = { onRequestWrite { onAction(CollectionsAction.OpenEditor) } },
-                        )
-                    }
-                } else {
-                    itemsIndexed(
-                        items = state.collections,
-                        key = { _, collection -> collection.id },
-                    ) { index, collection ->
-                        SegmentedListItem(
-                            onClick = { onNavigateToDetail(collection.id) },
-                            selected = collection.id == currentSelected,
-                            shapes = segmentedListItemShapes(index, state.collections.size),
-                            colors =
-                                ListItemDefaults.colors(
-                                    containerColor = colorScheme.surfaceContainer
-                                ),
-                            leadingContent = {
+                itemsIndexed(items = state.collections, key = { _, collection -> collection.id }) {
+                    index,
+                    collection ->
+                    SegmentedListItem(
+                        onClick = { onNavigateToDetail(collection.id) },
+                        selected = collection.id == currentSelected,
+                        shapes = segmentedListItemShapes(index, state.collections.size),
+                        colors =
+                            ListItemDefaults.colors(containerColor = colorScheme.surfaceContainer),
+                        leadingContent = {
+                            FilledTonalIconButton(
+                                onClick = { onRequestPlay { onPlayCollection(collection.id) } },
+                                enabled = collection.verses.isNotEmpty(),
+                                shapes = IconButtonDefaults.shapes(),
+                            ) {
                                 Icon(
-                                    painter = painterResource(Res.drawable.collection),
-                                    contentDescription = null,
+                                    painter = painterResource(Res.drawable.play),
+                                    contentDescription = stringResource(Res.string.play_collection),
                                 )
-                            },
-                            content = { Text(text = collection.name) },
-                            overlineContent = {
-                                Text(
-                                    text =
-                                        pluralStringResource(
-                                            Res.plurals.verses_count,
-                                            collection.verses.size,
-                                            collection.verses.size,
-                                        )
-                                )
-                            },
-                            supportingContent = {
-                                if (collection.description.isNotBlank()) {
-                                    Text(
-                                        text = collection.description,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
+                            }
+                        },
+                        content = { Text(text = collection.name) },
+                        overlineContent = {
+                            Text(
+                                text =
+                                    pluralStringResource(
+                                        Res.plurals.verses_count,
+                                        collection.verses.size,
+                                        collection.verses.size,
                                     )
-                                }
-                            },
-                            trailingContent = {
-                                Icon(
-                                    painter = painterResource(Res.drawable.arrow_forward_ios),
-                                    contentDescription = null,
+                            )
+                        },
+                        supportingContent = {
+                            if (collection.description.isNotBlank()) {
+                                Text(
+                                    text = collection.description,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                 )
-                            },
-                        )
-                    }
+                            }
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_forward_ios),
+                                contentDescription = null,
+                            )
+                        },
+                    )
                 }
             }
         }
@@ -203,9 +212,9 @@ fun Collections(
     }
 
 @Composable
-private fun CollectionsEmpty(isPlus: Boolean, onClick: () -> Unit) {
+private fun CollectionsEmpty(isPlus: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.heightIn(min = 400.dp).fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = modifier.heightIn(min = 400.dp).fillMaxWidth().padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -228,14 +237,15 @@ private fun CollectionsEmpty(isPlus: Boolean, onClick: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = stringResource(
-                if (!isPlus) {
-                    Res.string.collections_feature
-                } else {
-                    Res.string.collections_empty
-                }
-            ),
-            textAlign = TextAlign.Center
+            text =
+                stringResource(
+                    if (!isPlus) {
+                        Res.string.collections_feature
+                    } else {
+                        Res.string.collections_empty
+                    }
+                ),
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
