@@ -25,6 +25,7 @@ import com.shub39.dharmik.shared.core.domain.CollectionsRepo
 import com.shub39.dharmik.shared.core.domain.LongPair
 import com.shub39.dharmik.shared.core.domain.PreferencesRepo
 import com.shub39.dharmik.shared.ui.navigation.AddToCollection
+import com.shub39.dharmik.shared.ui.presentation.collections.CollectionEditor
 import com.shub39.dharmik.shared.ui.presentation.collections.add.AddToCollectionAction
 import com.shub39.dharmik.shared.ui.presentation.collections.add.AddToCollectionState
 import kotlinx.coroutines.Job
@@ -45,8 +46,8 @@ import org.koin.core.annotation.Provided
 /**
  * Collects the verse carried by the route into the selected collections.
  *
- * A new collection is created whenever the "new collection" field holds a name, which is also what
- * makes the very first collected verse land in "Collection 1" without an extra step.
+ * A new collection can be created inline from the dialog, which immediately selects it so the
+ * collected verse lands in it on save.
  */
 @KoinViewModel
 class AddToCollectionViewModel(
@@ -81,8 +82,20 @@ class AddToCollectionViewModel(
                     )
                 }
 
-            is AddToCollectionAction.SetNewCollectionName ->
-                _state.update { it.copy(newCollectionName = action.name) }
+            AddToCollectionAction.OpenEditor ->
+                _state.update { it.copy(editor = CollectionEditor()) }
+
+            is AddToCollectionAction.EditName ->
+                _state.update { it.copy(editor = it.editor?.copy(name = action.name)) }
+
+            is AddToCollectionAction.EditDescription ->
+                _state.update {
+                    it.copy(editor = it.editor?.copy(description = action.description))
+                }
+
+            AddToCollectionAction.DismissEditor -> _state.update { it.copy(editor = null) }
+
+            AddToCollectionAction.SaveEditor -> viewModelScope.launch { saveEditor() }
 
             is AddToCollectionAction.SetNote -> _state.update { it.copy(note = action.note) }
 
@@ -104,19 +117,22 @@ class AddToCollectionViewModel(
         }
     }
 
+    private suspend fun saveEditor() {
+        val editor = _state.value.editor ?: return
+        val name = editor.name.trim()
+        if (name.isEmpty()) return
+
+        val id = repo.createCollection(name, editor.description)
+        analytics.trackEvent(AnalyticsEvent.COLLECTION_CREATED, mapOf("collection_id" to id))
+
+        _state.update { it.copy(editor = null, selectedIds = it.selectedIds + id) }
+    }
+
     private suspend fun save() {
         val current = _state.value.verse ?: return
         _state.update { it.copy(isSaving = true) }
 
         val targets = _state.value.selectedIds.toMutableSet()
-
-        val newName = _state.value.newCollectionName.trim()
-        if (newName.isNotEmpty()) {
-            val id = repo.createCollection(newName)
-            analytics.trackEvent(AnalyticsEvent.COLLECTION_CREATED, mapOf("collection_id" to id))
-            targets.add(id)
-        }
-
         val note = _state.value.note.trim()
 
         targets.forEach { collectionId ->

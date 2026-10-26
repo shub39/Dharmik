@@ -44,7 +44,6 @@
     <string name="edit_collection">Edit collection</string>
     <string name="collection_name">Collection name</string>
     <string name="collection_description">Description</string>
-    <string name="collection_default_name">Collection 1</string>
     <string name="add_to_collection">Add to collection</string>
     <string name="delete_collection">Delete collection</string>
     <string name="delete_collection_message">This removes the collection and its notes. The verses stay in the Gita.</string>

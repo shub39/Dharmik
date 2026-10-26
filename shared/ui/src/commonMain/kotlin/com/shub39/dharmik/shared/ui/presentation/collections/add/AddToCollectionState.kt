@@ -19,12 +19,14 @@ package com.shub39.dharmik.shared.ui.presentation.collections.add
 import com.shub39.dharmik.shared.core.domain.Collections
 import com.shub39.dharmik.shared.core.domain.GitaVerse
 import com.shub39.dharmik.shared.core.domain.VerseCardState
+import com.shub39.dharmik.shared.ui.presentation.collections.CollectionEditor
 
 data class AddToCollectionState(
     val verse: GitaVerse? = null,
     val collections: List<Collections> = emptyList(),
     val selectedIds: Set<Long> = emptySet(),
-    val newCollectionName: String = "",
+    /** The collection being created from this screen, `null` when the dialog is closed. */
+    val editor: CollectionEditor? = null,
     val note: String = "",
     val verseCardState: VerseCardState = VerseCardState.ENGLISH,
     val fontSize: Float = 16f,

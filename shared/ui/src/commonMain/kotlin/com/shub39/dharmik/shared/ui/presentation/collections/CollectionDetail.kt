@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -39,6 +41,7 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
@@ -47,6 +50,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,7 +62,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.dharmik.shared.core.domain.VerseCardState.ENGLISH
@@ -74,7 +77,6 @@ import com.shub39.dharmik.shared.ui.theme.getHindiFont
 import com.shub39.dharmik.shared.ui.theme.getSanskritFont
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
 import dharmik.shared.ui.generated.resources.Res
-import dharmik.shared.ui.generated.resources.add_note
 import dharmik.shared.ui.generated.resources.arrow_back
 import dharmik.shared.ui.generated.resources.cancel
 import dharmik.shared.ui.generated.resources.collection
@@ -85,6 +87,7 @@ import dharmik.shared.ui.generated.resources.delete_collection_message
 import dharmik.shared.ui.generated.resources.edit
 import dharmik.shared.ui.generated.resources.edit_collection
 import dharmik.shared.ui.generated.resources.edit_note
+import dharmik.shared.ui.generated.resources.more
 import dharmik.shared.ui.generated.resources.more_options
 import dharmik.shared.ui.generated.resources.navigate_back
 import dharmik.shared.ui.generated.resources.remove_verse
@@ -146,9 +149,9 @@ fun CollectionDetail(
                     },
                     actions = {
                         Box {
-                            FilledTonalIconButton(onClick = { menuExpanded = true }) {
+                            IconButton(onClick = { menuExpanded = true }) {
                                 Icon(
-                                    painter = painterResource(Res.drawable.edit),
+                                    painter = painterResource(Res.drawable.more),
                                     contentDescription = stringResource(Res.string.more_options),
                                 )
                             }
@@ -211,7 +214,7 @@ fun CollectionDetail(
                 if (!collection?.description.isNullOrBlank()) {
                     item {
                         Text(
-                            text = collection?.description.orEmpty(),
+                            text = collection.description,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
                         )
@@ -246,8 +249,6 @@ fun CollectionDetail(
                                         },
                                     fontSize = state.fontSize.sp,
                                     lineHeight = state.fontSize.plus(3).sp,
-                                    maxLines = 4,
-                                    overflow = TextOverflow.Ellipsis,
                                 )
                             },
                             supportingContent = {
@@ -255,49 +256,49 @@ fun CollectionDetail(
                                     Text(
                                         text = "Chapter ${item.chapter}, Verse ${item.verse}",
                                         color = colorScheme.primary,
-                                        style = MaterialTheme.typography.labelMedium,
                                     )
 
                                     if (item.notes.isNotBlank()) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+
                                         Text(
                                             text = item.notes,
-                                            style = MaterialTheme.typography.labelMedium,
-                                            maxLines = 3,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    }
-
-                                    TextButton(
-                                        onClick = {
-                                            onRequestWrite {
-                                                onAction(CollectionDetailAction.EditNotes(item))
-                                            }
-                                        },
-                                        contentPadding = PaddingValues(horizontal = 0.dp),
-                                    ) {
-                                        Text(
-                                            text =
-                                                stringResource(
-                                                    if (item.notes.isBlank()) Res.string.add_note
-                                                    else Res.string.edit_note
-                                                ),
-                                            style = MaterialTheme.typography.labelMedium,
+                                            color = colorScheme.onSurfaceVariant,
                                         )
                                     }
                                 }
                             },
                             trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        onRequestWrite {
-                                            onAction(CollectionDetailAction.RemoveVerse(item.id))
+                                Row {
+                                    IconButton(
+                                        onClick = {
+                                            onRequestWrite {
+                                                onAction(CollectionDetailAction.EditNotes(item))
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.edit),
+                                            contentDescription =
+                                                stringResource(Res.string.edit_note),
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.delete),
-                                        contentDescription = stringResource(Res.string.remove_verse),
-                                    )
+
+                                    IconButton(
+                                        onClick = {
+                                            onRequestWrite {
+                                                onAction(
+                                                    CollectionDetailAction.RemoveVerse(item.id)
+                                                )
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.delete),
+                                            contentDescription =
+                                                stringResource(Res.string.remove_verse),
+                                        )
+                                    }
                                 }
                             },
                         )
@@ -357,11 +358,21 @@ private fun VersesEmpty() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Icon(
-            painter = painterResource(Res.drawable.collection),
-            contentDescription = null,
-            tint = colorScheme.primary,
-        )
+        Box(
+            modifier =
+                Modifier.size(48.dp)
+                    .background(
+                        color = colorScheme.primaryContainer,
+                        shape = MaterialShapes.Sunny.toShape(),
+                    ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.collection),
+                contentDescription = null,
+                tint = colorScheme.onPrimaryContainer,
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

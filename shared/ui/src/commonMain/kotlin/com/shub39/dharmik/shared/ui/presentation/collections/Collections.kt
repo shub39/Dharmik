@@ -40,7 +40,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
@@ -160,25 +159,24 @@ fun Collections(
                                 )
                             },
                             content = { Text(text = collection.name) },
-                            supportingContent = {
-                                if (collection.description.isNotBlank()) {
-                                    Text(
-                                        text = collection.description,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
-
+                            overlineContent = {
                                 Text(
                                     text =
                                         pluralStringResource(
                                             Res.plurals.verses_count,
                                             collection.verses.size,
                                             collection.verses.size,
-                                        ),
-                                    style = MaterialTheme.typography.labelMedium,
+                                        )
                                 )
+                            },
+                            supportingContent = {
+                                if (collection.description.isNotBlank()) {
+                                    Text(
+                                        text = collection.description,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
                             },
                             trailingContent = {
                                 Icon(

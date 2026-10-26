@@ -26,8 +26,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -39,6 +37,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
@@ -79,10 +78,10 @@ import dharmik.shared.ui.generated.resources.arrow_forward
 import dharmik.shared.ui.generated.resources.autoplay
 import dharmik.shared.ui.generated.resources.bhagvad_gita
 import dharmik.shared.ui.generated.resources.chapter_template
-import dharmik.shared.ui.generated.resources.check_list
 import dharmik.shared.ui.generated.resources.content_copy
 import dharmik.shared.ui.generated.resources.favorite
 import dharmik.shared.ui.generated.resources.favorite_border
+import dharmik.shared.ui.generated.resources.more
 import dharmik.shared.ui.generated.resources.pause
 import dharmik.shared.ui.generated.resources.play
 import kotlinx.coroutines.launch
@@ -167,9 +166,9 @@ fun Verses(
                     },
                     actions = {
                         Box {
-                            FilledTonalIconButton(onClick = { menuExpanded = true }) {
+                            IconButton(onClick = { menuExpanded = true }) {
                                 Icon(
-                                    painter = painterResource(Res.drawable.check_list),
+                                    painter = painterResource(Res.drawable.more),
                                     contentDescription = "More options",
                                 )
                             }

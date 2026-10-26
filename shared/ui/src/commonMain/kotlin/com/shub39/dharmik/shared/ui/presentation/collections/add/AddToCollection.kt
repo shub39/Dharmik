@@ -16,44 +16,52 @@
  */
 package com.shub39.dharmik.shared.ui.presentation.collections.add
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.shub39.dharmik.shared.ui.presentation.collections.components.CollectionEditorDialog
 import com.shub39.dharmik.shared.ui.presentation.components.PageFill
 import com.shub39.dharmik.shared.ui.presentation.components.VerseCard
 import com.shub39.dharmik.shared.ui.segmentedListItemShapes
 import com.shub39.dharmik.shared.ui.theme.getTitleFont
 import dharmik.shared.ui.generated.resources.Res
+import dharmik.shared.ui.generated.resources.add_collection
 import dharmik.shared.ui.generated.resources.add_to_collection
 import dharmik.shared.ui.generated.resources.arrow_back
-import dharmik.shared.ui.generated.resources.collection_default_name
-import dharmik.shared.ui.generated.resources.collection_name
 import dharmik.shared.ui.generated.resources.collections
 import dharmik.shared.ui.generated.resources.navigate_back
 import dharmik.shared.ui.generated.resources.new_collection
@@ -67,8 +75,8 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Collects the verse carried by the route.
  *
- * When the user has no collections yet, the "new collection" field is pre-filled so the first save
- * always has somewhere to put the verse.
+ * Collections are picked from the list, and a brand new one can be created inline through the same
+ * dialog the collections screen uses.
  */
 @Composable
 fun AddToCollection(
@@ -78,14 +86,6 @@ fun AddToCollection(
     onBack: () -> Unit,
 ) =
     PageFill(modifier = modifier.background(colorScheme.background)) {
-        val defaultName = stringResource(Res.string.collection_default_name)
-
-        LaunchedEffect(state.collections.isEmpty(), state.newCollectionName) {
-            if (state.collections.isEmpty() && state.newCollectionName.isBlank()) {
-                onAction(AddToCollectionAction.SetNewCollectionName(defaultName))
-            }
-        }
-
         LaunchedEffect(state.isSaved) { if (state.isSaved) onBack() }
 
         Scaffold(
@@ -106,28 +106,22 @@ fun AddToCollection(
                             )
                         }
                     },
-                    actions = {
-                        TextButton(
-                            onClick = { onAction(AddToCollectionAction.Save) },
-                            enabled = state.verse != null && !state.isSaving,
-                        ) {
-                            Text(text = stringResource(Res.string.save))
-                        }
-                    },
                 )
             },
         ) { paddingValues ->
             LazyColumn(
+                modifier = Modifier.fillMaxSize().animateContentSize(),
                 contentPadding =
                     PaddingValues(
                         top = paddingValues.calculateTopPadding() + 16.dp,
                         bottom = paddingValues.calculateBottomPadding() + 60.dp,
                         start =
                             paddingValues.calculateStartPadding(LocalLayoutDirection.current) +
-                                8.dp,
-                        end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) + 8.dp,
+                                16.dp,
+                        end =
+                            paddingValues.calculateEndPadding(LocalLayoutDirection.current) + 16.dp,
                     ),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 state.verse?.let { verse ->
                     item {
@@ -141,10 +135,25 @@ fun AddToCollection(
                 }
 
                 item {
+                    OutlinedTextField(
+                        value = state.note,
+                        onValueChange = { onAction(AddToCollectionAction.SetNote(it)) },
+                        label = { Text(text = stringResource(Res.string.notes)) },
+                        minLines = 2,
+                        keyboardOptions =
+                            KeyboardOptions(
+                                imeAction = ImeAction.Done,
+                                capitalization = KeyboardCapitalization.Sentences,
+                            ),
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp),
+                    )
+                }
+
+                item {
                     Text(
                         text = stringResource(Res.string.collections),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                        modifier = Modifier,
                     )
                 }
 
@@ -154,20 +163,13 @@ fun AddToCollection(
                     val checked = collection.id in state.selectedIds
 
                     SegmentedListItem(
+                        selected = checked,
                         onClick = {
                             onAction(AddToCollectionAction.ToggleCollection(collection.id))
                         },
                         shapes = segmentedListItemShapes(index, state.collections.size),
                         colors =
                             ListItemDefaults.colors(containerColor = colorScheme.surfaceContainer),
-                        leadingContent = {
-                            Checkbox(
-                                checked = checked,
-                                onCheckedChange = {
-                                    onAction(AddToCollectionAction.ToggleCollection(collection.id))
-                                },
-                            )
-                        },
                         content = { Text(text = collection.name) },
                         supportingContent = {
                             Text(
@@ -184,36 +186,59 @@ fun AddToCollection(
                 }
 
                 item {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    OutlinedButton(
+                        onClick = { onAction(AddToCollectionAction.OpenEditor) },
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .padding(top = 8.dp)
+                                .height(ButtonDefaults.MediumContainerHeight),
                     ) {
-                        Text(
-                            text = stringResource(Res.string.new_collection),
-                            style = MaterialTheme.typography.titleMedium,
+                        Icon(
+                            painter = painterResource(Res.drawable.add_collection),
+                            contentDescription = null,
                         )
 
-                        OutlinedTextField(
-                            value = state.newCollectionName,
-                            onValueChange = {
-                                onAction(AddToCollectionAction.SetNewCollectionName(it))
-                            },
-                            label = { Text(text = stringResource(Res.string.collection_name)) },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = stringResource(Res.string.new_collection),
+                            style =
+                                ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
                         )
                     }
                 }
 
                 item {
-                    OutlinedTextField(
-                        value = state.note,
-                        onValueChange = { onAction(AddToCollectionAction.SetNote(it)) },
-                        label = { Text(text = stringResource(Res.string.notes)) },
-                        minLines = 2,
-                        modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth(),
-                    )
+                    Column(modifier = Modifier.padding(top = 16.dp)) {
+                        Button(
+                            onClick = { onAction(AddToCollectionAction.Save) },
+                            enabled =
+                                state.verse != null &&
+                                    !state.isSaving &&
+                                    state.selectedIds.isNotEmpty(),
+                            modifier =
+                                Modifier.fillMaxWidth().height(ButtonDefaults.MediumContainerHeight),
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.save),
+                                style =
+                                    ButtonDefaults.textStyleFor(
+                                        ButtonDefaults.MediumContainerHeight
+                                    ),
+                            )
+                        }
+                    }
                 }
             }
+        }
+
+        state.editor?.let { editor ->
+            CollectionEditorDialog(
+                editor = editor,
+                onNameChange = { onAction(AddToCollectionAction.EditName(it)) },
+                onDescriptionChange = { onAction(AddToCollectionAction.EditDescription(it)) },
+                onSave = { onAction(AddToCollectionAction.SaveEditor) },
+                onDismiss = { onAction(AddToCollectionAction.DismissEditor) },
+            )
         }
     }

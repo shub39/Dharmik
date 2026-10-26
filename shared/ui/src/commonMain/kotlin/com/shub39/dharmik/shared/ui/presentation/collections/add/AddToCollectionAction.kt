@@ -19,7 +19,15 @@ package com.shub39.dharmik.shared.ui.presentation.collections.add
 sealed interface AddToCollectionAction {
     data class ToggleCollection(val id: Long) : AddToCollectionAction
 
-    data class SetNewCollectionName(val name: String) : AddToCollectionAction
+    data object OpenEditor : AddToCollectionAction
+
+    data class EditName(val name: String) : AddToCollectionAction
+
+    data class EditDescription(val description: String) : AddToCollectionAction
+
+    data object SaveEditor : AddToCollectionAction
+
+    data object DismissEditor : AddToCollectionAction
 
     data class SetNote(val note: String) : AddToCollectionAction
 
