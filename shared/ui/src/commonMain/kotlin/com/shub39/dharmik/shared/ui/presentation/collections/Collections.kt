@@ -64,6 +64,7 @@ import dharmik.shared.ui.generated.resources.arrow_forward_ios
 import dharmik.shared.ui.generated.resources.collection
 import dharmik.shared.ui.generated.resources.collections
 import dharmik.shared.ui.generated.resources.collections_empty
+import dharmik.shared.ui.generated.resources.collections_feature
 import dharmik.shared.ui.generated.resources.new_collection
 import dharmik.shared.ui.generated.resources.plus_feature
 import dharmik.shared.ui.generated.resources.verses_count
@@ -226,7 +227,16 @@ private fun CollectionsEmpty(isPlus: Boolean, onClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = stringResource(Res.string.collections_empty), textAlign = TextAlign.Center)
+        Text(
+            text = stringResource(
+                if (!isPlus) {
+                    Res.string.collections_feature
+                } else {
+                    Res.string.collections_empty
+                }
+            ),
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
