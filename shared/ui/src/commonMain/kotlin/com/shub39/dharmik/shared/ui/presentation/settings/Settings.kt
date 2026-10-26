@@ -179,7 +179,13 @@ fun Settings(
                                     onSelectedChange = {
                                         onAction(SettingsAction.OnSetVerseCardState(it))
                                     },
-                                    labelProvider = { Text(text = it.fullName) },
+                                    labelProvider = {
+                                        Text(
+                                            text = it.fullName,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    },
                                 )
                             }
                         }
@@ -225,7 +231,13 @@ fun Settings(
                                     onSelectedChange = {
                                         onAction(SettingsAction.OnSetAppTheme(it))
                                     },
-                                    labelProvider = { Text(text = stringResource(it.labelRes())) },
+                                    labelProvider = {
+                                        Text(
+                                            text = stringResource(it.labelRes()),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    },
                                 )
                             }
                         }
