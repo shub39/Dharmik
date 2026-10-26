@@ -138,6 +138,12 @@ class VersesViewModel(
                         )
                         _state.value.pagerState.animateScrollToPage(action.index)
 
+                        // Saved for every page change, including the ones playback drives, so the
+                        // bookmark keeps up with what is being listened to.
+                        if (route.saveBookmarks) {
+                            datastore.setBgBookMark(LongPair(route.chapter, action.index.toLong()))
+                        }
+
                         // The pager also moves when playback advances, so only a real user change
                         // should stop the audio.
                         val playingPage =
@@ -148,10 +154,6 @@ class VersesViewModel(
 
                         if (_state.value.autoPlay) {
                             play(index = action.index)
-                        }
-
-                        if (route.saveBookmarks) {
-                            datastore.setBgBookMark(LongPair(route.chapter, action.index.toLong()))
                         }
                     }
                 }

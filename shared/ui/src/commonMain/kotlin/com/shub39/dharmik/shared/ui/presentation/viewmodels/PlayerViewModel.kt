@@ -162,18 +162,24 @@ class PlayerViewModel(
             observeJob = launch {
                 controller.state
                     .onEach { playback ->
-                        val previousTrack = _state.value.playback.currentTrack
+                        val previous = _state.value.playback
 
                         _state.update { it.copy(playback = playback) }
 
-                        if (playback.currentTrack != previousTrack) {
+                        val trackChanged = playback.currentTrack != previous.currentTrack
+
+                        if (trackChanged) {
                             playback.currentTrack?.let { track ->
                                 analytics.trackEvent(
                                     AnalyticsEvent.AUDIO_TRACK_CHANGED,
                                     mapOf("chapter" to track.chapter, "verse" to track.verse),
                                 )
                             }
+                        }
 
+                        // The verse text is resolved from both the track and the audio variant, so
+                        // switching variant alone also has to reload it.
+                        if (trackChanged || playback.variant != previous.variant) {
                             loadVerseText(playback)
                         }
                     }
