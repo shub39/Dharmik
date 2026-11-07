@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.3.0
+## 4.3.1
 - Added a player: listen to a whole chapter without tapping the next verse, with a queue, lock screen and notification controls.
 - Added collections: save verses with your own notes and listen to them as a playlist.
 - Pick the audio language (Sanskrit, Hindi or English) from the player, even while it is playing.
