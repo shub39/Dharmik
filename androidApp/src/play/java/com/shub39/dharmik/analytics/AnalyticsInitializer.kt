@@ -17,8 +17,10 @@
 package com.shub39.dharmik.analytics
 
 import android.content.Context
+import com.posthog.PostHog
 import com.posthog.android.PostHogAndroid
 import com.posthog.android.PostHogAndroidConfig
+import com.revenuecat.purchases.Purchases
 import com.shub39.dharmik.BuildConfig
 
 /** Sets up the PostHog client. Only compiled into the `play` flavor. */
@@ -27,13 +29,10 @@ class AnalyticsInitializer {
         PostHogAndroidConfig(
             projectToken = BuildConfig.POSTHOG_API_KEY,
             host = BuildConfig.POSTHOG_HOST,
-        )
+        ).apply { errorTrackingConfig.autoCapture = true }
 
     fun setup(context: Context) {
-        try {
-            PostHogAndroid.setup(context, config)
-        } catch (_: Exception) {
-            // A misconfigured key must not prevent the app from starting.
-        }
+        PostHogAndroid.setup(context, config)
+        PostHog.identify(Purchases.sharedInstance.appUserID)
     }
 }
